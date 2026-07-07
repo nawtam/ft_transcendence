@@ -58,3 +58,26 @@ graph TD
 
 
 ---
+![alt text](image.png)
+
+Étape 1 : ouvre le site. Navigateur envoie une demande. Elle arrive chez le Gateway, qui joue le rôle d'un standard téléphonique : il regarde ce que vous voulez et vous redirige vers le bon "bureau".
+Étape 2 : Vous vous inscrivez ou vous connectez. Le Gateway vous envoie chez Auth. Ce bureau vérifie votre mot de passe et note dans la base de données que vous existez.
+Étape 3 :  Vous jouez. Le Gateway vous envoie cette fois chez Game. C'est ce bureau qui gère l'état de la partie (où vous êtes, ce qui se passe).
+Étape 4 : Le jeu a besoin de texte généré par l'IA. Game va lui-même demander de l'aide à IA (vous, en tant que joueur, ne parlez jamais directement à IA c'est toujours Game qui fait l'intermédiaire).
+Étape 5 : Tout se range. Chacun des trois services note ce qu'il doit garder dans la base de données, qui est juste une grosse armoire à fiches partagée.
+
+
+Auth s'occupe uniquement des comptes et mots de passe.
+Game s'occupe uniquement de la partie en cours.
+IA s'occupe uniquement de générer du texte.
+
+
+dossier gateway
+
+containerfile : C'est ce fichier que Podman lit pour fabriquer le conteneur qui fera tourner Gateway.
+nginx.conf :  "si quelqu'un demande /api/auth/..., envoie-le au service Auth ; si c'est /api/game/..., envoie-le au service Game. Nginx est le programme qui lit ce fichier et fait vraiment la redirection.
+certs/ : contiendra fichiers de sécurité pour que la connexion avec le site chiffrée.
+
+dossier service
+package.json == include
+index.js == .c
