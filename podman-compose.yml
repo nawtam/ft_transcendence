@@ -1,0 +1,71 @@
+networks:
+  jdr-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+
+services:
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/containerfile
+    ports:
+      - "8443:443"
+    volumes:
+      - ./gateway/certs:/etc/nginx/certs:Z
+    networks:
+      - jdr-network
+    depends_on:
+      - auth
+      - game
+
+  auth:
+    build:
+      context: ./services/auth
+      dockerfile: containerfile
+    environment:
+      DATABASE_URL: postgres://auth_user:${AUTH_DB_PASSWORD}@postgres:5432/jdr_auth
+      JWT_SECRET: ${JWT_SECRET}
+    networks:
+      - jdr-network
+    depends_on:
+      - postgres
+
+  game:
+    build:
+      context: ./services/game
+      dockerfile: containerfile
+    environment:
+      DATABASE_URL: postgres://game_user:${GAME_DB_PASSWORD}@postgres:5432/jdr_game
+      IA_SERVICE_URL: http://ia:8000
+      JWT_SECRET: ${JWT_SECRET}
+    networks:
+      - jdr-network
+    depends_on:
+      - postgres
+
+  ia:
+    build:
+      context: ./services/ia
+      dockerfile: containerfile
+    environment:
+      DATABASE_URL: postgres://ai_user:${AI_DB_PASSWORD}@postgres:5432/jdr_ai
+    networks:
+      - jdr-network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: docker.io/pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data:Z
+      - ./database/init:/docker-entrypoint-initdb.d:Z
+    networks:
+      - jdr-network
