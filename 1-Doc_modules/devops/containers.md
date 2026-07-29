@@ -47,6 +47,7 @@ AS frontend-build : donne un nom à cette étape, pour pouvoir y faire référen
 npm run build exécute vite build, qui range toujours son résultat dans un dossier appelé dist/ c'est son comportement par défaut
 dans dist/ il y aura des fichier statique prêt a etre utiliser (HTML/CSS/JS)
 
+*Vite est un outil qui transforme votre code frontend (écrit en TypeScript moderne, avec import/export, potentiellement éparpillé dans plusieurs fichiers) en quelque chose qu'un navigateur peut comprendre directement*
 
 **IMAGE 2 :**
 
@@ -62,10 +63,40 @@ On va chercher uniquement le dossier dist/ fabriqué dans la première étape (m
 **`networks:`** Déclare un réseau virtuel isolé, nommé `jdr-network.`
 **`driver: bridge :`** le type de réseau standard
 
+### bloc Gateway
+**`build:`** construie l'image a partir d'un **containerfile**, **`context: . `** est le point de départ des copy la cest un point donc la ou se trouve podmancompose.yml cest necessaire pour que le container gateway puisse copier à la fois le front et gateway.
 
+**`ports: - "2026:443"`** : 2026 port de l'ordi, 443 port de dans lequel nginx ecoute
+**`networks: - jdr-network`** : Branche ce container sur le réseau qu'on a déclaré plus haut
+
+**`depends_on:`** démarre auth et game avant gateway
+
+**`restart: unless-stopped`** : Si le container plante relance automatique
+
+### bloc auth/ia/game
+même principe que gateway au debut
+**`context: ./services/...`**  le point de départ pour les COPY du containerfile
+
+**`DATABASE_URL`** necessaire pour ce connecté a la base de donnée 
+
+**`JWT_SECRET: ${JWT_SECRET}`** Le secret utilisé pour signer les jetons de connexion
+
+
+## Postgres
+*logiciel qui range et retrouve les données*
+
+**`Image`** pas buld donc on telecharge une image existante
+
+**`environnement`** on creer un compte admin au premier demarrage 
+
+**`volumes`** localisation du volume pour la persistance
 make up
 podman-compose lit le fichier du début à la fin, et pour chaque service listé sous services: :
 
 1- Il construit l'image (build:) ou télécharge celle demandée (image:), si ce n'est pas déjà fait.
+
 2- Il crée le réseau (jdr-network) et les volumes (pgdata), s'ils n'existent pas encore.
+
 3- Il démarre chaque container, en respectant l'ordre donné par depends_on:, en lui injectant exactement les variables d'environnement, les volumes et le réseau qu'on a décrits.
+
+
