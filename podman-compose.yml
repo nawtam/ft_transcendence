@@ -12,7 +12,7 @@ services:
       context: .
       dockerfile: gateway/containerfile
     ports:
-      - "8443:443"
+      - "2026:443"
     volumes:
       - ./gateway/certs:/etc/nginx/certs:Z
     networks:
