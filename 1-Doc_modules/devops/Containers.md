@@ -1,5 +1,10 @@
 # Les 4 containerfiles
 
+**auth** : gère les comptes utilisateurs
+**game** : gère la logique du jeu
+**ia** : gère l'IA/RAG 
+**gateway** : la porte d'entrée (Nginx), qui reçoit toutes les requêtes du navigateur et les redirige vers le bon container
+
 ## Les services
 **`FROM docker.io/node:20-alpine`**
 - node:20 : version moderne pour ecrire en js
