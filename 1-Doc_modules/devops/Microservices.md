@@ -49,9 +49,9 @@ graph TD
     Gateway -->|/api/auth| Auth[auth-service - Node.js]
     Gateway -->|/api/game, /ws| Game[game-service - Node.js]
     Game -->|HTTP interne :8000| AI[ai-service - Python]
-    Auth --> DBAuth[(PostgreSQL - jdr_auth)]
-    Game --> DBGame[(PostgreSQL - jdr_game)]
-    AI --> DBAI[(PostgreSQL - jdr_ai + pgvector)]
+    Auth --> DBAuth[(PostgreSQL - db_auth)]
+    Game --> DBGame[(PostgreSQL - db_game)]
+    AI --> DBAI[(PostgreSQL - db_ai + pgvector)]
     Auth -->|clé privée| Vault[Vault]
     Game -->|clé publique| Vault
 ```

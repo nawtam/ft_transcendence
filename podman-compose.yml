@@ -26,7 +26,7 @@ services:
       context: ./services/auth
       dockerfile: containerfile
     environment:
-      DATABASE_URL: postgres://auth_user:${AUTH_DB_PASSWORD}@postgres:5432/jdr_auth
+      DATABASE_URL: postgres://auth_user:${AUTH_DB_PASSWORD}@postgres:5432/db_auth
       JWT_SECRET: ${JWT_SECRET}
     networks:
       - jdr-network
@@ -38,7 +38,7 @@ services:
       context: ./services/game
       dockerfile: containerfile
     environment:
-      DATABASE_URL: postgres://game_user:${GAME_DB_PASSWORD}@postgres:5432/jdr_game
+      DATABASE_URL: postgres://game_user:${GAME_DB_PASSWORD}@postgres:5432/db_game
       IA_SERVICE_URL: http://ia:8000
       JWT_SECRET: ${JWT_SECRET}
     networks:
@@ -51,7 +51,7 @@ services:
       context: ./services/ia
       dockerfile: containerfile
     environment:
-      DATABASE_URL: postgres://ai_user:${AI_DB_PASSWORD}@postgres:5432/jdr_ai
+      DATABASE_URL: postgres://ai_user:${AI_DB_PASSWORD}@postgres:5432/db_ai
     networks:
       - jdr-network
     depends_on:
@@ -62,6 +62,9 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_ADMIN_USER}
       POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD}
+      GAME_DB_PASSWORD: ${GAME_DB_PASSWORD}
+      AI_DB_PASSWORD: ${AI_DB_PASSWORD}
     ports:
       - "127.0.0.1:5433:5432"
     volumes:

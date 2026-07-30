@@ -8,11 +8,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     CREATE USER ai_user   WITH PASSWORD '$AI_DB_PASSWORD';
 
 
-    CREATE DATABASE jdr_auth;
-    CREATE DATABASE jdr_game;
-    CREATE DATABASE jdr_ai;
+    CREATE DATABASE db_auth;
+    CREATE DATABASE db_game;
+    CREATE DATABASE db_ai;
 
-    GRANT ALL PRIVILEGES ON DATABASE jdr_auth TO auth_user;
-    GRANT ALL PRIVILEGES ON DATABASE jdr_game TO game_user;
-    GRANT ALL PRIVILEGES ON DATABASE jdr_ai   TO ai_user;
+    GRANT ALL PRIVILEGES ON DATABASE db_auth TO auth_user;
+    GRANT ALL PRIVILEGES ON DATABASE db_game TO game_user;
+    GRANT ALL PRIVILEGES ON DATABASE db_ai   TO ai_user;
 EOSQL
