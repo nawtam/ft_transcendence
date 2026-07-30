@@ -1,0 +1,1 @@
+# Structure du JSON de l'état du jeu
