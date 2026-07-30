@@ -6,7 +6,7 @@ up:
 	$(COMPOSE) up -d --build
 
 down:
-	$(COMPOSE) down
+	$(COMPOSE) down 
 
 build:
 	$(COMPOSE) build
