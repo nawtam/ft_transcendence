@@ -1,13 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head><meta charset="UTF-8"><title>Transcendence</title></head>
-<body>
-  <h1>🎲 Transcendence — ça tourne !</h1>
-  <p id="status">Test en cours...</p>
-  <script>
-    fetch('/api/auth/health').then(r => r.json()).then(d => {
-      document.getElementById('status').innerText = 'auth: ' + JSON.stringify(d);
-    }).catch(e => document.getElementById('status').innerText = 'erreur: ' + e);
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>transcendence</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
