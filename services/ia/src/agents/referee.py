@@ -35,15 +35,17 @@ def _summarize_stats(stats: dict) -> str:
     weapons = [i["name"] for i in stats.get("inventory", []) if i.get("type") == "weapon"]
     return f"HP: {hp}/{max_hp}, Location: {location}, Weapons: {', '.join(weapons) or 'none'}"
 
-llm = get_referee_llm()
 TOOLS = [attack_enemy]
-llm_with_tools = llm.bind_tools(TOOLS)
 
-def call_referee(state: State):
+async def call_referee(state: State):
+    
+	llm = get_referee_llm() 
+	llm_with_tools = llm.bind_tools(TOOLS)
+
 	system = SystemMessage(content=REFEREE_SYSTEM_PROMPT.format(
 		universe_context=state["universe_context"],
 		player_stats_summary=_summarize_stats(state["player_stats"]),
 	))
 	messages = [system] + state["messages"]
-	response: AIMessage = llm_with_tools.invoke(messages)
+	response: AIMessage = await llm_with_tools.invoke(messages)
 	return {"messages": [response]}
