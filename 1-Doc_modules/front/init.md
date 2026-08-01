@@ -78,3 +78,12 @@ Fermeture de la fonction App.
 
 export default App
 On rend cette fonction disponible pour d'autres fichiers. C'est exactement ce que main.tsx récupère avec import App from './App.tsx'. Le mot default signifie "l'export principal de ce fichier" — c'est pour ça qu'on n'a pas besoin d'accolades { } côté import.
+
+
+![alt text](image.png)
+
+npm run dev → Vite démarre un serveur local ✓
+Navigateur va sur le lien → envoie une requête à ce serveur ✓
+Le serveur renvoie index.html ✓
+index.html dit d'exécuter main.tsx ✓
+main.tsx appelle App → App s'exécute ✓
