@@ -1,10 +1,12 @@
 import DestinyCard from '../composants/DestinyCard'
+import soloImage from '../assets/home/solo.jpg'
+import multiImage from '../assets/home/multi.jpg'
 
 function Home() {
   return (
     <div className="page">
       <header className="header">
-        <span className="logo">Logo</span>
+        <span className="Transcendence">Transcendence</span>
         <button className="btn-connexion">Connexion</button>
       </header>
 
@@ -16,10 +18,12 @@ function Home() {
           <DestinyCard
             title="Aventure Solo"
             description="Plonge dans une saga narrative dont tu es le héro."
+            image={soloImage}
           />
           <DestinyCard
             title="Multijoueur"
             description="Rejoins un univers avec des compagnons"
+            image={multiImage}
           />
         </div>
       </main>
