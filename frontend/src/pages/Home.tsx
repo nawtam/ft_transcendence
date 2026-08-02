@@ -1,14 +1,15 @@
 import DestinyCard from '../composants/DestinyCard'
 import soloImage from '../assets/home/solo.jpg'
 import multiImage from '../assets/home/multi.jpg'
+import { Link } from 'react-router-dom'
+import '../css/Home.css'
 
 function Home() {
   return (
     <div className="page">
       <header className="header">
         <span className="Transcendence">Transcendence</span>
-        <button className="btn-connexion">Connexion</button>
-      </header>
+        <Link to="/connexion" className="btn-connexion">Connexion</Link>      </header>
 
       <main className="hero">
         <p className="eyebrow">Bienvenue, aventurier</p>

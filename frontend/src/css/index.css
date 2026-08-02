@@ -1,0 +1,39 @@
+:root {
+  --color-bg: #140d08;
+  --color-bg-elevated: #1f1610;
+  --color-gold: #d9a84e;
+  --color-gold-dark: #a9762c;
+  --color-text: #f1e6d3;
+  --color-text-muted: #b8a88f;
+  --font-display: 'Cinzel', serif;
+  --font-body: 'EB Garamond', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 1200px 900px at 10% 10%, rgba(232, 150, 58, 0.16), transparent 65%),
+    radial-gradient(ellipse 1100px 900px at 90% 15%, rgba(169, 118, 44, 0.14), transparent 65%),
+    radial-gradient(ellipse 1300px 1000px at 50% 95%, rgba(217, 168, 78, 0.13), transparent 65%),
+    radial-gradient(ellipse 1000px 800px at 15% 80%, rgba(201, 105, 31, 0.15), transparent 65%),
+    radial-gradient(ellipse 1000px 800px at 85% 75%, rgba(169, 118, 44, 0.12), transparent 65%);
+  background-size: 200% 200%;
+  animation: driftGlow 25s ease-in-out infinite alternate;
+  pointer-events: none;
+}
