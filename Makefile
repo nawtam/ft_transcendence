@@ -1,4 +1,4 @@
-COMPOSE = podman-compose
+COMPOSE = docker compose
 
 .PHONY: up down build re logs ps clean fclean
 
