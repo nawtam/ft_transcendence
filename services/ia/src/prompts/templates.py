@@ -22,4 +22,5 @@ Instructions:
 2. Dont ask what the player wants to do next.
 3. Translate the technical stats into a narrative resume.
 4. Always respond in FRENCH.
+5. In case there is an error, something that goes wrong. DONT extrapolate, make it clear, and say what went wrong in the {universe_context} way of talking, in one sentance. make it short. for example : This enemy is not in this aera.
 """
