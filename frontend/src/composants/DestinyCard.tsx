@@ -3,13 +3,12 @@ interface DestinyCardProps {
   description: string
 }
 
-
 function DestinyCard({ title, description }: DestinyCardProps) {
   return (
-    <article>
-      <h2>{title}</h2>
-      <p>{description}</p>
-      <a href="#">Entrer →</a>
+    <article className="card">
+      <h2 className="card-title">{title}</h2>
+      <p className="card-description">{description}</p>
+      <a href="#" className="card-link">Entrer →</a>
     </article>
   )
 }

@@ -1,0 +1,108 @@
+:root {
+  --color-bg: #140d08;
+  --color-bg-elevated: #1f1610;
+  --color-gold: #d9a84e;
+  --color-gold-dark: #a9762c;
+  --color-text: #f1e6d3;
+  --color-text-muted: #b8a88f;
+  --font-display: 'Cinzel', serif;
+  --font-body: 'EB Garamond', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 2rem 3rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  letter-spacing: 0.05em;
+}
+
+.btn-connexion {
+  font-family: var(--font-display);
+  background: linear-gradient(180deg, #e8963a, #c9691f);
+  color: #1a1006;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.hero {
+  text-align: center;
+  margin-top: 6rem;
+}
+
+.eyebrow {
+  color: var(--color-text-muted);
+  letter-spacing: 0.3em;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--color-gold);
+  margin-top: 1rem;
+}
+
+.cards {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 4rem;
+}
+
+.card {
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-gold-dark);
+  border-radius: 8px;
+  padding: 2rem;
+  width: 320px;
+  text-align: left;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-description {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.card-link {
+  color: var(--color-gold);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
