@@ -1,25 +1,30 @@
 import DestinyCard from '../composants/DestinyCard'
+import soloImage from '../assets/home/solo.jpg'
+import multiImage from '../assets/home/multi.jpg'
+import { Link } from 'react-router-dom'
+import '../css/Home.css'
 
 function Home() {
   return (
-    <div>
-      <header>
-        <span>Logo</span>
-        <button>Connexion</button>
-      </header>
+    <div className="page">
+      <header className="header">
+        <span className="Transcendence">Transcendence</span>
+        <Link to="/connexion" className="btn-connexion">Connexion</Link>      </header>
 
-      <main>
-        <p>Bienvenue, aventurier</p>
-        <h1>Choisis ton destin</h1>
+      <main className="hero">
+        <p className="eyebrow">Bienvenue, aventurier</p>
+        <h1 className="title">Choisis ton destin</h1>
 
-        <div>
+        <div className="cards">
           <DestinyCard
             title="Aventure Solo"
             description="Plonge dans une saga narrative dont tu es le héro."
+            image={soloImage}
           />
           <DestinyCard
             title="Multijoueur"
             description="Rejoins un univers avec des compagnons"
+            image={multiImage}
           />
         </div>
       </main>

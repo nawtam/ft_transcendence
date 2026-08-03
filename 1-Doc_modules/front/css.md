@@ -9,4 +9,8 @@ Ils disent au navigateur "tu vas bientôt parler à ces serveurs, commence la co
 
 ## les variables CSS
 
-index.css
+dqns un fichier index.css
+
+
+root -> declaration des varible
+- couleurs
