@@ -25,8 +25,8 @@ function Connexion ()
         <button className="btn-entrer" type="submit">Entrer</button>
         </form>
 
-        <p className="sub">
-    Nouveau parmi nous ? <Link to="/sub" className="sub-link">Créer un compte</Link>
+        <p className="Registration">
+    Nouveau parmi nous ? <Link to="/Registration" className="Registration-link">Créer un compte</Link>
         </p>
       </main>
     </div>

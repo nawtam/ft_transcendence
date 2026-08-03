@@ -133,13 +133,13 @@
   transform: scale(1.02);
 }
 
-.sub {
+.Registration {
   display: block;
   text-align: center;
   font-size: 1.3rem;
 }
 
-.sub-link {
+.Registration-link {
 color: var(--color-gold);
   text-decoration: underline;
   cursor: pointer;
