@@ -47,15 +47,28 @@ services:
       - postgres
 
   ia:
-    build:
-      context: ./services/ia
-      dockerfile: containerfile
-    environment:
-      DATABASE_URL: postgres://ai_user:${AI_DB_PASSWORD}@postgres:5432/db_ai
-    networks:
-      - jdr-network
-    depends_on:
-      - postgres
+      build:
+        context: ./services/ia
+        dockerfile: containerfile
+      env_file:
+        - ./.env
+      dns:
+        - 8.8.8.8
+        - 1.1.1.1
+      environment:
+        - DATABASE_URL
+        - GROQ_API_KEY
+        - LANGCHAIN_TRACING_V2
+        - LANGCHAIN_API_KEY
+        - LANGCHAIN_PROJECT
+        - LANGCHAIN_ENDPOINT
+        - LANGCHAIN_TRACING_V2=true
+        - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}
+        - LANGCHAIN_PROJECT=${LANGCHAIN_PROJECT}
+      networks:
+        - jdr-network
+      depends_on:
+        - postgres
 
   postgres:
     image: docker.io/pgvector/pgvector:pg16
