@@ -3,5 +3,5 @@
   "graphs": {
     "game_engine": "./src/core/graph.py:app"
   },
-  "env": ".env"
+  "env": "../../.env"
 }

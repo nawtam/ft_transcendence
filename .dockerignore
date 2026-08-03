@@ -1,0 +1,21 @@
+# On bloque TOUS les dossiers node_modules, peu importe où ils sont
+**/node_modules/
+**/venv/
+**/.venv/
+**/__pycache__/
+
+# On bloque les fichiers d'environnement locaux
+.env
+.env.*
+!.env.example
+
+# On bloque les dossiers Git et Docker
+.git/
+.dockerignore
+**/containerfile
+**/Dockerfile
+docker-compose.yml
+podman-compose.yml
+
+# Logs
+*.log
