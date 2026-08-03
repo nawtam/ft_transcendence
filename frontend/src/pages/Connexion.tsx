@@ -8,7 +8,7 @@ function Connexion ()
     <div className="page">
       <header className="header">
         <span className="Transcendence">Transcendence</span>
-        <button className="btn-connexion">Connexion</button>
+        {/* <button className="btn-connexion">Connexion</button> */}
       </header>
 
       <Link to="/" className="btn-retour">← Retour</Link>
