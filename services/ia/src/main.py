@@ -1,7 +1,10 @@
-# from fastapi import FastAPI
+import src.core.config
 
-# app = FastAPI()
+from fastapi import FastAPI
 
-# @app.get("/health")
-# def health():
-#     return {"status": "ok"}
+app = FastAPI()
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}

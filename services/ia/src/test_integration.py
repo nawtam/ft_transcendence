@@ -1,90 +1,86 @@
 import asyncio
-import os
-import random
+
 import asyncpg
-from dotenv import load_dotenv, find_dotenv
+from langchain_core.messages import HumanMessage
 
-# Importation de ton travail
+import src.core.config
+from src.core.config import DATABASE_URL
 from src.core.graph import app
-from src.core.state import State
 
-# Charger les variables d'environnement (API Groq, DB_URL)
-load_dotenv(find_dotenv())
 
-async def setup_database():
-    """
-    Prépare la base de données pour le test.
-    Crée un Orc avec 50 HP pour s'assurer que le test est répétable.
-    """
-    print("\n[1/3] 🛠️  Configuration de la base de données de test...")
-    conn = await asyncpg.connect(os.getenv("DATABASE_URL"))
+async def setup_database() -> None:
+    print("\n[1/3] Configuration de la base de données de test...")
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL ou AI_DATABASE_URL manquante — vérifie ton .env")
+
+    conn = await asyncpg.connect(DATABASE_URL)
     try:
-        # Nettoyage et création du monstre de test
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS monsters (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                hp INTEGER NOT NULL,
+                max_hp INTEGER NOT NULL
+            );
+        """)
         await conn.execute("DELETE FROM monsters WHERE name = 'Orc'")
-        await conn.execute("INSERT INTO monsters (name, hp, max_hp) VALUES ('Orc', 50, 50)")
-        print("✅ Monstre 'Orc' (50 HP) prêt dans la base de données.")
+        await conn.execute(
+            "INSERT INTO monsters (name, hp, max_hp) VALUES ('Orc', 50, 50)"
+        )
+        print("Table 'monsters' prête et Orc (50 HP) créé.")
     finally:
         await conn.close()
 
-async def verify_db_results():
-    """
-    Vérifie si les HP de l'Orc ont bien diminué.
-    """
-    conn = await asyncpg.connect(os.getenv("DATABASE_URL"))
+
+async def verify_db_results() -> int:
+    conn = await asyncpg.connect(DATABASE_URL)
     try:
-        hp = await conn.fetchval("SELECT hp FROM monsters WHERE name = 'Orc'")
-        return hp
+        return await conn.fetchval("SELECT hp FROM monsters WHERE name = 'Orc'")
     finally:
         await conn.close()
 
-async def run_test_scenario(user_input: str):
-    """
-    Lance un tour de jeu complet à travers le graphe LangGraph.
-    """
-    print(f"\n[2/3] 🧠 L'IA analyse l'action : '{user_input}'...")
-    
-    # État initial tel que défini dans ton state.py
+
+async def run_test_scenario(user_input: str) -> dict:
+    print(f"\n[2/3] L'IA analyse l'action : '{user_input}'...")
+
     initial_state = {
-        "messages": [("user", user_input)],
+        "messages": [HumanMessage(content=user_input)],
         "player_stats": {"hp": 100, "strength": 15},
         "universe_context": "Médiéval Fantastique",
         "world_state": {"current_room": "Donjon de test"},
-        "last_tool": {}
+        "last_tool": {},
     }
 
-    # EXÉCUTION DU GRAPHE (La boucle Arbitre -> Tool -> Arbitre)
-    final_state = await app.ainvoke(initial_state)
-    
-    return final_state
+    return await app.ainvoke(initial_state)
 
-async def main():
-    # 1. Préparation
+
+async def main() -> None:
+    print(f"--- Connexion DB -> {DATABASE_URL} ---")
     await setup_database()
 
-    # 2. Exécution du scénario d'attaque
-    user_action = "Je frappe l'orc avec mon épée longue"
+    user_action = "J'attaque l'Orc avec mon épée"
     final_state = await run_test_scenario(user_action)
 
-    # 3. Analyse des résultats techniques
-    print("\n[3/3] 📊 Analyse du flux de messages :")
+    print("\n[3/3] Analyse du flux de messages :")
     for msg in final_state["messages"]:
         role = msg.__class__.__name__
         content = msg.content if msg.content else f"Tool Call: {msg.tool_calls}"
-        print(f"   🔹 {role}: {content}")
+        print(f"   {role}: {content}")
 
-    # 4. LE VERDICT (L'assertion)
+    print(f"\nlast_tool = {final_state.get('last_tool', {})}")
+
     final_hp = await verify_db_results()
-    
-    print("\n" + "="*40)
+
+    print("\n" + "=" * 40)
     if final_hp < 50:
-        print(f"🔥 TEST RÉUSSI : L'orc a maintenant {final_hp} HP (Dégâts confirmés en DB)")
+        print(f"TEST RÉUSSI : l'Orc a maintenant {final_hp} HP (dégâts confirmés en DB)")
     else:
-        print("❌ TEST ÉCHOUÉ : Les HP de l'orc n'ont pas bougé.")
-    print("="*40 + "\n")
+        print("TEST ÉCHOUÉ : les HP de l'Orc n'ont pas bougé.")
+    print("=" * 40 + "\n")
+
 
 if __name__ == "__main__":
-    # Lancement du test asynchrone
     try:
         asyncio.run(main())
-    except Exception as e:
-        print(f"💥 Erreur fatale durant le test : {e}")
+    except Exception as exc:
+        print(f"Erreur fatale durant le test : {exc}")

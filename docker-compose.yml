@@ -50,8 +50,15 @@ services:
     build:
       context: ./services/ia
       dockerfile: containerfile
+    env_file:
+      - ./.env
     environment:
-      DATABASE_URL: postgres://ai_user:${AI_DB_PASSWORD}@postgres:5432/db_ai
+      - DATABASE_URL
+      - AI_DATABASE_URL
+      - GROQ_API_KEY
+      - LANGCHAIN_TRACING_V2
+      - LANGCHAIN_API_KEY
+      - LANGCHAIN_PROJECT
     networks:
       - jdr-network
     depends_on:
