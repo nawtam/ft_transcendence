@@ -1,0 +1,10 @@
+# Force tous les fichiers texte à être traités en LF au moment du commit
+* text=auto eol=lf
+
+# Force spécifiquement les scripts shell
+*.sh text eol=lf
+
+# Force les fichiers de config Docker
+Containerfile text eol=lf
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf

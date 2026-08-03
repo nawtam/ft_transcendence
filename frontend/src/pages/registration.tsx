@@ -1,4 +1,4 @@
-import '../css/Registration.css'
+// import '../css/Registration.css' ce fichier exite pas encore donc probleme de compilation, je met en commentaire ne attendant que tu le cree nono. (dsl)
 
 function Connexion ()
 {
