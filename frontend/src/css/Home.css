@@ -7,6 +7,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(217, 168, 78, 0.4);
+  margin-bottom: 1rem;
 }
 
 .Transcendence {
@@ -36,13 +39,13 @@
 
 .hero {
   text-align: center;
-  margin-top: 8rem;
+  margin-top: 5rem;
 }
 
 .eyebrow {
   color: var(--color-text-muted);
   letter-spacing: 0.3em;
-  font-size: 1.4rem;
+  font-size: 1.4;
   text-transform: uppercase;
 }
 
@@ -50,7 +53,7 @@
   font-family: var(--font-display);
   font-size: 4rem;
   color: var(--color-gold);
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .cards {
@@ -67,12 +70,14 @@
   border: 1px solid var(--color-gold-dark);
   border-radius: 8px;
   overflow: hidden;
+  display: block;
+  text-decoration: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
   border-color: var(--color-gold);
-  box-shadow: 0 0 24px rgba(217, 168, 78, 0.35);
+  box-shadow: 0 0 30px 3px rgba(217, 168, 78, 0.5);
 }
 
 .card-image {
@@ -106,7 +111,7 @@
 
 .card-description {
   color: var(--color-text-muted);
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   line-height: 1.5;
   margin-bottom: 1.5rem;
 }
@@ -116,12 +121,13 @@
   color: var(--color-gold);
   text-decoration: none;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   letter-spacing: 0.05em;
-  transition: transform 0.25s ease, text-shadow 0.25s ease;
+  transition: transform 0.25s ease, text-shadow 0.25s ease, color 0.25s ease;
 }
 
-.card-link:hover {
+.card:hover .card-link {
   transform: scale(1.1);
   text-shadow: 0 0 10px rgba(217, 168, 78, 0.9);
+  color: rgba(226, 205, 166, 0.9);
 }

@@ -20,11 +20,13 @@ function Home() {
             title="Aventure Solo"
             description="Plonge dans une saga narrative dont tu es le héro."
             image={soloImage}
+            href="#"
           />
           <DestinyCard
             title="Multijoueur"
             description="Rejoins un univers avec des compagnons"
             image={multiImage}
+            href="#"
           />
         </div>
       </main>

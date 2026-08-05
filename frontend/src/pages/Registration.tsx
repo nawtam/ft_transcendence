@@ -3,12 +3,14 @@ import '../css/Registration.css'
 
 function Registration() {
   return (
-    <div>
-    <span className="Transcendence">Transcendence</span>
-    <Link to="/Connexion" className="btn-retour">← Retour</Link>
+    <div className="reg-page">
+     <header className="header">
+        <span className="Transcendence">Transcendence</span>
+      </header>
+    <Link to="/Connexion" className="reg-back">← Retour</Link>
 
-    <h1>Inscription</h1>
     <form className="reg-form">
+      <h1 className="reg-title">Inscription</h1>
         <span className="reg-pseudo">Pseudo</span>
         <input type="text" placeholder="nom de jeu" />
 
