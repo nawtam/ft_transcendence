@@ -1,0 +1,56 @@
+{
+  "name": "",
+  "description": "",
+  "type": "",
+  // principale, secondaire, aleatoire
+  "repeatable": false,
+  "steps": [
+    {
+      "order": 1,
+      "objective": "",
+      "target_npc": "",
+      //npc concerné
+      "target_monster": "",
+      // monster concerné
+      "target_item": "",
+      // item concerné
+      // vide si non
+      "target_place": {
+        "place": "",
+        "sous_zone": ""
+      }
+    }
+    // ajouter autant d'étapes que nécessaire
+  ],
+  "reward": {
+    "xp": 0,
+    "items": [
+      {
+        "item": "",
+        // référence items/
+        "quantity": 1
+      }
+    ]
+  },
+  "unlocks_quest": "",
+  // si chaîne de quêtes dire la suivante
+  "fail_condition": "",
+  // optionnel, ex: "le pnj cible meurt", "délai dépassé"
+  "fail_consequence": {
+    "description": "",
+    // ce qui se passe narrativement en cas d'échec
+    "npc_change": [
+      {
+        "npc": "",
+        // référence npcs/
+        "disposition": ""
+        // amical, neutre, hostile, mefiant
+      }
+    ],
+    "lose_items": [],
+    //items retirés si applicable
+    "blocks_quest": "",
+    // optionnel, quête qui devient inaccessible
+    "permanent": false
+}
+}

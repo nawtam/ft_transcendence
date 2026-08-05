@@ -1,0 +1,1 @@
+Informations que l'IA connaît mais ne doit pas révéler facilement aux joueurs (twists, vérités cachées)

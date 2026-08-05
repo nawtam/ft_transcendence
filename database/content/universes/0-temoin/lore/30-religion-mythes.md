@@ -1,0 +1,1 @@
+Croyances, cultes, légendes, divinités ou entités surnaturelles

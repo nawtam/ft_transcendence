@@ -1,0 +1,42 @@
+{
+  "name": "",
+  "description": "",
+  "role": "",
+  // marchand, forgeron, garde, sage, mendiant, aubergiste...
+"place": {
+  "place": "",
+  "sous_zone": ""
+  //si pas dans une sous zone laisse vide.
+},
+  "personality": "",
+  "disposition": "",
+  // amical, neutre, hostile, mefiant
+  "voice_tone": "",
+  "idle_lines": [],
+  "quest_pool": [
+    {
+      "quest": "",
+      // référence un fichier de quests/
+      "probability": 1,
+      "condition": "",
+      // optionnel, condition narrative d'éligibilité
+    },
+    {
+      "quest": "",
+      "probability": 1,
+      "condition": "",
+    } //ajouter autant de quete qu'il peut proposer
+  ],
+  "sells": [],
+  "buys_categories": [],
+  "hostile_condition": "",
+  // ce qui le rend hostile ex : l'attaquer
+  "combat_stats": {
+    "hp": 0,
+    "attack": 0,
+    "defense": 0,
+    "equipement" : []
+  },
+  "loot": [],
+  "asset": ""
+}

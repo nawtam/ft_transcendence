@@ -1,0 +1,38 @@
+{
+  "name": "",
+  "description": "",
+  "steps": [
+    {
+      "order": 1,
+      "objective": "",
+      "indice": "",
+      "target_npc": "",
+      // optionnel, référence npcs/
+      "target_monster": "",
+      // optionnel, référence monsters/
+      "target_item": "",
+      // optionnel, référence items/
+      "target_place": {
+        "place": "",
+        // optionnel, référence places/
+        "sous_zone": ""
+        // optionnel
+      },
+      "optional": false
+      //étape est facultative
+    }
+    // ajouter autant d'étapes que nécessaire, dans l'ordre
+  ],
+  "victory_text": "",
+  "reward": {
+    "xp": 0,
+    "items": [
+      {
+        "item": "",
+        // référence items/
+        "quantity": 1
+      }
+    ]
+  },
+  "fail_condition": ""
+}
