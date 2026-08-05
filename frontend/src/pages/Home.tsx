@@ -2,9 +2,31 @@ import DestinyCard from '../composants/DestinyCard'
 import soloImage from '../assets/home/solo.jpg'
 import multiImage from '../assets/home/multi.jpg'
 import { Link } from 'react-router-dom'
+import { useState } from "react";
 import '../css/Home.css'
 
+interface Joueur {
+  pseudo: string;
+  niveau: number;
+  classe: string;
+  xpActuel: number;
+  xpTotal: number;
+  or: number;
+  mana: number;
+  manaMax: number;
+}
+
 function Home() {
+  const [joueur, setJoueur] = useState<Joueur | null>({
+    pseudo: "NONO",
+    niveau: 67,
+    classe: "chat noir",
+    xpActuel: 667,
+    xpTotal: 667,
+    or: 2026,
+    mana: 80,
+    manaMax: 100,
+  });
   return (
     <div className="page">
       <header className="header">
