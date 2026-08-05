@@ -5,7 +5,7 @@
   // se qui declenche
   "event_place": [],
   "probability": 0,
-  "fréquence": "",
+  "frequence": "",
   // ex: 1x par partie, par lieux visité...
   "quest": "",
   // si lié a une quete

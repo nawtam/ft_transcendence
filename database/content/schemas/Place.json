@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "interactive_object.schema.json",
+  "title": "Objet interactif du monde (décor, coffre, station de craft...)",
+  "$comment": "Nommé 'interactive_object' pour ne pas le confondre avec item.schema.json (objet d'inventaire). Ce fichier décrit un élément de décor avec lequel on interagit (fouiller, crafter, examiner), pas un objet qu'on transporte.",
+  "$defs": {
+    "interaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["fouille", "craft", "examiner"]
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "requires_items": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/item_stack" },
+          "description": "Peut être vide si aucun item requis."
+        },
+        "consumes_items": { "type": "boolean" },
+        "loot_table": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "item": { "$ref": "common.schema.json#/$defs/slug" },
+              "quantity": { "type": "integer", "minimum": 1 },
+              "probability": { "$ref": "common.schema.json#/$defs/probability" }
+            },
+            "required": ["item", "quantity", "probability"]
+          }
+        },
+        "success_probability": { "$ref": "common.schema.json#/$defs/probability" },
+        "success_text": { "type": "string", "minLength": 1 },
+        "fail_text": { "type": "string", "minLength": 1 },
+        "cooldown": { "type": "string" }
+      },
+      "required": [
+        "type", "label", "requires_items", "consumes_items", "loot_table",
+        "success_probability", "success_text", "fail_text", "cooldown"
+      ],
+      "if": {
+        "properties": { "type": { "enum": ["fouille", "craft"] } },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "loot_table": { "minItems": 1 }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "asset": { "$ref": "common.schema.json#/$defs/asset_path" },
+    "locations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "place": { "$ref": "common.schema.json#/$defs/slug" },
+          "sous_zone": { "type": "string" },
+          "probability": { "$ref": "common.schema.json#/$defs/probability" }
+        },
+        "required": ["place", "sous_zone", "probability"]
+      }
+    },
+    "reusable": { "type": "boolean" },
+    "respawn": {
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "string", "enum": ["jamais", "partie_suivante"] }
+      ],
+      "$comment": "Incohérence détectée dans ton template : la valeur par défaut est 'false' (booléen) mais le commentaire décrit des valeurs texte ('jamais', 'partie_suivante'). J'ai autorisé les deux et ajouté la règle if/then ci-dessous ; à toi de trancher définitivement."
+    },
+    "interactions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/interaction" }
+    }
+  },
+  "required": ["name", "description", "asset", "locations", "reusable", "respawn", "interactions"],
+  "if": {
+    "properties": { "reusable": { "const": false } },
+    "required": ["reusable"]
+  },
+  "then": {
+    "properties": {
+      "respawn": { "type": "string", "enum": ["jamais", "partie_suivante"] }
+    }
+  },
+  "else": {
+    "properties": {
+      "respawn": { "type": "boolean" }
+    }
+  }
+}

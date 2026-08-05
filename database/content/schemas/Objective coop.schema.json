@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "objective_coop.schema.json",
+  "title": "Objectif - mode coopératif",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "difficulty": { "$ref": "common.schema.json#/$defs/difficulty" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "common.schema.json#/$defs/objective_step_coop" }
+    },
+    "victory_text": { "type": "string", "minLength": 1 },
+    "reward": { "$ref": "common.schema.json#/$defs/reward" },
+    "fail_condition": { "type": "string" },
+    "fail_consequence": { "$ref": "common.schema.json#/$defs/fail_consequence_disposition" }
+  },
+  "required": [
+    "name", "description", "difficulty", "steps", "victory_text",
+    "reward", "fail_condition", "fail_consequence"
+  ]
+}

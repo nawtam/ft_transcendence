@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "quest.schema.json",
+  "title": "Quête",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "type": {
+      "type": "string",
+      "enum": ["principale", "secondaire", "aleatoire"]
+    },
+    "repeatable": { "type": "boolean" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "common.schema.json#/$defs/quest_step" }
+    },
+    "reward": { "$ref": "common.schema.json#/$defs/reward" },
+    "unlocks_quest": { "$ref": "common.schema.json#/$defs/optional_ref" },
+    "fail_condition": { "type": "string" },
+    "fail_consequence": { "$ref": "common.schema.json#/$defs/quest_fail_consequence" }
+  },
+  "required": [
+    "name", "description", "type", "repeatable", "steps",
+    "reward", "unlocks_quest", "fail_condition", "fail_consequence"
+  ]
+}

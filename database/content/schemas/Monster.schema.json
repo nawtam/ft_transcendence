@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "monster.schema.json",
+  "title": "Monstre",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hp": { "type": "integer", "minimum": 0 },
+        "attack": { "type": "integer", "minimum": 0 },
+        "defense": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["hp", "attack", "defense"]
+    },
+    "behavior": {
+      "type": "string",
+      "minLength": 1,
+      "examples": ["agressif", "fuit_si_blesse", "chasse_en_groupe", "passif_sauf_provoque"]
+    },
+    "loot": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/slug" }
+    },
+    "place": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Au moins un lieu d'apparition (à confirmer si un monstre peut n'apparaître nulle part par défaut).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "place": { "$ref": "common.schema.json#/$defs/slug" },
+          "sous_zone": { "type": "string" },
+          "probability": { "$ref": "common.schema.json#/$defs/probability" }
+        },
+        "required": ["place", "sous_zone", "probability"]
+      }
+    },
+    "quest": { "$ref": "common.schema.json#/$defs/optional_ref" },
+    "npc": { "$ref": "common.schema.json#/$defs/optional_ref" },
+    "asset": { "$ref": "common.schema.json#/$defs/asset_path" }
+  },
+  "required": ["name", "description", "stats", "behavior", "loot", "place", "quest", "npc", "asset"]
+}

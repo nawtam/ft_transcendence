@@ -39,7 +39,7 @@
   "fail_consequence": {
     "description": "",
     // ce qui se passe narrativement en cas d'échec
-    "npc_change": [
+    "npc_disposition_change": [
       {
         "npc": "",
         // référence npcs/
