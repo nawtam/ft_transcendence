@@ -3,6 +3,7 @@ import soloImage from '../assets/home/solo.jpg';
 import multiImage from '../assets/home/multi.jpg';
 import Header from '../composants/Header';
 import { Link } from 'react-router-dom';
+import CompanionsSidebar from '../composants/CompanionsSidebar';
 import { useState } from "react";
 import '../css/Home.css'
 
@@ -40,6 +41,8 @@ return (
       </header>
     )}
     <div className="page">
+      <div className="page-body">
+      {joueur && <CompanionsSidebar />}
       <main className="hero">
         <p className="eyebrow">Bienvenue, aventurier</p>
         <h1 className="title">Choisis ton destin</h1>
@@ -58,6 +61,7 @@ return (
           />
         </div>
       </main>
+      </div>
     </div>
   </div>
 );

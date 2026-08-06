@@ -11,7 +11,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/connexion" element={<Connexion />} />
       <Route path="/Registration" element={<Registration />} />
-<Route path="/conditions-generales" element={<ConditionsGenerales />} />    </Routes>
+      <Route path="/conditions-generales" element={<ConditionsGenerales />} />    </Routes>
   )
 }
 

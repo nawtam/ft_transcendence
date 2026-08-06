@@ -138,3 +138,9 @@
   text-shadow: 0 0 10px rgba(217, 168, 78, 0.9);
   color: rgba(226, 205, 166, 0.9);
 }
+
+.page-body {
+  display: flex;
+  gap: 100px;
+  align-items: stretch;
+}
