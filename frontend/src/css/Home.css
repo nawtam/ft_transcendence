@@ -4,19 +4,26 @@
 }
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(217, 168, 78, 0.4);
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 24px;
+  border-bottom: 2px solid color-mix(in oklch, var(--color-gold) 20%, transparent);
+  backdrop-filter: blur(12px);
+  background-color: color-mix(in oklch, var(--color-cosmo) 5%, transparent);
 }
 
 .Transcendence {
   font-family: var(--font-display);
   color: var(--color-gold);
   letter-spacing: 0.05em;
-  font-size: 2rem;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  margin-top: 20px;
   text-decoration: none;
 }
 
@@ -25,9 +32,9 @@
   background: linear-gradient(180deg, #e8963a, #c9691f);
   color: #1a1006;
   border: none;
-  padding: 0.6rem 1.4rem;
+  padding: 0.5rem 1.4rem;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.5rem;
   letter-spacing: 1em;
   cursor: pointer;
   transition: color 0.25s ease;
@@ -39,7 +46,7 @@
 
 .hero {
   text-align: center;
-  margin-top: 5rem;
+  margin-top: 1rem;
 }
 
 .eyebrow {
@@ -65,8 +72,8 @@
 
 .card {
   position: relative;
-  width: 820px;
-  height: 820px;
+  width: 520px;
+  height: 520px;
   border: 1px solid var(--color-gold-dark);
   border-radius: 8px;
   overflow: hidden;

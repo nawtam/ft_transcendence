@@ -7,6 +7,11 @@
   --color-text-muted: #b8a88f;
   --font-display: 'Cinzel', serif;
   --font-body: 'EB Garamond', serif;
+  --color-gold-bright: oklch(0.88 0.16 85);
+  --color-ember: oklch(0.65 0.22 40);
+  --color-arcane: oklch(0.6 0.2 290);
+  --color-parchment: oklch(0.92 0.04 85);
+    --color-cosmo: oklch(72.658% 0.1046 307.14);
 }
 
 * {

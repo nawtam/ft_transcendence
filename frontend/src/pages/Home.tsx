@@ -1,7 +1,8 @@
-import DestinyCard from '../composants/DestinyCard'
-import soloImage from '../assets/home/solo.jpg'
-import multiImage from '../assets/home/multi.jpg'
-import { Link } from 'react-router-dom'
+import DestinyCard from '../composants/DestinyCard';
+import soloImage from '../assets/home/solo.jpg';
+import multiImage from '../assets/home/multi.jpg';
+import Header from '../composants/Header';
+import { Link } from 'react-router-dom';
 import { useState } from "react";
 import '../css/Home.css'
 
@@ -21,22 +22,27 @@ function Home() {
     pseudo: "NONO",
     niveau: 67,
     classe: "chat noir",
-    xpActuel: 667,
+    xpActuel: 100,
     xpTotal: 667,
     or: 2026,
     mana: 80,
     manaMax: 100,
   });
-  return (
-    <div className="page">
+return (
+  <div>
+    {joueur ? (
+      
+      <Header joueur={joueur} />
+    ) : (
       <header className="header">
         <span className="Transcendence">Transcendence</span>
-        <Link to="/connexion" className="btn-connexion">Connexion</Link>      </header>
-
+        <Link to="/connexion" className="btn-connexion">Connexion</Link>
+      </header>
+    )}
+    <div className="page">
       <main className="hero">
         <p className="eyebrow">Bienvenue, aventurier</p>
         <h1 className="title">Choisis ton destin</h1>
-
         <div className="cards">
           <DestinyCard
             title="Aventure Solo"
@@ -53,7 +59,8 @@ function Home() {
         </div>
       </main>
     </div>
-  )
+  </div>
+);
 }
 
 export default Home
