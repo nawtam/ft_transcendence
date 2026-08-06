@@ -1,7 +1,9 @@
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Connexion from './pages/Connexion'
-import Registration from './pages/registration'
+import Registration from './pages/Registration'
+import ConditionsGenerales from './pages/ConditionsGenerales'
+
 
 function App() {
   return (
@@ -9,7 +11,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/connexion" element={<Connexion />} />
       <Route path="/Registration" element={<Registration />} />
-    </Routes>
+<Route path="/conditions-generales" element={<ConditionsGenerales />} />    </Routes>
   )
 }
 

@@ -1,0 +1,256 @@
+.header-connecte {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 24px;
+  border-bottom: 2px solid color-mix(in oklch, var(--color-gold) 20%, transparent);
+  backdrop-filter: blur(12px);
+  background-color: color-mix(in oklch, var(--color-cosmo) 5%, transparent);
+}
+
+.site-name {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  font-size: 2.2rem;
+  letter-spacing: 0.05em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+/* --- Panneau partagé (pilule stats + bloc joueur) --- */
+.header-stats
+{
+    display: flex;
+    align-items: center;
+    border-radius: 9px;
+    background: linear-gradient(180deg,
+    color-mix(in oklch, var(--color-bg-elevated) 95%, transparent),
+    color-mix(in oklch, var(--color-bg) 95%, transparent)
+  );
+  border: 2.5px solid color-mix(in oklch, var(--color-gold) 25%, transparent);
+  backdrop-filter: blur(10px);
+}
+.header-player {
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-bg-elevated) 95%, transparent),
+    color-mix(in oklch, var(--color-bg) 95%, transparent)
+  );
+  border: 2px solid color-mix(in oklch, var(--color-gold) 25%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.header-stats {
+  gap: 15px;
+  padding: 6px 12px;
+  margin-bottom: -20px;
+}
+
+.header-player {
+  gap: 20px;
+  z-index: 50;
+  padding: 8px 16px 8px 10 px;
+  transition: all 0.3s ease;
+  margin-right: 54px;
+  margin-bottom: 8px;
+  margin-top: 2px;
+  padding: 6px 20px 6px 8px;
+  position: relative;
+  cursor: pointer;
+}
+
+.header-player:hover {
+  border-color: color-mix(in oklch, var(--color-gold) 60%, transparent);
+  box-shadow: 0 0 25px color-mix(in oklch, var(--color-gold) 25%, transparent);
+  transform: translateY(-2px);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1rem;
+  font-weight: 6000;
+  color: var(--color-parchment);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.stat-icon-gold {
+  color: var(--color-gold-bright);
+}
+
+.stat-icon-mana {
+  color: var(--color-arcane);
+}
+
+.stat-divider {
+  width: 2px;
+  height: 16px;
+  background-color: color-mix(in oklch, var(--color-gold) 30%, transparent);
+}
+
+/* --- Avatar + niveau --- */
+.avatar-wrapper {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, var(--color-gold), var(--color-ember));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--color-bg);
+}
+
+.level-badge {
+  position: absolute;
+  bottom: -20px;
+  right: 20px;
+  height: 20px;
+  min-width: 16px;
+  padding: 3px 5px;
+  border-radius: 9px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+  color: var(--color-gold-bright);
+  white-space: nowrap;
+}
+
+/* --- Infos joueur --- */
+.player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-pseudo {
+  font-family: var(--font-display);
+  color: var(--color-parchment);
+  font-size: 0.875rem;
+}
+
+.player-classe {
+  font-family: var(--font-body);
+  color: color-mix(in oklch, var(--color-gold) 70%, transparent);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.player-xp-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.xp-barre-fond {
+  width: 120px;
+  height: 5px;
+  border-radius: 999px;
+  background-color: color-mix(in oklch, var(--color-bg) 60%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-gold) 20%, transparent);
+  overflow: hidden;
+}
+
+.xp-barre-remplie {
+  height: 100%;
+  background: linear-gradient(to right, var(--color-arcane), var(--color-cosmo), var(--color-gold), var(--color-ember));
+}
+
+.xp-text {
+  font-size: 0.7rem;
+  color: color-mix(in oklch, var(#ffffffb2) 60%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+/*---- menu deroulant*/
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 13.5px);
+  right: -170px;
+  z-index: 10;
+  margin-right: 12px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: 5px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-bg-elevated) 95%, transparent),
+    color-mix(in oklch, var(--color-bg) 90%, transparent)
+  );
+  border: 1.5px solid color-mix(in oklch, var(--color-gold) 30%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow:
+     0 8px 16px color-mix(in oklch, var(--color-gold) 12%, transparent),
+     0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 50;
+}
+.dropdown-menu:hover {
+  border-color: color-mix(in oklch, var(--color-gold) 60%, transparent);
+  box-shadow: 0 0 25px color-mix(in oklch, var(--color-gold) 25%, transparent);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: color-mix(in oklch, var(--color-gold) 12%, transparent);
+  color: var(--color-gold-bright);
+}
+
+.dropdown-divider {
+  height: 1px;
+  margin: 6px 8px;
+  background-color: color-mix(in oklch, var(--color-gold) 20%, transparent);
+}
+
+.dropdown-item-danger:hover {
+  background-color: color-mix(in oklch, var(--color-destructive, #c0392b) 20%, transparent);
+  color: #ff6b6b;
+}

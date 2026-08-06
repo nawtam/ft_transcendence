@@ -1,0 +1,71 @@
+.cg-page {
+  min-height: 100vh;
+  padding: 2rem 3rem;
+}
+
+.cg-back {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
+  text-align: left;
+  color: #d9d0c3;
+  text-decoration: none;
+  font-size: 1.85rem;
+  letter-spacing: 0.05em;
+  transition: color 0.25s ease;
+}
+
+.btn-retour:hover {
+  color: #ffffff;
+}
+
+.cg-back:hover {
+  color: #ffffff;
+}
+
+.cg-box {
+  max-width: 680px;
+  margin: 2rem auto 4rem;
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-gold-dark);
+  border-radius: 12px;
+  padding: 3rem;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+.cg-title {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.cg-updated {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+.cg-section {
+  margin-bottom: 1.75rem;
+}
+
+.cg-section h2 {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+}
+
+.cg-section p {
+  color: var(--color-text);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.cg-link {
+  color: var(--color-gold);
+  text-decoration: underline;
+}

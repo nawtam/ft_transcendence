@@ -7,6 +7,11 @@
   --color-text-muted: #b8a88f;
   --font-display: 'Cinzel', serif;
   --font-body: 'EB Garamond', serif;
+  --color-gold-bright: oklch(0.88 0.16 85);
+  --color-ember: oklch(0.65 0.22 40);
+  --color-arcane: oklch(0.6 0.2 290);
+  --color-parchment: oklch(0.92 0.04 85);
+    --color-cosmo: oklch(72.658% 0.1046 307.14);
 }
 
 * {
@@ -20,20 +25,9 @@ body {
   color: var(--color-text);
   font-family: var(--font-body);
   overflow-x: hidden;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(ellipse 1200px 900px at 10% 10%, rgba(232, 150, 58, 0.16), transparent 65%),
-    radial-gradient(ellipse 1100px 900px at 90% 15%, rgba(169, 118, 44, 0.14), transparent 65%),
-    radial-gradient(ellipse 1300px 1000px at 50% 95%, rgba(217, 168, 78, 0.13), transparent 65%),
-    radial-gradient(ellipse 1000px 800px at 15% 80%, rgba(201, 105, 31, 0.15), transparent 65%),
-    radial-gradient(ellipse 1000px 800px at 85% 75%, rgba(169, 118, 44, 0.12), transparent 65%);
-  background-size: 200% 200%;
-  animation: driftGlow 25s ease-in-out infinite alternate;
-  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, oklch(0.3 0.08 60 / 0.35), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, oklch(0.25 0.12 290 / 0.25), transparent 60%),
+    radial-gradient(ellipse at 50% 50%, oklch(0.18 0.03 40), oklch(0.1 0.015 40));
+  background-attachment: fixed;
 }
