@@ -44,12 +44,14 @@ position: sticky;
 .btn-retour {
   display: block;
   width: 100%;
-  max-width: 420px;
-  margin: 0;
+  max-width: 520px;
+  margin: 2rem auto 0;
+    margin-top: 80px;
+
   text-align: left;
   color: #d9d0c3;
   text-decoration: none;
-  font-size: 1.85rem;
+  font-size: 1.2rem;
   letter-spacing: 0.05em;
   transition: color 0.25s ease;
 }
@@ -60,13 +62,14 @@ position: sticky;
 
 .box {
   max-width: 520px;
-  margin: 5rem auto 4rem;
+  margin: 0rem auto 4rem;
   background-color: var(--color-bg-elevated);
   border: 1px solid var(--color-gold-dark);
   border-radius: 12px;
   padding: 3.5rem;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
   text-align: center;
+  gap: 0.81rem;
 }
 
 .box-title {
@@ -88,14 +91,15 @@ position: sticky;
 .mdp {
   display: block;
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  margin-top: 0.75rem;
 }
 
 .mdp {
-  margin-top: 3.75rem;
+  margin-top: 2rem;
 }
 
 .form input {
@@ -106,7 +110,7 @@ position: sticky;
   padding: 1rem 1rem;
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -123,7 +127,7 @@ position: sticky;
 
 .btn-entrer {
   width: 100%;
-  margin-top: 1.75rem;
+  margin-top: 3rem;
   font-family: var(--font-display);
   background: linear-gradient(180deg, #e8963a, #c9691f);
   color: #1a1006;
