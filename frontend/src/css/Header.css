@@ -17,6 +17,8 @@
   color: var(--color-gold);
   font-size: 2.2rem;
   letter-spacing: 0.05em;
+    text-decoration: none;
+
 }
 
 .header-right {
@@ -224,6 +226,7 @@
 }
 
 .dropdown-item {
+  text-decoration: none;
   display: flex;
   align-items: center;
   width: 100%;

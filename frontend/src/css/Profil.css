@@ -1,0 +1,572 @@
+zz
+.page {
+  /* couleur locale pour la rareté "rare" (bleu), absente des tokens globaux */
+  --color-rare: #4ea8e6;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem clamp(1rem, 4vw, 3rem) 3rem;
+  background: radial-gradient(ellipse 900px 500px at 50% -10%,
+              color-mix(in oklch, var(--color-ember) 10%, var(--color-bg)) 0%,
+              var(--color-bg) 65%);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+
+/* ===== Bouton retour ===== */
+.btn-retour {
+  align-self: flex-start;
+  margin: 1.25rem 0 1rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  text-decoration: none;
+  transition: color .2s ease, transform .2s ease;
+}
+.btn-retour:hover { color: var(--color-gold-bright); transform: translateX(-3px); }
+.btn-retour:focus-visible { outline: 1px solid var(--color-gold-bright); outline-offset: 3px; }
+
+/* ===== Carte principale ===== */
+.box-main {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  background: color-mix(in oklch, var(--color-bg-elevated) 90%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-gold) 25%, transparent);
+  border-radius: 18px;
+  padding: 1.75rem 2.25rem 2rem;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45),
+              inset 0 0 70px color-mix(in oklch, var(--color-ember) 6%, transparent);
+}
+
+/* ===== Ressources (Or / Points d'action) ===== */
+.ressources {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+.ressource-or,
+.ressource-mana {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ressource-or { color: var(--color-gold); }
+.ressource-mana { color: var(--color-arcane); }
+.ressource-or::before,
+.ressource-mana::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* ===== Losange de rang (haut droite de toute la carte) ===== */
+.rank-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+.rank-losange {
+  width: 46px;
+  height: 46px;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in oklch, var(--color-gold) 55%, transparent);
+  background: linear-gradient(135deg,
+              color-mix(in oklch, var(--color-gold) 18%, transparent),
+              transparent 70%);
+  box-shadow: 0 0 14px color-mix(in oklch, var(--color-gold) 30%, transparent);
+}
+.rank-losange span {
+  transform: rotate(-45deg);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--color-gold-bright);
+}
+.rank-texte {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ===== Bloc joueur (avatar / nom / xp) ===== */
+.player-info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.avatar-wrapper {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: center;
+  width: 84px;
+  height: 84px;
+}
+.avatar-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+              color-mix(in oklch, var(--color-arcane) 55%, transparent) 0%,
+              color-mix(in oklch, var(--color-gold) 30%, transparent) 55%,
+              transparent 78%);
+  filter: blur(14px);
+}
+.avatar {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--color-gold-bright);
+  background: radial-gradient(circle at 35% 30%,
+              color-mix(in oklch, var(--color-arcane) 70%, white 8%),
+              color-mix(in oklch, var(--color-arcane) 90%, black 45%));
+  border: 1px solid color-mix(in oklch, var(--color-gold) 45%, transparent);
+  box-shadow: 0 0 22px color-mix(in oklch, var(--color-arcane) 45%, transparent);
+}
+.level-badge {
+  position: absolute;
+  z-index: 2;
+  right: -8px;
+  bottom: -6px;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 0.55rem;
+  letter-spacing: 0.02em;
+  color: var(--color-gold-bright);
+  background: color-mix(in oklch, var(--color-bg-elevated) 85%, black 15%);
+  border: 1px solid color-mix(in oklch, var(--color-gold) 60%, transparent);
+}
+
+/* Fallback si .player-rank est laisse a sa place d'origine (dans
+   .avatar-wrapper) plutot que deplace en .rank-badge : au moins
+   propre, pas un texte brut flottant. Le vrai losange "toute la carte"
+   demande le deplacement JSX indique plus haut. */
+.player-rank {
+  position: absolute;
+  z-index: 2;
+  top: -10px;
+  right: -10px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gold-bright);
+  background: color-mix(in oklch, var(--color-bg-elevated) 90%, black 10%);
+  border: 1px solid color-mix(in oklch, var(--color-gold) 55%, transparent);
+  white-space: nowrap;
+}
+
+.player-pseudo {
+  grid-column: 2;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  letter-spacing: 0.03em;
+  background: linear-gradient(90deg, var(--color-gold-bright), var(--color-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.player-classe {
+  grid-column: 2;
+  display: block;
+  margin: 0.15rem 0 0.6rem;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--color-arcane);
+}
+
+/* badge optionnel "Classe · X" + texte libre à côté (voir notes JSX) */
+.badge-classe {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.55rem;
+  margin-right: 0.5rem;
+  border: 1px solid color-mix(in oklch, var(--color-gold) 45%, transparent);
+  border-radius: 999px;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+.voie {
+  font-size: 0.68rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.player-xp-row { grid-column: 2; align-self: end; }
+.xp-barre-fond {
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in oklch, var(--color-text-muted) 20%, transparent);
+}
+.xp-barre-remplie {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-arcane), var(--color-gold-bright));
+  box-shadow: 0 0 8px color-mix(in oklch, var(--color-gold) 50%, transparent);
+  transition: width .4s ease;
+}
+.profil-txt-xp {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+}
+.xp-text {
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ===== Barre d'onglets ===== */
+.barre-onglets {
+  display: flex;
+  gap: 2.25rem;
+  border-top: 1px solid color-mix(in oklch, var(--color-gold) 15%, transparent);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-gold) 15%, transparent);
+  padding-top: 1rem;
+  margin-bottom: 1.75rem;
+}
+.barre-onglets > div {
+  position: relative;
+  padding-bottom: 0.9rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: color-mix(in oklch, var(--color-text-muted) 75%, transparent);
+  cursor: pointer;
+  transition: color .2s ease;
+}
+.barre-onglets > div::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 0 auto 0.5rem;
+  background: currentColor;
+  opacity: 0.55;
+  transform: rotate(45deg);
+  transition: opacity .2s ease;
+}
+.barre-onglets > div:hover { color: var(--color-gold); }
+.barre-onglets > div.actif { color: var(--color-gold-bright); }
+.barre-onglets > div.actif::before { opacity: 1; }
+.barre-onglets > div.actif::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-gold-bright));
+  box-shadow: 0 0 8px color-mix(in oklch, var(--color-gold) 60%, transparent);
+}
+.barre-onglets > div:focus-visible { outline: 1px solid var(--color-gold-bright); outline-offset: 3px; }
+
+/* ===== Contenu onglet Personnage ===== */
+.contenu-perso {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  gap: 1.5rem;
+}
+
+/* Ligne des 4 statistiques, sur toute la largeur.
+   NB: le .tsx fourni a une faute de frappe (classeName au lieu de
+   className) sur ce conteneur -> React laisse l'attribut tel quel
+   dans le DOM sans appliquer de classe. Le selecteur d'attribut
+   [classeName="stat-perso"] ci-dessous rattrape ce cas en attendant
+   la correction du typo (a corriger cote .tsx, cf. notes). */
+.stat-perso,
+[classeName="stat-perso"] {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.stat-perso > div,
+[classeName="stat-perso"] > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  color: var(--color-text);
+}
+.stat-perso > div span,
+[classeName="stat-perso"] > div span {
+  position: relative;
+  padding-bottom: 0.55rem;
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.stat-perso > div span::after,
+[classeName="stat-perso"] > div span::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 20px;
+  height: 2px;
+  transform: translateX(-50%);
+  background: var(--color-gold);
+}
+.stat-perso .stat-intelligent,
+[classeName="stat-perso"] .stat-intelligent { color: var(--color-arcane); }
+.stat-perso .stat-intelligent span,
+[classeName="stat-perso"] .stat-intelligent span { color: var(--color-text-muted); }
+.stat-icon {
+  width: 18px;
+  height: 18px;
+  margin-bottom: 0.15rem;
+  color: var(--color-gold-dark);
+}
+
+/* ===== Carte Vitalité ===== */
+.profil-vitality {
+  background: color-mix(in oklch, var(--color-bg-elevated) 88%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-gold) 18%, transparent);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+.title-vitalite,
+.title-inventaire {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 1.1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+.title-pv,
+.title-energie {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.35rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.title-pv { color: var(--color-ember); }
+.title-energie { color: var(--color-arcane); margin-top: 1.1rem; }
+.profil-pv,
+.profil-energie {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-text);
+}
+.pv-barre-fond,
+.energie-barre-fond {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in oklch, var(--color-text-muted) 18%, transparent);
+}
+/* hauteur fixe en dur (pas 100%) : reste correcte meme sans le wrapper
+   -fond, et evite l'emballement de hauteur avec une grille en align-items:stretch */
+.pv-barre {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-ember), color-mix(in oklch, var(--color-ember) 55%, var(--color-gold)));
+  box-shadow: 0 0 10px color-mix(in oklch, var(--color-ember) 55%, transparent);
+  transition: width .4s ease;
+}
+.energie-barre {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-arcane), color-mix(in oklch, var(--color-arcane) 55%, white 15%));
+  box-shadow: 0 0 10px color-mix(in oklch, var(--color-arcane) 55%, transparent);
+  transition: width .4s ease;
+}
+
+/* ===== Carte Inventaire ===== */
+.profil-inventaire {
+  background: color-mix(in oklch, var(--color-bg-elevated) 88%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-gold) 18%, transparent);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+.inventaire-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+.inventaire-entete .title-inventaire { margin-bottom: 0; }
+.inventaire-toggle {
+  display: flex;
+  padding: 2px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-gold) 20%, transparent);
+  background: color-mix(in oklch, var(--color-bg) 70%, transparent);
+}
+.inventaire-toggle button {
+  padding: 0.3rem 0.75rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.inventaire-toggle button.actif {
+  color: var(--color-bg);
+  background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold));
+}
+.inventaire-toggle button:focus-visible { outline: 1px solid var(--color-gold-bright); outline-offset: 2px; }
+
+.slots-grille {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.3rem;
+}
+.slot {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--color-text-muted);
+  border: 1px solid color-mix(in oklch, var(--color-gold) 15%, transparent);
+  background: color-mix(in oklch, var(--color-bg) 65%, transparent);
+}
+.slot.legendaire {
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+  box-shadow: 0 0 8px color-mix(in oklch, var(--color-gold) 40%, transparent);
+}
+.slot.epique {
+  color: var(--color-arcane);
+  border-color: var(--color-arcane);
+  box-shadow: 0 0 8px color-mix(in oklch, var(--color-arcane) 40%, transparent);
+}
+.slot.rare {
+  color: var(--color-rare);
+  border-color: var(--color-rare);
+  box-shadow: 0 0 8px color-mix(in oklch, var(--color-rare) 40%, transparent);
+}
+
+.liste-objets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.objet-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-gold) 12%, transparent);
+  background: color-mix(in oklch, var(--color-bg) 55%, transparent);
+}
+.objet-icone {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid color-mix(in oklch, var(--color-gold) 20%, transparent);
+  color: var(--color-text-muted);
+}
+.objet-info { flex: 1; display: flex; flex-direction: column; }
+.objet-nom { font-size: 0.8rem; color: var(--color-text); }
+.objet-emplacement {
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.objet-rarete { font-size: 0.65rem; font-style: italic; white-space: nowrap; }
+
+.objet-item.legendaire .objet-icone { border-color: var(--color-gold); color: var(--color-gold); }
+.objet-item.legendaire .objet-rarete { color: var(--color-gold); }
+.objet-item.epique .objet-icone { border-color: var(--color-arcane); color: var(--color-arcane); }
+.objet-item.epique .objet-rarete { color: var(--color-arcane); }
+.objet-item.rare .objet-icone { border-color: var(--color-rare); color: var(--color-rare); }
+.objet-item.rare .objet-rarete { color: var(--color-rare); }
+
+/* ===== Placeholders autres onglets ===== */
+.contenu-multi,
+.contenu-succes,
+.contenu-quetes {
+  padding: 3rem 1rem;
+  text-align: center;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+.plus-tard {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.65rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .box-main { padding: 1.5rem 1.25rem 1.75rem; }
+  .rank-badge { top: 1rem; right: 1rem; }
+  .contenu-perso { grid-template-columns: 1fr; }
+  .stat-perso { flex-wrap: wrap; justify-content: space-around; gap: 1.25rem; }
+  .barre-onglets { gap: 1.25rem; overflow-x: auto; }
+  .slots-grille { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-barre-remplie, .pv-barre, .energie-barre, .btn-retour { transition: none; }
+}

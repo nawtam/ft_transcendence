@@ -8,8 +8,8 @@ interface Joueur {
   xpActuel: number;
   xpTotal: number;
   or: number;
-  mana: number;
-  manaMax: number;
+  action: number;
+  actionMax: number;
   rank: string;
   force: number;
   agilite: number;
@@ -29,8 +29,8 @@ function Profil() {
     xpActuel: 100,
     xpTotal: 667,
     or: 2026,
-    mana: 80,
-    manaMax: 100,
+    action: 80,
+    actionMax: 100,
     rank: "Or II",
     force: 42,
     agilite: 58,
@@ -62,6 +62,8 @@ return (
 
         
           <div className="avatar-wrapper">
+            <span className="stat-or">{joueur.or}</span>
+            <span className="stat-action">{joueur.rank}</span>
               <span className="player-rank">{joueur.rank}</span>
               <div className="avatar">{joueur.pseudo.charAt(0).toUpperCase()}</div>
               <div className="level-badge">Niv. {joueur.niveau}</div>
