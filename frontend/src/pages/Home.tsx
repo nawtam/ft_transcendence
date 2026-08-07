@@ -19,16 +19,18 @@ interface Joueur {
 }
 
 function Home() {
-  const [joueur, setJoueur] = useState<Joueur | null>({
-    pseudo: "NONO",
-    niveau: 67,
-    classe: "chat noir",
-    xpActuel: 100,
-    xpTotal: 667,
-    or: 2026,
-    mana: 80,
-    manaMax: 100,
-  });
+  const [joueur, setJoueur] = useState<Joueur | null> 
+  (null)
+  // ({
+  //   pseudo: "NONO",
+  //   niveau: 67,
+  //   classe: "chat noir",
+  //   xpActuel: 100,
+  //   xpTotal: 667,
+  //   or: 2026,
+  //   mana: 80,
+  //   manaMax: 100,
+  // });
 return (
   <div>
     {joueur ? (
@@ -42,7 +44,7 @@ return (
     )}
     <div className="page">
       <div className="page-body">
-      {joueur && <CompanionsSidebar />}
+      {joueur ? <CompanionsSidebar /> : <div className="sidebar-placeholder"></div>}
       <main className="hero">
         <p className="eyebrow">Bienvenue, aventurier</p>
         <h1 className="title">Choisis ton destin</h1>

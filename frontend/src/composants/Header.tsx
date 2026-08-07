@@ -44,7 +44,6 @@ function Header({ joueur }: HeaderProps) {
             {menuOuvert && (
              <div className="dropdown-menu">
             <button className="dropdown-item">Mon profil</button>
-            <button className="dropdown-item">Mes amis</button>
             <button className="dropdown-item">Paramètres</button>
             <div className="dropdown-divider"></div>
             <button className="dropdown-item dropdown-item-danger">Déconnexion</button>

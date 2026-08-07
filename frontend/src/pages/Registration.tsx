@@ -3,7 +3,7 @@ import '../css/Registration.css'
 
 function Registration() {
   return (
-    <div className="reg-page">
+    <div>
       <header className="header">
         <span className="Transcendence">Transcendence</span>
       </header>

@@ -3,7 +3,7 @@ import '../css/ConditionsGenerales.css'
 
 function ConditionsGenerales() {
   return (
-    <div className="cg-page">
+    <div>
       <header className="header">
         <span className="Transcendence">Transcendence</span>
       </header>

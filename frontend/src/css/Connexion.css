@@ -3,10 +3,18 @@
   padding: 2rem 3rem;
 }
 
-.header {
+.header-connexion {
+position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 24px;
+  border-bottom: 2px solid color-mix(in oklch, var(--color-gold) 20%, transparent);
+  backdrop-filter: blur(12px);
+  background-color: color-mix(in oklch, var(--color-cosmo) 5%, transparent);
 }
 
 .logo {
