@@ -1,5 +1,6 @@
 import { Coins, FlaskConical } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom'
 import '../css/Header.css';
 
 interface Joueur {
@@ -11,6 +12,7 @@ interface Joueur {
   or: number;
   mana: number;
   manaMax: number;
+  rank: string;
 }
 
 interface HeaderProps {
@@ -43,8 +45,8 @@ function Header({ joueur }: HeaderProps) {
             <div className="level-badge">Niv. {joueur.niveau}</div>
             {menuOuvert && (
              <div className="dropdown-menu">
-            <button className="dropdown-item">Mon profil</button>
-            <button className="dropdown-item">Paramètres</button>
+            <Link to="/Profil" className="dropdown-item">Mon profil</Link>
+            <Link to="/Parametre" className="dropdown-item">Paramètres</Link>
             <div className="dropdown-divider"></div>
             <button className="dropdown-item dropdown-item-danger">Déconnexion</button>
             </div>

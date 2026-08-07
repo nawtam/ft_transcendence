@@ -16,21 +16,31 @@ interface Joueur {
   or: number;
   mana: number;
   manaMax: number;
+  rank: string;
+  force: number;
+  agilite: number;
+  endurance: number;
+  inteligence: number;
 }
 
 function Home() {
   const [joueur, setJoueur] = useState<Joueur | null> 
-  (null)
-  // ({
-  //   pseudo: "NONO",
-  //   niveau: 67,
-  //   classe: "chat noir",
-  //   xpActuel: 100,
-  //   xpTotal: 667,
-  //   or: 2026,
-  //   mana: 80,
-  //   manaMax: 100,
-  // });
+  // (null)
+  ({
+    pseudo: "NONO",
+    niveau: 67,
+    classe: "chat noir",
+    xpActuel: 100,
+    xpTotal: 667,
+    or: 2026,
+    mana: 80,
+    manaMax: 100,
+    force: 42,
+    agilite: 58,
+    endurance: 67,
+    inteligence: 74,
+    rank: "Or II",
+  });
 return (
   <div>
     {joueur ? (
