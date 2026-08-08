@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link } from 'react-router-dom'
-import './profil/refs.css';
-import './profil/page.css';
-import './profil/banner.css';
-import './profil/solo.css';
-import './profil/multi.css';
-import './profil/succes.css';
-import './profil/quetes.css';
+import '../css/profil/refs.css';
+import '../css/profil/page.css';
+import '../css/profil/banner.css';
+import '../css/profil/solo.css';
+import '../css/profil/multi.css';
+import '../css/profil/succes.css';
+import '../css/profil/quetes.css';
 
 
 interface Joueur {

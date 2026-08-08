@@ -1,0 +1,156 @@
+
+
+.contenu-perso {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .contenu-perso {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+}
+
+/* -- Grille de stats -- */
+.contenu-perso > div:first-child {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--gold-20);
+  border-bottom: 1px solid var(--gold-20);
+}
+
+@media (min-width: 640px) {
+  .contenu-perso > div:first-child {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat-force,
+.stat-agilite,
+.stat-endurance,
+.stat-intelligent {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-gold);
+}
+
+.stat-intelligent {
+  color: var(--color-arcane);
+}
+
+.stat-force span,
+.stat-agilite span,
+.stat-endurance span,
+.stat-intelligent span {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.6rem;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold-60);
+}
+
+.stat-intelligent span {
+  color: var(--arcane-60);
+}
+
+.profil-vitality {
+  border: 1px solid var(--gold-15);
+  background: var(--parchment-5);
+  border-radius: 0.2rem;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title-pv,
+.title-energie {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin: 0;
+}
+
+.title-pv {
+  color: var(--color-ember);
+}
+
+.title-energie {
+  color: var(--color-arcane);
+  margin-top: 0.5rem;
+}
+
+.profil-pv,
+.profil-energie {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.profil-pv {
+  color: var(--color-ember);
+}
+
+.profil-energie {
+  color: var(--color-parchment);
+}
+
+.pv-barre,
+.energie-barre {
+  height: 0.5rem;
+  min-width: 0.5rem;
+  border-radius: 999px;
+}
+
+.pv-barre {
+  background: linear-gradient(90deg, var(--color-ember), var(--color-gold));
+  border: 1px solid var(--ember-55);
+  box-shadow: 0 0 10px var(--ember-55);
+}
+
+.energie-barre {
+  background: linear-gradient(90deg, var(--color-arcane), var(--color-gold-bright));
+  border: 1px solid var(--arcane-60);
+  box-shadow: 0 0 10px var(--arcane-60);
+}
+
+/* -- Inventaire (placeholder — aucune donnée d'objets pour l'instant) -- */
+.profil-inventaire {
+  border: 1px solid var(--gold-15);
+  background: var(--parchment-5);
+  border-radius: 0.2rem;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.title-inventaire {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-gold-bright);
+}
+
+.plus-tard {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 6rem;
+  border: 1px dashed var(--gold-20);
+  border-radius: 0.2rem;
+  font-style: italic;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
