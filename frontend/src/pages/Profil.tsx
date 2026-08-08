@@ -21,6 +21,13 @@ interface Joueur {
   energieMax: number;
 }
 
+// interface Parties {
+//   univers: string,
+//   mode: string,
+//   perso: string,
+//   victoire: boolean,
+// }
+
 function Profil() {
   const [joueur, setJoueur] = useState<Joueur>({
     pseudo: "NONO",
@@ -41,6 +48,15 @@ function Profil() {
     pvMax: 1000,
     energieMax: 1000,
   });
+
+//   const parties: Parties[] = [
+//   { univers: "cyberpunk", mode: "Coop", perso: "barman", victoire: true},
+//   { univers: "Médiéval", mode: "TeamVsTeam", perso: "Garde", victoire: false},
+//   { univers: "Fantastique", mode: "coop", perso: "Sorcier", victoire: true},
+//   { univers: "Pirate", mode: "Solo", perso: "Capitaine", victoire: true},
+
+// ];
+
   const pourcentagePV = (joueur.pv / joueur.pvMax) * 100;
   const pourcentageEN = (joueur.energie / joueur.energieMax) * 100;
   const pourcentageXP = (joueur.xpActuel / joueur.xpTotal) * 100;
@@ -58,29 +74,29 @@ return (
 
       <main className="box-main">
 
-        <div className="player-info">
+        <div className="p-player-info">
 
         
-          <div className="avatar-wrapper">
-            <span className="stat-or">{joueur.or}</span>
-            <span className="stat-action">{joueur.rank}</span>
-              <span className="player-rank">{joueur.rank}</span>
-              <div className="avatar">{joueur.pseudo.charAt(0).toUpperCase()}</div>
-              <div className="level-badge">Niv. {joueur.niveau}</div>
+          <div className="p-avatar-wrapper">
+            <span className="p-stat-or">{joueur.or} Or</span>
+            <span className="p-stat-action">{joueur.action} Points d'action</span>
+              <span className="p-player-rank">{joueur.rank}</span>
+              <div className="p-avatar">{joueur.pseudo.charAt(0).toUpperCase()}</div>
+              <div className="p-level-badge">Niv. {joueur.niveau}</div>
           </div>
           
-          <span className="player-pseudo">{joueur.pseudo}</span>
-          <span className="player-classe">{joueur.classe}</span>
+          <span className="p-player-pseudo">{joueur.pseudo}</span>
+          <span className="p-player-classe">{joueur.classe}</span>
           
-          <div className="player-xp-row">
-          <div className="xp-barre-fond">
-          <div className="xp-barre-remplie" style={{ width: `${pourcentageXP}%` }}></div>
+          <div className="p-player-xp-row">
+          <div className="p-xp-barre-fond">
+          <div className="p-xp-barre-remplie" style={{ width: `${pourcentageXP}%` }}></div>
           </div>
           </div>
 
           <div className="profil-txt-xp">
-          <span className="xp-text">Expérience</span>
-          <span className="xp-text">{joueur.xpActuel}/{joueur.xpTotal}</span>
+          <span className="p-xp-text">Expérience</span>
+          <span className="p-xp-text">{joueur.xpActuel}/{joueur.xpTotal}</span>
           </div>
 
         </div>
@@ -137,7 +153,26 @@ return (
               {ongletActif === 'multi' && (
                 <div className="contenu-multi">
                   {
-                  <span> multi </span>
+                    <div className="stat-multi">
+                      <div className="palmares">
+                        <span>Palmarès</span>
+                        <div className="victoires">
+                          <span>Victoires</span>
+                          </div>
+                        <div className="Defaites">
+                          <span>Défaites</span>
+                          </div>
+                        <div className="heures-de-jeu">
+                          <span>Heures</span>
+                          </div>
+                        </div>
+
+                        <section className="Historique">
+                          <h2 className="title-historique">Historique</h2>
+                          <li className=""
+
+                        </section>
+                      </div>
                   }</div>
               )}
               {ongletActif === 'succes' && (
