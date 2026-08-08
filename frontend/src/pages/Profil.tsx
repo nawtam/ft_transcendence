@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { Link } from 'react-router-dom'
-import '../css/Profil.css'
+import './profil/refs.css';
+import './profil/page.css';
+import './profil/banner.css';
+import './profil/solo.css';
+import './profil/multi.css';
+import './profil/succes.css';
+import './profil/quetes.css';
+
+
 interface Joueur {
   pseudo: string;
   niveau: number;
@@ -21,12 +29,12 @@ interface Joueur {
   energieMax: number;
 }
 
-// interface Parties {
-//   univers: string,
-//   mode: string,
-//   perso: string,
-//   victoire: boolean,
-// }
+interface Parties {
+  univers: string,
+  mode: string,
+  perso: string,
+  resultat: string,
+}
 
 function Profil() {
   const [joueur, setJoueur] = useState<Joueur>({
@@ -49,13 +57,13 @@ function Profil() {
     energieMax: 1000,
   });
 
-//   const parties: Parties[] = [
-//   { univers: "cyberpunk", mode: "Coop", perso: "barman", victoire: true},
-//   { univers: "Médiéval", mode: "TeamVsTeam", perso: "Garde", victoire: false},
-//   { univers: "Fantastique", mode: "coop", perso: "Sorcier", victoire: true},
-//   { univers: "Pirate", mode: "Solo", perso: "Capitaine", victoire: true},
+  const parties: Parties[] = [
+  { univers: "cyberpunk", mode: "Coop", perso: "barman", resultat: "Victoire"},
+  { univers: "Médiéval", mode: "TeamVsTeam", perso: "Garde", resultat: "Défaite"},
+  { univers: "Fantastique", mode: "coop", perso: "Sorcier", resultat: "Victoire"},
+  { univers: "Pirate", mode: "Solo", perso: "Capitaine", resultat: "Victoire"},
 
-// ];
+];
 
   const pourcentagePV = (joueur.pv / joueur.pvMax) * 100;
   const pourcentageEN = (joueur.energie / joueur.energieMax) * 100;
@@ -103,7 +111,7 @@ return (
 
           <div className="barre-onglets">
             <div className="section-perso" onClick={() => setOngletActif('perso')}>
-                Personnage
+                Solo
               </div>
             <div className="section-multi" onClick={() => setOngletActif('multi')}>
                 Multijoueur
@@ -155,7 +163,7 @@ return (
                   {
                     <div className="stat-multi">
                       <div className="palmares">
-                        <span>Palmarès</span>
+                        <h2>Palmarès</h2>
                         <div className="victoires">
                           <span>Victoires</span>
                           </div>
@@ -169,7 +177,18 @@ return (
 
                         <section className="Historique">
                           <h2 className="title-historique">Historique</h2>
-                          <li className=""
+                          <ul className="multi-historique">
+                          {parties.map((partie, index) => (
+                          <li key={index} className="multi-partie">
+                          <span className="multi-univers">{partie.univers}</span>
+                          <span className="p-perso">{partie.perso}</span>
+                          <span className={`multi-resultat ${partie.resultat === "Victoire" ? "Victoire" : "Défaite"}`}>
+                            {partie.resultat}
+                          </span>
+                          <span className="p-mode">{partie.mode}</span>
+                          </li>
+                            ))}
+                          </ul>
 
                         </section>
                       </div>
