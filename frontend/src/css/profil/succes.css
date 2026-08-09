@@ -1,13 +1,261 @@
+/*
+  succes.css
+  ----------
+  Écrit pour le squelette JSX proposé (succes-header, succes-barre-*,
+  succes-filtres/succes-filtre/succes-toggle, succes-grille/succes-carte,
+  succes-rarete avec les 4 valeurs Commun/Rare/Épique/Légendaire,
+  succes-progression-*). Dépend de refs.css.
+
+  Les icônes (case à cocher / cadenas, trophée du titre) sont générées
+  en CSS pur (::before avec un caractère) en attendant que tu poses tes
+  vraies icônes — remplace-les quand tu veux, le reste du CSS n'a pas
+  besoin de changer.
+*/
+
 .contenu-succes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ===================== En-tête ===================== */
+.succes-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.succes-header h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-gold-bright);
+}
+
+.succes-header h2::before {
+  content: "🏆";
+  margin-right: 0.5rem;
+  font-size: 0.8em;
+}
+
+.succes-compteur {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.succes-barre-fond {
+  height: 0.35rem;
+  border-radius: 999px;
+  background: var(--parchment-10);
+  border: 1px solid var(--gold-20);
+  overflow: hidden;
+}
+
+.succes-barre {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-ember), var(--color-gold), var(--color-gold-bright));
+}
+
+/* ===================== Filtres ===================== */
+.succes-filtres {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--gold-10);
+}
+
+.succes-filtre,
+.succes-toggle {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold-15);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.succes-filtre:hover,
+.succes-toggle:hover {
+  color: var(--color-text);
+  border-color: var(--gold-40);
+}
+
+.succes-filtre.actif {
+  border-color: var(--gold-60);
+  background: var(--gold-15);
+  color: var(--color-gold-bright);
+}
+
+.succes-toggle {
+  margin-left: auto;
+}
+
+.succes-toggle.actif {
+  border-color: var(--arcane-60);
+  background: var(--arcane-15);
+  color: var(--color-arcane);
+}
+
+/* ===================== Grille de cartes ===================== */
+.succes-grille {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .succes-grille {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.succes-carte {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.2rem;
+  border: 1px solid var(--gold-15);
+  background: var(--bg-60);
+  transition: border-color 0.15s ease;
+}
+
+.succes-carte.debloque {
+  border-color: var(--gold-40);
+  background: var(--gold-10);
+}
+
+/* -- Pastille d'état (case à cocher / cadenas) -- */
+.succes-etat {
+  height: 2.2rem;
+  width: 2.2rem;
+  border-radius: 0.2rem;
   display: grid;
   place-items: center;
-  min-height: 8rem;
-  border: 1px dashed var(--gold-20);
-  border-radius: 0.2rem;
-  color: var(--color-text-muted);
-  font-family: var(--font-display);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
+  font-size: 1rem;
+  border: 1px solid var(--gold-20);
+  background: var(--bg-82);
 }
- 
+
+.succes-carte.debloque .succes-etat {
+  border-color: var(--gold-50);
+  background: var(--gold-15);
+  color: var(--color-gold-bright);
+  box-shadow: 0 0 12px var(--gold-25);
+}
+
+.succes-carte.debloque .succes-etat::before {
+  content: "✓";
+}
+
+.succes-carte.verrouille .succes-etat {
+  color: var(--color-text-muted);
+}
+
+.succes-carte.verrouille .succes-etat::before {
+  content: "🔒";
+  font-size: 0.9rem;
+}
+
+/* -- Infos -- */
+.succes-infos {
+  min-width: 0;
+}
+
+.succes-titre {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+}
+
+.succes-carte.debloque .succes-titre {
+  color: var(--color-gold-bright);
+}
+
+.succes-carte.verrouille .succes-titre {
+  color: var(--color-text);
+}
+
+.succes-rarete {
+  font-size: 0.6rem;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.succes-rarete.Commun {
+  color: var(--color-text-muted);
+}
+
+.succes-rarete.Rare {
+  color: var(--color-arcane);
+}
+
+.succes-rarete.Épique {
+  color: var(--color-ember);
+}
+
+.succes-rarete.Légendaire {
+  color: var(--color-gold-bright);
+}
+
+.succes-desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.succes-carte.debloque .succes-desc {
+  font-style: normal;
+  color: var(--gold-60);
+}
+
+/* -- Progression (succès verrouillés avec compteur) -- */
+.succes-progression {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.succes-progression-barre-fond {
+  flex: 1;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--parchment-10);
+  border: 1px solid var(--gold-15);
+  overflow: hidden;
+}
+
+.succes-progression-barre {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-arcane), var(--color-gold));
+}
+
+.succes-progression-texte {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
