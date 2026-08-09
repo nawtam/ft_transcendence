@@ -24,7 +24,7 @@
 .p-stat-or,
 .p-stat-action {
   grid-column: 1 / -1;
-  display: inline-flex;
+  /* display: inline-flex; */
   align-items: center;
   gap: 0.5rem;
   justify-self: start;
@@ -188,4 +188,4 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--parchment-40);
-}
+} 

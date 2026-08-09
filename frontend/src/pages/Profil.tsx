@@ -36,6 +36,16 @@ interface Parties {
   resultat: string,
 }
 
+interface Succes {
+  id: string;
+  titre: string;
+  rarete: "Commun" | "Rare" | "Épique" | "Légendaire";
+  categorie: string;
+  debloque: boolean;
+  description: string;
+  progression?: { actuel: number; but: number };
+}
+
 function Profil() {
   const [joueur, setJoueur] = useState<Joueur>({
     pseudo: "NONO",
@@ -69,14 +79,38 @@ function Profil() {
   const pourcentageEN = (joueur.energie / joueur.energieMax) * 100;
   const pourcentageXP = (joueur.xpActuel / joueur.xpTotal) * 100;
   const [ongletActif, setOngletActif] = useState('perso')
+  
+  const succesCategories = ["Tous", "Aventure", "Multijoueur", "Exploration", "Collection", "Maîtrise"];
+  const succesListe: Succes[] = [
+    { id: "s1", titre: "Premier Souffle", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
+    { id: "s2", titre: "Éveil des Runes", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
+    { id: "s3", titre: "Marcheur d'Ombres", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
+    { id: "s4", titre: "Porteur de Lumière", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
+    { id: "s5", titre: "Voix du Destin", rarete: "Rare", categorie: "Aventure", debloque: true, description: "" },
+    { id: "s6", titre: "Chasseur de Dragons", rarete: "Épique", categorie: "Aventure", debloque: false, description: "Vaincre le Dragon Céleste en Fantastique.", progression: { actuel: 0, but: 1 } },
+    { id: "s7", titre: "Élu du Voile", rarete: "Légendaire", categorie: "Aventure", debloque: false, description: "Débloquer la fin secrète d'une campagne." },
+    { id: "s8", titre: "Effet Domino", rarete: "Épique", categorie: "Aventure", debloque: false, description: "Obtenir 3 fins alternatives différentes.", progression: { actuel: 1, but: 3 } },
+    { id: "s9", titre: "Chroniqueur", rarete: "Rare", categorie: "Aventure", debloque: false, description: "Terminer 10 épisodes solo.", progression: { actuel: 4, but: 10 } },
+  ];
 
+  const [categorieActive, setCategorieActive] = useState("Tous");
+  const [seulementADebloquer, setSeulementADebloquer] = useState(false);
+  
+  const succesFiltres = succesListe.filter(
+    (s) =>
+      (categorieActive === "Tous" || s.categorie === categorieActive) &&
+      (!seulementADebloquer || !s.debloque)
+  );
+  
+  const nbDebloques = succesListe.filter((s) => s.debloque).length;
+  const pourcentageSucces = Math.round((nbDebloques / succesListe.length) * 100);
 
 return (
     <div>
       <header className="header">
         <span className="Transcendence">Transcendence</span>
       </header>
-      <div className="page">
+      <div className="p-page">
         <Link to="/" className="btn-retour">← Retour</Link>
 
 
@@ -182,10 +216,10 @@ return (
                           <li key={index} className="multi-partie">
                           <span className="multi-univers">{partie.univers}</span>
                           <span className="p-perso">{partie.perso}</span>
+                          <span className="p-mode">{partie.mode}</span>
                           <span className={`multi-resultat ${partie.resultat === "Victoire" ? "Victoire" : "Défaite"}`}>
                             {partie.resultat}
                           </span>
-                          <span className="p-mode">{partie.mode}</span>
                           </li>
                             ))}
                           </ul>
@@ -194,11 +228,65 @@ return (
                       </div>
                   }</div>
               )}
+              
               {ongletActif === 'succes' && (
                 <div className="contenu-succes">
-                  {
-                    <span> succes </span>
-                  }</div>
+                  <div className="succes-header">
+                    <h2>Succès</h2>
+                    <span className="succes-compteur">
+                      {nbDebloques} / {succesListe.length} débloqués — {pourcentageSucces}%
+                    </span>
+                  </div>
+              
+                  <div className="succes-barre-fond">
+                    <div className="succes-barre" style={{ width: `${pourcentageSucces}%` }}></div>
+                  </div>
+              
+                  <div className="succes-filtres">
+                    {succesCategories.map((cat) => (
+                      <button
+                        key={cat}
+                        className={`succes-filtre ${categorieActive === cat ? "actif" : ""}`}
+                        onClick={() => setCategorieActive(cat)}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                    <button
+                      className={`succes-toggle ${seulementADebloquer ? "actif" : ""}`}
+                      onClick={() => setSeulementADebloquer(!seulementADebloquer)}
+                    >
+                      À débloquer
+                    </button>
+                  </div>
+              
+                  <ul className="succes-grille">
+                    {succesFiltres.map((s) => (
+                      <li key={s.id} className={`succes-carte ${s.debloque ? "debloque" : "verrouille"}`}>
+                        <span className="succes-etat"></span>
+                        <div className="succes-infos">
+                          <p className="succes-titre">
+                            {s.titre} <span className={`succes-rarete ${s.rarete}`}>{s.rarete}</span>
+                          </p>
+                          <p className="succes-desc">{s.debloque ? "Débloqué" : s.description}</p>
+                          {!s.debloque && s.progression && (
+                            <div className="succes-progression">
+                              <div className="succes-progression-barre-fond">
+                                <div
+                                  className="succes-progression-barre"
+                                  style={{ width: `${(s.progression.actuel / s.progression.but) * 100}%` }}
+                                ></div>
+                              </div>
+                              <span className="succes-progression-texte">
+                                {s.progression.actuel} / {s.progression.but}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
               {ongletActif === 'quetes' && (
                 <div className="contenu-quetes">
