@@ -46,6 +46,71 @@ interface Succes {
   progression?: { actuel: number; but: number };
 }
 
+
+interface Quete {
+  id: string;
+  nom: string;
+  description: string;
+  pa: number;
+  xp: number;
+  actuel: number;
+  but: number;
+}
+
+  const questesJournalieres: Quete[] = [
+  { id: "qj1", nom: "Souffle quotidien", description: "Se connecter et réclamer le coffre journalier.", pa: 2, xp: 50, actuel: 1, but: 1 },
+  { id: "qj2", nom: "Compagnon d'armes", description: "Terminer 1 partie multijoueur.", pa: 3, xp: 120, actuel: 1, but: 1 },
+  { id: "qj3", nom: "Fil narratif", description: "Faire 5 choix narratifs en solo.", pa: 2, xp: 80, actuel: 3, but: 5 },
+  { id: "qj4", nom: "Main chanceuse", description: "Réussir 3 jets de dés.", pa: 2, xp: 60, actuel: 1, but: 3 },
+];
+ 
+const questesHebdomadaires: Quete[] = [
+  { id: "qh1", nom: "Tour des mondes", description: "Jouer une partie dans 3 univers différents.", pa: 8, xp: 400, actuel: 2, but: 3 },
+  { id: "qh2", nom: "Vétéran de l'arène", description: "Remporter 5 parties multijoueur.", pa: 10, xp: 600, actuel: 3, but: 5 },
+  { id: "qh3", nom: "Archiviste", description: "Collecter 4 objets d'histoire.", pa: 6, xp: 300, actuel: 1, but: 4 },
+];
+
+
+function GroupeQuetes({ titre, quetes }: { titre: string; quetes: Quete[] }) {
+  return (
+    <div className="groupe-quetes">
+      <h3 className="titre-groupe-quetes">{titre}</h3>
+      <ul className="liste-quetes">
+        {quetes.map((q) => {
+          const terminee = q.actuel >= q.but;
+          const pourcentage = Math.min(100, (q.actuel / q.but) * 100);
+          return (
+            <li key={q.id} className={`quete-carte ${terminee ? "terminee" : ""}`}>
+              <div className="quete-entete">
+                <div className="quete-texte">
+                  <p className="quete-nom">{q.nom}</p>
+                  <p className="quete-desc">{q.description}</p>
+                </div>
+                <div className="quete-recompenses">
+                  <span className="recompense-pa">{q.pa} PA</span>
+                  <span className="recompense-xp">{q.xp} XP</span>
+                </div>
+              </div>
+              <div className="quete-progression">
+                <div className="quete-progression-barre-fond">
+                  <div
+                    className="quete-progression-barre"
+                    style={{ width: `${pourcentage}%` }}
+                  ></div>
+                </div>
+                <span className="quete-progression-texte">
+                  {q.actuel} / {q.but}
+                </span>
+                {terminee && <span className="quete-terminee-icone"></span>}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 function Profil() {
   const [joueur, setJoueur] = useState<Joueur>({
     pseudo: "NONO",
@@ -82,7 +147,7 @@ function Profil() {
   
   const succesCategories = ["Tous", "Aventure", "Multijoueur", "Exploration", "Collection", "Maîtrise"];
   const succesListe: Succes[] = [
-    { id: "s1", titre: "Premier Souffle", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
+    { id: "s1", titre: "Premier Souffle", rarete: "Commun", categorie: "Exploration", debloque: true, description: "" },
     { id: "s2", titre: "Éveil des Runes", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
     { id: "s3", titre: "Marcheur d'Ombres", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
     { id: "s4", titre: "Porteur de Lumière", rarete: "Commun", categorie: "Aventure", debloque: true, description: "" },
@@ -288,11 +353,16 @@ return (
                   </ul>
                 </div>
               )}
+              
               {ongletActif === 'quetes' && (
                 <div className="contenu-quetes">
-                  {
-                  <span> quetes </span>
-                  }</div>
+                  <div className="quetes-header">
+                    <h2>Quêtes &amp; défis</h2>
+                    <span className="quetes-reset">Réinitialisation dans 6h</span>
+                  </div>
+                  <GroupeQuetes titre="Défis journaliers" quetes={questesJournalieres} />
+                  <GroupeQuetes titre="Défis hebdomadaires" quetes={questesHebdomadaires} />
+                </div>
               )}
             </div>
       
