@@ -29,6 +29,7 @@
   --parchment-5: oklch(0.92 0.04 85 / 0.05);
   --parchment-10: oklch(0.92 0.04 85 / 0.10);
   --parchment-40: oklch(0.92 0.04 85 / 0.40);
+  --color-success: #4cae6e;
 
   --bg-60: rgba(20, 13, 8, 0.60);
   --bg-82: rgba(20, 13, 8, 0.82);
