@@ -72,13 +72,14 @@
   opacity: 0.8;
 }
 
-
-.section-perso {
+.section-perso.onglet-actif,
+.section-multi.onglet-actif,
+.section-succes.onglet-actif,
+.section-quetes.onglet-actif {
   opacity: 1;
   color: var(--color-gold-bright);
   background: var(--gold-10);
 }
-
 /* ===================== Conteneur de contenu (commun à tous les onglets) ===================== */
 .zone-contenu {
   position: relative;
