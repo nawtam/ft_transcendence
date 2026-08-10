@@ -63,7 +63,7 @@ return (
             title="Aventure Solo"
             description="Plonge dans une saga narrative dont tu es le héro."
             image={soloImage}
-            href="#"
+            href="/Aventure"
           />
           <DestinyCard
             title="Multijoueur"
