@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useJoueur } from '../context/JoueurContext.tsx';
+import { useMonde } from '../context/MondeContext.tsx';
 import '../css/aventure.css';
 
 function Aventure() {
   const { joueur } = useJoueur();
+  const { lieux, quetesAventure } = useMonde();
 
   const pourcentagePV = (joueur.pv / joueur.pvMax) * 100;
   const pourcentageEN = (joueur.energie / joueur.energieMax) * 100;
@@ -69,14 +71,37 @@ function Aventure() {
                   <span className="title-inventaire">inventaire</span>
                   <span className="plus-tard">a faire</span>
                     </div>
-                  <div className= "profil-inventaire">
-                  <span className="title-inventaire">Lieux</span>
-                  <span className="plus-tard">a faire</span>
-                    </div>
-                    <div className= "profil-inventaire">
-                  <span className="title-inventaire">Quêtes</span>
-                  <span className="plus-tard">a faire</span>
-                    </div>
+                  <div className="lieux">
+                <span className="title-lieux">Lieux</span>
+                <ul className="liste-lieux">
+                  {lieux.map((lieu) => (
+                    <li key={lieu.id} className={`lieu-carte ${lieu.decouvert ? "decouvert" : "inconnu"}`}>
+                      <span className="lieu-etat"></span>
+                      <div className="lieu-infos">
+                        <p className="lieu-nom">{lieu.decouvert ? lieu.nom : "????"}</p>
+                        <p className="lieu-desc">{lieu.decouvert ? lieu.description : "????"}</p>
+                      </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                  <div className="quetes-aventure">
+                <span className="title-quetes-aventure">Quêtes</span>
+                <ul className="liste-quetes-aventure">
+                  {quetesAventure.map((q) => (
+                    <li key={q.id} className={`quete-aventure-carte ${q.decouverte ? "decouverte" : "inconnue"}`}>
+                      <span className="quete-aventure-etat"></span>
+                      <div className="quete-aventure-infos">
+          <p className="quete-aventure-titre">
+            {q.decouverte ? q.titre : "????"}
+            {q.decouverte && <span className={`quete-aventure-type ${q.type}`}>{q.type}</span>}
+          </p>
+          <p className="quete-aventure-desc">{q.decouverte ? q.description : "????"}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+</div>
                     </div>
                   <Link to="/play-Aventure" className="btn-play">Jouer</Link>
         </main>

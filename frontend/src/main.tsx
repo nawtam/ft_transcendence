@@ -3,14 +3,16 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { JoueurProvider } from './context/JoueurContext.tsx'
+import { MondeProvider } from './context/MondeContext.tsx'
+
 import App from './App.tsx'
  
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <JoueurProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </JoueurProvider>
-  </StrictMode>,
+  <JoueurProvider>
+  <MondeProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </MondeProvider>
+  </JoueurProvider>
 )

@@ -23,3 +23,174 @@
 .btn-play:hover {
   color: #ffffff;
 }
+
+
+
+.lieux,
+.quetes-aventure {
+  border: 1px solid var(--gold-15);
+  background: var(--parchment-5);
+  border-radius: 0.2rem;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 0; /* nécessaire pour que le scroll interne fonctionne dans une grille */
+}
+ 
+.title-lieux,
+.title-quetes-aventure {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-gold-bright);
+}
+ 
+/* -- Listes scrollables -- */
+.liste-lieux,
+.liste-quetes-aventure {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.3rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 11rem;
+  overflow-y: auto;
+ 
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-40) transparent;
+}
+ 
+.liste-lieux::-webkit-scrollbar,
+.liste-quetes-aventure::-webkit-scrollbar {
+  width: 6px;
+}
+ 
+.liste-lieux::-webkit-scrollbar-thumb,
+.liste-quetes-aventure::-webkit-scrollbar-thumb {
+  background: var(--gold-40);
+  border-radius: 999px;
+}
+ 
+.liste-lieux::-webkit-scrollbar-track,
+.liste-quetes-aventure::-webkit-scrollbar-track {
+  background: transparent;
+}
+ 
+/* -- Carte lieu -- */
+.lieu-carte,
+.quete-aventure-carte {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.15rem;
+  border: 1px solid var(--gold-15);
+  background: var(--bg-60);
+  flex-shrink: 0;
+}
+ 
+.lieu-carte.decouvert,
+.quete-aventure-carte.decouverte {
+  border-color: var(--gold-40);
+  background: var(--gold-10);
+}
+ 
+.lieu-carte.inconnu,
+.quete-aventure-carte.inconnue {
+  border-style: dashed;
+  opacity: 0.7;
+}
+ 
+/* -- Pastille d'état -- */
+.lieu-etat,
+.quete-aventure-etat {
+  height: 1.6rem;
+  width: 1.6rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-family: var(--font-display);
+  border: 1px solid var(--gold-20);
+  background: var(--bg-82);
+  flex-shrink: 0;
+}
+ 
+.lieu-carte.decouvert .lieu-etat,
+.quete-aventure-carte.decouverte .quete-aventure-etat {
+  border-color: var(--gold-50);
+  background: var(--gold-15);
+  color: var(--color-gold-bright);
+}
+ 
+.lieu-carte.decouvert .lieu-etat::before,
+.quete-aventure-carte.decouverte .quete-aventure-etat::before {
+  content: "✓";
+}
+ 
+.lieu-carte.inconnu .lieu-etat,
+.quete-aventure-carte.inconnue .quete-aventure-etat {
+  color: var(--color-text-muted);
+}
+ 
+.lieu-carte.inconnu .lieu-etat::before,
+.quete-aventure-carte.inconnue .quete-aventure-etat::before {
+  content: "?";
+}
+ 
+/* -- Textes -- */
+.lieu-infos,
+.quete-aventure-infos {
+  min-width: 0;
+}
+ 
+.lieu-nom,
+.quete-aventure-titre {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--color-text);
+}
+ 
+.lieu-carte.decouvert .lieu-nom,
+.quete-aventure-carte.decouverte .quete-aventure-titre {
+  color: var(--color-gold-bright);
+}
+ 
+.lieu-desc,
+.quete-aventure-desc {
+  margin: 0.15rem 0 0;
+  font-size: 0.7rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+ 
+.quete-aventure-type {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-style: normal;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+ 
+.quete-aventure-type.Principale {
+  color: var(--color-gold-bright);
+  border-color: var(--gold-50);
+  background: var(--gold-15);
+}
+ 
+.quete-aventure-type.Secondaire {
+  color: var(--color-arcane);
+  border-color: var(--arcane-40);
+  background: var(--arcane-15);
+}
+ 
