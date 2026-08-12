@@ -11,7 +11,31 @@
   --color-ember: oklch(0.65 0.22 40);
   --color-arcane: oklch(0.6 0.2 290);
   --color-parchment: oklch(0.92 0.04 85);
-    --color-cosmo: oklch(72.658% 0.1046 307.14);
+  --color-cosmo: oklch(72.658% 0.1046 307.14);
+  --gold-10: rgba(217, 168, 78, 0.10);
+  --gold-15: rgba(217, 168, 78, 0.15);
+  --gold-20: rgba(217, 168, 78, 0.20);
+  --gold-25: rgba(217, 168, 78, 0.25);
+  --gold-30: rgba(217, 168, 78, 0.30);
+  --gold-40: rgba(217, 168, 78, 0.40);
+  --gold-50: rgba(217, 168, 78, 0.50);
+  --gold-60: rgba(217, 168, 78, 0.60);
+
+  --arcane-15: oklch(0.6 0.2 290 / 0.15);
+  --arcane-25: oklch(0.6 0.2 290 / 0.25);
+  --arcane-40: oklch(0.6 0.2 290 / 0.40);
+  --arcane-60: oklch(0.6 0.2 290 / 0.60);
+
+  --ember-25: oklch(0.65 0.22 40 / 0.25);
+  --ember-55: oklch(0.65 0.22 40 / 0.55);
+
+  --parchment-5: oklch(0.92 0.04 85 / 0.05);
+  --parchment-10: oklch(0.92 0.04 85 / 0.10);
+  --parchment-40: oklch(0.92 0.04 85 / 0.40);
+  --color-success: #4cae6e;
+
+  --bg-60: rgba(20, 13, 8, 0.60);
+  --bg-82: rgba(20, 13, 8, 0.82);
 }
 
 * {

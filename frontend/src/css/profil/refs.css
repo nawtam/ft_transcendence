@@ -1,12 +1,3 @@
-/*
-  refs.css
-  --------
-  Variantes d'opacité de tes vrais tokens (index.css) : --color-gold
-  (hex) -> rgba(), --color-arcane/--color-ember/--color-parchment
-  (oklch) -> oklch(... / alpha), --color-bg (hex) -> rgba().
-  Mises sur :root pour être disponibles dans TOUS les fichiers ci-après,
-  peu importe l'ordre d'import ou si .page existe déjà à ce moment-là.
-*/
 
 :root {
   --gold-10: rgba(217, 168, 78, 0.10);

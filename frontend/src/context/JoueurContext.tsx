@@ -24,6 +24,8 @@ export interface Joueur {
   energie: number;
   energieMax: number;
   lieuActuel: string;
+  victoires: number;
+  defaites: number;
 }
 
 interface JoueurContextType {
@@ -53,6 +55,8 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
     pvMax: 1000,
     energieMax: 1000,
     lieuActuel: "Le village",
+    victoires: 58,
+    defaites: 41,
   });
 
   return (

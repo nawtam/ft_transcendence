@@ -69,7 +69,7 @@ return (
             title="Multijoueur"
             description="Rejoins un univers avec des compagnons"
             image={multiImage}
-            href="#"
+            href="/Multijoueur"
           />
         </div>
       </main>

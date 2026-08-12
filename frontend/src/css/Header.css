@@ -44,8 +44,7 @@
   display: flex;
   align-items: center;
   border-radius: 999px;
-  background: linear-gradient(
-    180deg,
+  background: linear-gradient(180deg,
     color-mix(in oklch, var(--color-bg-elevated) 95%, transparent),
     color-mix(in oklch, var(--color-bg) 95%, transparent)
   );
