@@ -1,7 +1,3 @@
-// src/context/JoueurContext.tsx
-// -----------------------------------------------------------------
-// Un seul état "joueur", partagé par toutes les pages qui en ont besoin
-// (Profil, Aventure, plus tard le HUD en jeu, etc.)
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
@@ -66,7 +62,6 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Le hook que tes pages utiliseront à la place de useState
 export function useJoueur() {
   const ctx = useContext(JoueurContext);
   if (!ctx) throw new Error("useJoueur doit être utilisé sous JoueurProvider");
