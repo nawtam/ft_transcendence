@@ -35,6 +35,13 @@ Le deuxième élément *(setPseudo)* est toujours une fonction, quel que soit le
 Quand on l'appelle avec un chemin, 
 *ex : navigate('/Home')*, elle change immédiatement l'URL affichée par l'app.
 
+### useParams()
+1- BrowserRouter (dans main.tsx) écoute la barre d'URL.
+2- Routes compare cette URL à chaque path déclaré dans App.tsx
+3- React Router construit un objet avec ce qu'il a capturé. *ex : { universeId: "fantastique" }*
+4- useParams() lit cet objet déjà construit
+va juste chercher, dans le Context interne de React Router, l'objet que l'étape 3 vient de préparer, et le renvoie.
+
 ## Connexion
 
 La fonction onChange vas recuperer ce qui est mis dans les inputs a chaque changement.
