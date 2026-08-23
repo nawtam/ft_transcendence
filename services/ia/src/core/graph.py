@@ -75,4 +75,4 @@ workflow.add_edge("tools", "narrator")
 workflow.add_edge("narrator", "weaver")
 workflow.add_edge("weaver", END)
 
-app = workflow.compile()
+game_graph = workflow.compile()
