@@ -5,6 +5,7 @@ import src.core.config  # noqa: F401 — charge le .env avant les agents
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
 
+from src.agents.weaver import record_world_event
 from src.agents.narrator import call_narrator
 from src.agents.referee import call_referee
 from src.agents.weaver import call_weaver
@@ -14,12 +15,23 @@ from src.tools import TOOLS
 _tool_node = ToolNode(TOOLS)
 
 
-def should_continue(state: State) -> str:
+def route_referee(state: State) -> str:
     last_message = state["messages"][-1]
     if getattr(last_message, "tool_calls", None):
         return "tools"
     return "narrator"
 
+def route_weaver(state: State) -> str:
+    last_message = state["messages"][-1]
+    if getattr(last_message, "tool_calls", None):
+        return "tools"
+    return END
+
+def route_tools(state: State) -> str:
+    last_tool_name = state.get("last_tool", {}).get("tool_name")
+    if last_tool_name == "record_world_event":
+        return END
+    return "narrator"
 
 def _parse_tool_content(content) -> dict | str | None:
     if content is None:
@@ -67,12 +79,36 @@ workflow.set_entry_point("referee")
 
 workflow.add_conditional_edges(
     "referee",
-    should_continue,
+    route_referee,
     {"tools": "tools", "narrator": "narrator"},
 )
 
-workflow.add_edge("tools", "narrator")
+workflow.add_conditional_edges(
+    "referee",
+    route_referee,
+    {
+        "tools": "tools",
+        "narrator": "narrator",
+    }
+)
+
+workflow.add_conditional_edges(
+    "tools",
+    route_tools,
+    {
+        "narrator": "narrator",
+        END: END
+    }
+)
+
 workflow.add_edge("narrator", "weaver")
-workflow.add_edge("weaver", END)
+workflow.add_edge(
+    "weaver",
+    route_weaver,
+    {
+        "tools": "tools",
+        END: END
+    }
+)
 
 game_graph = workflow.compile()

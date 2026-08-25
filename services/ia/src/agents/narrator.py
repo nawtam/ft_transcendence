@@ -12,7 +12,7 @@ def get_narrator_llm() -> ChatGroq:
     global _narrator_llm
     if _narrator_llm is None:
         if not GROQ_API_KEY:
-            raise RuntimeError("GROQ_API_KEY manquante — vérifie ton .env")
+            raise RuntimeError("GROQ_API_KEY not found — check your .env file")
         _narrator_llm = ChatGroq(
             model=GROQ_MODEL,
             temperature=0.7,
@@ -23,11 +23,11 @@ def get_narrator_llm() -> ChatGroq:
 
 def _format_last_tool(last_tool: dict) -> str:
     if not last_tool:
-        return "Aucun résultat technique récent."
+        return "No recent technical result."
     return (
-        f"Outil: {last_tool.get('tool_name', 'unknown')}\n"
+        f"Tool: {last_tool.get('tool_name', 'unknown')}\n"
         f"Args: {last_tool.get('args', {})}\n"
-        f"Résultat: {last_tool.get('result', {})}"
+        f"Result: {last_tool.get('result', {})}"
     )
 
 
