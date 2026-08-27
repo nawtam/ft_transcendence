@@ -12,17 +12,31 @@ Utility for the frontend :
 from pydantic import BaseModel, Field
 from typing import Any, Optional
 
+
+class InventoryItem(BaseModel):
+    name: str
+    type: str
+
+class PlayerStats(BaseModel):
+    hp: int
+    max_hp: int
+    location: str = "unknown"
+    inventory: list[InventoryItem] = Field(default_factory=list)
+
+class WorldState(BaseModel):
+    current_room: str = "unknown"
+
 class GameRequest(BaseModel):
     user_message: str
     messages_history: list[dict[str, str]] = Field(default_factory=list)
-    player_stats: dict[str, Any]
+    player_stats: PlayerStats
     universe_context: str
-    world_state: dict[str, Any]
+    world_state: WorldState
 
 
 class GameResponse(BaseModel):
     narrator_message: str
-    last_tool_result: Optional[dict[str, Any]] = None
-    updated_player_stats: dict[str, Any]
-    updated_world_state: dict[str, Any]
+    last_tool_result: Optional[dict] = None
+    updated_player_stats: PlayerStats
+    updated_world_state: WorldState
     stats_updated: bool = False
