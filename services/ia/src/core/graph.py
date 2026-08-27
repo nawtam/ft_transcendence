@@ -5,14 +5,13 @@ import src.core.config  # noqa: F401 — charge le .env avant les agents
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
 
-from src.agents.weaver import record_world_event
 from src.agents.narrator import call_narrator
 from src.agents.referee import call_referee
 from src.agents.weaver import call_weaver
 from src.core.state import State
-from src.tools import TOOLS
+from src.tools import ALL_TOOLS
 
-_tool_node = ToolNode(TOOLS)
+_tool_node = ToolNode(ALL_TOOLS)
 
 
 def route_referee(state: State) -> str:
