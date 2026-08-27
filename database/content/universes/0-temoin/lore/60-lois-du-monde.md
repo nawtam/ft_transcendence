@@ -1,0 +1,1 @@
+Règles du système surnaturel ou technologique de ton univers (comment fonctionne la magie/la tech, ses limites)

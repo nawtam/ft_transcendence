@@ -1,0 +1,43 @@
+{
+  "name": "",
+  "theme": "",
+  // fantasy-medieval, scifi, horreur...
+  "tone": "",
+  "description": "",
+  "game_modes": {
+    "ffa": {
+      "pools_by_character": {
+        "char1": [
+          { "objectif": "", "probability": 1 }
+          // référençant objectifs/ffa/char1/*.json5
+        ],
+        "char2": [
+          { "objectif": "", "probability": 1 }
+        ],
+        "char3": [
+          { "objectif": "", "probability": 1 }
+        ],
+        "char4": [
+          { "objectif": "", "probability": 1 }
+        ]
+        // une clé par personnage jouable de l'univers
+      }
+    },
+    "coop": {
+      "pool": [
+        { "objectif": "", "probability": 1 }
+        // slug référençant objectifs/coop/*.json5
+      ]
+    },
+    "equipes": {
+      "pool": [
+        { "objectif": "", "probability": 1 }
+        // slug référençant objectifs/tvt/*.json5
+      ]
+    }
+  },
+  "content_version": "",
+  "status": "",
+  // draft, published
+  "asset": ""
+}

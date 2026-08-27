@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "character.schema.json",
+  "title": "Personnage jouable",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "examples": ["voleur", "mage", "noble", "guerrier"]
+    },
+    "description": { "type": "string", "minLength": 1 },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "asset": { "$ref": "common.schema.json#/$defs/asset_path" },
+    "base_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "force": { "type": "integer", "minimum": 0 },
+        "agilite": { "type": "integer", "minimum": 0 },
+        "intelligence": { "type": "integer", "minimum": 0 },
+        "charisme": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["force", "agilite", "intelligence", "charisme"]
+    },
+    "points": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Points à répartir par le joueur en plus des base_stats."
+    },
+    "stat_min": { "type": "integer", "minimum": 0 },
+    "stat_max": {
+      "type": "integer",
+      "minimum": 0,
+      "$comment": "Doit être >= stat_min. Contrainte à vérifier côté application (non exprimable simplement en JSON Schema entre deux propriétés numériques)."
+    },
+    "starting_equipment": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/slug" },
+      "description": "Peut être vide."
+    },
+    "spawn_place": { "$ref": "common.schema.json#/$defs/place_reference" },
+    "special_ability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "cooldown": { "type": "string" }
+      },
+      "required": ["name", "description", "cooldown"]
+    },
+    "lore_background": { "type": "string", "minLength": 1 },
+    "voice_tone": { "type": "string", "minLength": 1 }
+  },
+  "required": [
+    "name", "type", "description", "tags", "asset", "base_stats",
+    "points", "stat_min", "stat_max", "starting_equipment",
+    "spawn_place", "special_ability", "lore_background", "voice_tone"
+  ]
+}

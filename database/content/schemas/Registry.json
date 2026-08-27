@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0",
+  "common_schema": "common.schema.json",
+  "content_root": "database/content/universe",
+  "structure_note": "content/<slug-univers>/... — chaque sous-dossier de content_root est un univers, contenant son propre universe.json + ses propres dossiers d'entités. Adapte les noms de dossiers ci-dessous si les tiens sont différents.",
+  "types": {
+    "universe": {
+      "schema": "universe.schema.json",
+      "path_template": "database/content/universe/{universe}/universe.json",
+      "description": "Fichier racine de l'univers (un seul, à la racine du dossier de l'univers)"
+    },
+    "character": {
+      "schema": "character.schema.json",
+      "path_template": "database/content/universe/{universe}/characters/*.json"
+    },
+    "event": {
+      "schema": "event.schema.json",
+      "path_template": "database/content/universe/{universe}/events/*.json"
+    },
+    "item": {
+      "schema": "item.schema.json",
+      "path_template": "database/content/universe/{universe}/items/*.json"
+    },
+    "map": {
+      "schema": "map.schema.json",
+      "path_template": "database/content/universe/{universe}/maps/*.json"
+    },
+    "monster": {
+      "schema": "monster.schema.json",
+      "path_template": "database/content/universe/{universe}/monsters/*.json"
+    },
+    "npc": {
+      "schema": "npc.schema.json",
+      "path_template": "database/content/universe/{universe}/npcs/*.json"
+    },
+    "interactive_object": {
+      "schema": "interactive_object.schema.json",
+      "path_template": "database/content/universe/{universe}/objects/*.json"
+    },
+    "place": {
+      "schema": "place.schema.json",
+      "path_template": "database/content/universe/{universe}/places/*.json"
+    },
+    "quest": {
+      "schema": "quest.schema.json",
+      "path_template": "database/content/universe/{universe}/quests/*.json"
+    },
+    "objective_ffa": {
+      "schema": "objective_ffa.schema.json",
+      "path_template": "database/content/universe/{universe}/objectifs/ffa/{character}/*.json",
+      "description": "Un sous-dossier par personnage jouable, référencé depuis universe.json > game_modes.ffa.pools_by_character"
+    },
+    "objective_coop": {
+      "schema": "objective_coop.schema.json",
+      "path_template": "database/content/universe/{universe}/objectifs/coop/*.json"
+    },
+    "objective_team": {
+      "schema": "objective_team.schema.json",
+      "path_template": "database/content/universe/{universe}/objectifs/tvt/*.json",
+      "description": "Nom de dossier 'tvt' repris de ton commentaire dans universe.json (la clé JSON, elle, s'appelle 'equipes' — incohérence à trancher si tu veux)"
+    }
+  }
+}

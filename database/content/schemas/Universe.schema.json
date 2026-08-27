@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "universe.schema.json",
+  "title": "Univers narratif",
+  "$defs": {
+    "pool_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "objectif": { "$ref": "common.schema.json#/$defs/slug" },
+        "probability": { "$ref": "common.schema.json#/$defs/probability" }
+      },
+      "required": ["objectif", "probability"]
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "theme": {
+      "type": "string",
+      "minLength": 1,
+      "examples": ["fantasy-medieval", "scifi", "horreur"]
+    },
+    "tone": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "game_modes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ffa": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pools_by_character": {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": { "$ref": "common.schema.json#/$defs/slug" },
+              "additionalProperties": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "$ref": "#/$defs/pool_entry" }
+              },
+              "$comment": "Les clés (char1, char2...) sont des exemples dans ton template : en réalité chaque clé doit être le slug d'un personnage jouable de cet univers. Chaque objectif référencé doit exister dans objectifs/ffa/<char>/."
+            }
+          },
+          "required": ["pools_by_character"]
+        },
+        "coop": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pool": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/pool_entry" },
+              "$comment": "Chaque 'objectif' doit référencer un fichier coop-obj.json existant."
+            }
+          },
+          "required": ["pool"]
+        },
+        "equipes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pool": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/pool_entry" },
+              "$comment": "Chaque 'objectif' doit référencer un fichier team-obj.json existant."
+            }
+          },
+          "required": ["pool"]
+        }
+      },
+      "required": ["ffa", "coop", "equipes"]
+    },
+    "content_version": {
+      "type": "string",
+      "minLength": 1,
+      "examples": ["1.0.0"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "published"]
+    },
+    "asset": { "$ref": "common.schema.json#/$defs/asset_path" }
+  },
+  "required": ["name", "theme", "tone", "description", "game_modes", "content_version", "status", "asset"]
+}

@@ -1,0 +1,133 @@
+.reg-page {
+  min-height: 100vh;
+  padding: 2rem 3rem;
+}
+
+.Transcendence {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.reg-back {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  margin: 2rem auto 0;
+  margin-top: 80px;
+  text-align: left;
+  color: #d9d0c3;
+  text-decoration: none;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  transition: color 0.25s ease;
+
+}
+
+.reg-back:hover {
+  color: #ffffff;
+}
+
+.reg-title {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  font-size: 2.7rem;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.reg-form {
+  max-width: 520px;
+  margin: 0rem auto 4rem;
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-gold-dark);
+  border-radius: 12px;
+  padding: 3.5rem;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 0.81rem;
+}
+
+.reg-pseudo,
+.reg-mail,
+.reg-dob,
+.reg-mdp {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 0.75rem;
+}
+
+.reg-pseudo {
+  margin-top: 0;
+}
+
+.reg-form input[type="text"],
+.reg-form input[type="date"],
+.reg-form input[type="password"] {
+  width: 100%;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-gold-dark);
+  border-radius: 6px;
+  padding: 1rem 1rem;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.reg-form input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 12px rgba(217, 168, 78, 0.25);
+}
+
+.reg-form input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.reg-cgu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  color: var(--color-text-muted);
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.reg-cgu input {
+  accent-color: var(--color-gold);
+  cursor: pointer;
+}
+
+.reg-cgu a {
+  color: var(--color-gold);
+  text-decoration: underline;
+}
+
+.btn-reg-entrer {
+  width: 100%;
+  margin-top: 3rem;
+  font-family: var(--font-display);
+  background: linear-gradient(180deg, #e8963a, #c9691f);
+  color: #1a1006;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+.btn-reg-entrer:hover {
+  color: #ffffff;
+  transform: scale(1.02);
+}

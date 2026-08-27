@@ -1,0 +1,52 @@
+{
+  "name": "",
+  "description": "",
+  "asset": "",
+  "locations": [
+    {
+      "place": "",
+      // référence places/
+      "sous_zone": "",
+      // optionnel
+      "probability": 0
+      // 0 à 1
+    }
+    // ajouter autant d'entrées que de lieux/sous-zones possibles
+  ],
+  "reusable": true,
+  "respawn": false,
+  // requis seulement si reusable = false : jamais, partie_suivante...
+  "interactions": [
+    {
+      "type": "",
+      // fouille, craft, examiner
+      "label": "",
+      //nom de l'action
+      "requires_items": [
+        {
+          "item": "",
+          // référence items/
+          "quantity": 1
+        }
+        //rajouter si plusieurs item
+        // rien mettre si non
+      ],
+      "consumes_items": false,
+      // supprime les items consommé
+      "loot_table": [
+        {
+          "item": "",
+          // référence items/
+          "quantity": 1,
+          "probability": 1
+        }
+        // requis si type = fouille ou craft
+      ],
+      "success_probability": 1,
+      "success_text": "",
+      "fail_text": "",
+      "cooldown": ""
+    }
+    // ajouter autant d'interactions possibles que voulu
+  ]
+}

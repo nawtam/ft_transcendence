@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "npc.schema.json",
+  "title": "PNJ",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "role": {
+      "type": "string",
+      "minLength": 1,
+      "examples": ["marchand", "forgeron", "garde", "sage", "mendiant", "aubergiste"]
+    },
+    "place": { "$ref": "common.schema.json#/$defs/place_reference" },
+    "personality": { "type": "string", "minLength": 1 },
+    "disposition": { "$ref": "common.schema.json#/$defs/disposition" },
+    "voice_tone": { "type": "string", "minLength": 1 },
+    "idle_lines": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "quest_pool": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "quest": { "$ref": "common.schema.json#/$defs/slug" },
+          "probability": { "$ref": "common.schema.json#/$defs/probability" },
+          "condition": { "type": "string" }
+        },
+        "required": ["quest", "probability", "condition"]
+      }
+    },
+    "sells": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/slug" }
+    },
+    "buys_categories": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/item_type" }
+    },
+    "hostile_condition": { "type": "string" },
+    "combat_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hp": { "type": "integer", "minimum": 0 },
+        "attack": { "type": "integer", "minimum": 0 },
+        "defense": { "type": "integer", "minimum": 0 },
+        "equipement": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/slug" }
+        }
+      },
+      "required": ["hp", "attack", "defense", "equipement"]
+    },
+    "loot": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/slug" }
+    },
+    "asset": { "$ref": "common.schema.json#/$defs/asset_path" }
+  },
+  "required": [
+    "name", "description", "role", "place", "personality", "disposition",
+    "voice_tone", "idle_lines", "quest_pool", "sells", "buys_categories",
+    "hostile_condition", "combat_stats", "loot", "asset"
+  ]
+}

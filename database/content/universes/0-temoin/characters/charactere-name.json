@@ -1,0 +1,33 @@
+{
+  "name": "",
+  "type": "",
+  // voleur, mage, noble ...
+  "description": "",
+  "tags": [],
+  //Mots-clés libres pour filtrer/rechercher, ex: (humain, guerrier, garde, animal ...)
+  "asset": "assets/characters/nom.png",
+  "base_stats": {
+    "force": 0,
+    "agilite": 0,
+    "intelligence": 0,
+    "charisme": 0
+  },
+  "points": 0,
+  "stat_min": 0,
+  "stat_max": 0,
+  "starting_equipment": [],
+  //peut etre vide
+  "spawn_place": {
+    "place": "",
+    "sous_zone": ""
+    // optionnel
+  },
+  "special_ability": {
+    "name": "",
+    "description": "",
+    "cooldown": ""
+  },
+  // un pouvoir, une attaque...
+  "lore_background": "",
+  "voice_tone": ""
+}

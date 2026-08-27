@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "item.schema.json",
+  "title": "Item (objet d'inventaire)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "type": { "$ref": "common.schema.json#/$defs/item_type" },
+    "rarity": { "$ref": "common.schema.json#/$defs/rarity" },
+    "effects": {
+      "type": "object",
+      "additionalProperties": { "type": "number" },
+      "description": "Paires clé/valeur libres, ex: { \"force\": 1 } ou { \"soin\": 20 }. Peut être vide."
+    },
+    "usable": { "type": "boolean" },
+    "stackable": { "type": "boolean" },
+    "quest": { "$ref": "common.schema.json#/$defs/optional_ref" },
+    "npc": { "$ref": "common.schema.json#/$defs/optional_ref" },
+    "monster": { "$ref": "common.schema.json#/$defs/optional_ref" },
+    "place": { "$ref": "common.schema.json#/$defs/place_reference_optional" },
+    "asset": { "$ref": "common.schema.json#/$defs/asset_path" }
+  },
+  "required": [
+    "name", "description", "type", "rarity", "effects", "usable",
+    "stackable", "quest", "npc", "monster", "place", "asset"
+  ]
+}

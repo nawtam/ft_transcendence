@@ -1,0 +1,158 @@
+/*
+  multi.css
+  ---------
+  Écrit pour coller à ton TSX EXACT (aucune modification de JSX) :
+  - .palmares contient un <h2> sans classe (ciblé via ".palmares > h2")
+    puis 3 divs .victoires / .Defaites / .heures-de-jeu, chacune avec
+    juste un <span> de label (pas de valeur chiffrée pour l'instant —
+    voir note en bas de fichier).
+  - .Historique > .multi-historique > .multi-partie contient 4 spans à
+    plat (multi-univers, p-perso, multi-resultat, p-mode) : je les mets
+    en flex avec gap pour qu'ils ne soient plus collés les uns aux
+    autres comme sur ta capture.
+  - Le ternaire {partie.resultat === "Victoire" ? "Victoire" : "Défaite"}
+    ajoute une classe "Victoire" ou "Défaite" (majuscule + accent) sur
+    .multi-resultat : ciblé ici via ".multi-resultat.Victoire" et
+    ".multi-resultat.Défaite" pour matcher exactement.
+  Dépend de refs.css (utilise --success-*/--danger-*).
+*/
+
+.stat-multi {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ===================== Palmarès ===================== */
+.palmares {
+  border: 1px solid var(--gold-15);
+  background: var(--parchment-5);
+  border-radius: 0.2rem;
+  padding: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.palmares > h2 {
+  flex: 1 0 100%;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-gold-bright);
+  margin: 0 0 0.25rem;
+}
+
+.victoires,
+.Defaites,
+.heures-de-jeu {
+  flex: 1 1 0;
+  text-align: center;
+  padding: 0.5rem 0;
+  border-left: 1px solid var(--gold-10);
+}
+
+.victoires {
+  border-left: none;
+}
+
+.victoires span,
+.Defaites span,
+.heures-de-jeu span {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.victoires span {
+  color: var(--color-success);
+}
+
+.Defaites span {
+  color: var(--color-danger);
+}
+
+.heures-de-jeu span {
+  color: var(--color-text-muted);
+}
+
+/* ===================== Historique ===================== */
+.Historique {
+  border: 1px solid var(--gold-15);
+  background: var(--parchment-5);
+  border-radius: 0.2rem;
+  padding: 1.1rem;
+}
+
+.title-historique {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-gold-bright);
+  margin: 0 0 0.75rem;
+}
+
+.multi-historique {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.multi-partie {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border-left: 2px solid var(--gold-40);
+  background: var(--gold-10);
+  border-radius: 0.15rem;
+}
+
+.multi-univers {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  color: var(--color-text);
+}
+
+.p-perso {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.multi-resultat {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.multi-resultat.Victoire {
+  color: var(--color-success);
+  border-color: var(--success-50);
+  background: var(--success-15);
+}
+
+.multi-resultat.Défaite {
+  color: var(--color-danger);
+  border-color: var(--danger-50);
+  background: var(--danger-15);
+}
+
+.p-mode {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}

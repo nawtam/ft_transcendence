@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.schema.json",
+  "title": "Définitions communes - Contenu narratif",
+  "$defs": {
+
+    "slug": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Référence obligatoire vers une autre entité (son 'name')."
+    },
+
+    "optional_ref": {
+      "type": "string",
+      "description": "Référence facultative. Chaîne vide = aucune référence."
+    },
+
+    "probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+
+    "asset_path": {
+      "type": "string",
+      "description": "Chemin vers un asset. Chaîne vide autorisée si non livré."
+    },
+
+    "difficulty": {
+      "type": "string",
+      "enum": ["facile", "moyen", "difficile"]
+    },
+
+    "disposition": {
+      "type": "string",
+      "enum": ["amical", "neutre", "hostile", "mefiant"]
+    },
+
+    "item_type": {
+      "type": "string",
+      "enum": ["arme", "armure", "consommable", "quete", "divers"]
+    },
+
+    "rarity": {
+      "type": "string",
+      "enum": ["commun", "rare", "epique", "legendaire"]
+    },
+
+    "place_reference": {
+      "type": "object",
+      "properties": {
+        "place": { "$ref": "#/$defs/slug" },
+        "sous_zone": { "type": "string" }
+      },
+      "required": ["place"]
+    },
+
+    "place_reference_optional": {
+      "type": "object",
+      "properties": {
+        "place": { "$ref": "#/$defs/optional_ref" },
+        "sous_zone": { "type": "string" }
+      },
+      "required": ["place"]
+    },
+
+    "item_stack": {
+      "type": "object",
+      "properties": {
+        "item": { "$ref": "#/$defs/slug" },
+        "quantity": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["item", "quantity"]
+    },
+
+    "reward": {
+      "type": "object",
+      "properties": {
+        "xp": { "type": "integer", "minimum": 0 },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/item_stack" }
+        }
+      }
+    },
+
+    "npc_disposition_change": {
+      "type": "object",
+      "properties": {
+        "npc": { "$ref": "#/$defs/slug" },
+        "new_disposition": { "$ref": "#/$defs/disposition" }
+      },
+      "required": ["npc", "new_disposition"]
+    },
+
+    "fail_consequence_disposition": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "npc_disposition_change": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/npc_disposition_change" }
+        },
+        "permanent": { "type": "boolean" }
+      }
+    },
+
+    "npc_change": {
+      "type": "object",
+      "properties": {
+        "npc": { "$ref": "#/$defs/slug" },
+        "disposition": { "$ref": "#/$defs/disposition" }
+      },
+      "required": ["npc", "disposition"]
+    },
+
+    "quest_fail_consequence": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "npc_change": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/npc_change" }
+        },
+        "lose_items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/slug" }
+        },
+        "blocks_quest": { "$ref": "#/$defs/optional_ref" },
+        "permanent": { "type": "boolean" }
+      }
+    },
+
+    "objective_step": {
+      "type": "object",
+      "properties": {
+        "order": { "type": "integer", "minimum": 1 },
+        "objective": { "type": "string", "minLength": 1 },
+        "indice": { "type": "string" },
+        "target_npc": { "$ref": "#/$defs/optional_ref" },
+        "target_monster": { "$ref": "#/$defs/optional_ref" },
+        "target_item": { "$ref": "#/$defs/optional_ref" },
+        "target_place": { "$ref": "#/$defs/place_reference_optional" },
+        "optional": { "type": "boolean" }
+      },
+      "required": ["order", "objective"]
+    },
+
+    "objective_step_coop": {
+      "type": "object",
+      "properties": {
+        "order": { "type": "integer", "minimum": 1 },
+        "objective": { "type": "string", "minLength": 1 },
+        "indices": { "type": "string" },
+        "target_npc": { "$ref": "#/$defs/optional_ref" },
+        "target_monster": { "$ref": "#/$defs/optional_ref" },
+        "target_item": { "$ref": "#/$defs/optional_ref" },
+        "target_place": { "$ref": "#/$defs/place_reference_optional" },
+        "optional": { "type": "boolean" },
+        "requires_all_players": { "type": "boolean" }
+      },
+      "required": ["order", "objective"]
+    },
+
+    "quest_step": {
+      "type": "object",
+      "properties": {
+        "order": { "type": "integer", "minimum": 1 },
+        "objective": { "type": "string", "minLength": 1 },
+        "target_npc": { "$ref": "#/$defs/optional_ref" },
+        "target_monster": { "$ref": "#/$defs/optional_ref" },
+        "target_item": { "$ref": "#/$defs/optional_ref" },
+        "target_place": { "$ref": "#/$defs/place_reference_optional" }
+      },
+      "required": ["order", "objective"]
+    }
+  }
+}

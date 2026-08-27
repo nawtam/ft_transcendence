@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "map.schema.json",
+  "title": "Carte / grille de lieux",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "grid_size": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rows": { "type": "integer", "minimum": 1 },
+        "cols": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["rows", "cols"]
+    },
+    "movement": {
+      "type": "string",
+      "minLength": 1,
+      "default": "orthogonal",
+      "$comment": "Une seule valeur apparaît dans ton template sans liste d'alternatives en commentaire, donc pas d'enum forcé ici (je ne veux pas inventer 'diagonal'/'libre' à ta place). Confirme si tu veux verrouiller les valeurs possibles."
+    },
+    "map": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "place": { "$ref": "common.schema.json#/$defs/slug" },
+          "col": { "type": "integer", "minimum": 0 },
+          "row": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["place", "col", "row"]
+      }
+    },
+    "lieu_infranchissable": {
+      "type": "array",
+      "description": "Optionnel : liste des cases infranchissables sans lieu.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "row": { "type": "integer", "minimum": 0 },
+          "col": { "type": "integer", "minimum": 0 },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "required": ["row", "col", "reason"]
+      }
+    }
+  },
+  "required": ["name", "grid_size", "movement", "map", "lieu_infranchissable"],
+  "$comment": "Non vérifié par ce schema : que row/col de 'map' et 'lieu_infranchissable' restent dans les bornes de grid_size, et qu'il n'y a pas de collision entre une case de 'map' et une case de 'lieu_infranchissable'. À valider côté application."
+}
