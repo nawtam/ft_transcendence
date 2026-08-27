@@ -5,7 +5,7 @@ from langchain_core.messages import HumanMessage
 
 import src.core.config
 from src.core.config import DATABASE_URL
-from src.core.graph import app
+from src.core.graph import game_graph
 
 
 async def setup_database() -> None:
@@ -51,7 +51,7 @@ async def run_test_scenario(user_input: str) -> dict:
         "last_tool": {},
     }
 
-    return await app.ainvoke(initial_state)
+    return await game_graph.ainvoke(initial_state)
 
 
 async def main() -> None:

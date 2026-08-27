@@ -80,12 +80,6 @@ workflow.set_entry_point("referee")
 workflow.add_conditional_edges(
     "referee",
     route_referee,
-    {"tools": "tools", "narrator": "narrator"},
-)
-
-workflow.add_conditional_edges(
-    "referee",
-    route_referee,
     {
         "tools": "tools",
         "narrator": "narrator",
@@ -102,7 +96,7 @@ workflow.add_conditional_edges(
 )
 
 workflow.add_edge("narrator", "weaver")
-workflow.add_edge(
+workflow.add_conditional_edges(
     "weaver",
     route_weaver,
     {

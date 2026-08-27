@@ -41,4 +41,7 @@ async def call_narrator(state: State) -> dict:
 
     messages = [system] + state["messages"]
     response = await get_narrator_llm().ainvoke(messages)
-    return {"messages": [response]}
+    return {
+        "messages": [response],
+        "narrator_message": response.content,
+    }
