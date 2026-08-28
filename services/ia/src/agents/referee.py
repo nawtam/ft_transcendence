@@ -4,7 +4,7 @@ from langchain_core.messages import AIMessage, SystemMessage
 from src.core.config import GROQ_API_KEY, GROQ_MODEL
 from src.core.state import State
 from src.prompts.templates import REFEREE_SYSTEM_PROMPT
-from src.tools import TOOLS
+from src.tools import REFEREE_TOOLS
 
 _referee_llm: ChatGroq | None = None
 
@@ -13,7 +13,7 @@ def get_referee_llm() -> ChatGroq:
     global _referee_llm
     if _referee_llm is None:
         if not GROQ_API_KEY:
-            raise RuntimeError("GROQ_API_KEY manquante — vérifie ton .env")
+            raise RuntimeError("GROQ_API_KEY not found — check your .env file")
         _referee_llm = ChatGroq(
             model=GROQ_MODEL,
             temperature=0,
@@ -35,7 +35,7 @@ def _summarize_stats(stats: dict) -> str:
 
 
 async def call_referee(state: State) -> dict:
-    llm_with_tools = get_referee_llm().bind_tools(TOOLS)
+    llm_with_tools = get_referee_llm().bind_tools(REFEREE_TOOLS)
 
     system = SystemMessage(
         content=REFEREE_SYSTEM_PROMPT.format(

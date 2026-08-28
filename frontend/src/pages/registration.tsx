@@ -1,36 +1,68 @@
-// import '../css/Registration.css' ce fichier exite pas encore donc probleme de compilation, je met en commentaire ne attendant que tu le cree nono. (dsl)
+import { Link } from 'react-router-dom'
+import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
+import '../css/Registration.css'
 
-function Connexion ()
-{
-    return (
+function Registration() {
 
-    <div className="page">
+  const [pseudo, setPseudo] = useState('')
+  const [mdp, setMdp] = useState('')
+  const [email, setEmail] = useState('')
+  const [dob, setDob] = useState('')
+  const navigate = useNavigate()
+  const [cguAcceptees, setCguAcceptees] = useState(false)
+
+  function gererSoumission(e: FormEvent) {
+  e.preventDefault()
+  navigate('/')
+  console.log(pseudo, email, dob, mdp, cguAcceptees)
+  }
+  return (
+    <div>
       <header className="header">
         <span className="Transcendence">Transcendence</span>
-        {/* <button className="btn-connexion">Connexion</button> */}
       </header>
+      <Link to="/Connexion" className="reg-back">← Retour</Link>
 
-      <Link to="/" className="btn-retour">← Retour</Link>
+      <form className="reg-form" onSubmit={gererSoumission}>
+        <h1 className="reg-title">Inscription</h1>
+        <span className="reg-pseudo">Pseudo</span>
+        <input type="text" 
+        placeholder="nom de jeu"
+        value={pseudo}
+        onChange={(e) => setPseudo(e.target.value)} 
+        />
 
-      <main className="box">
-        <h1 className="box-title">Bienvenue</h1>
-        <form className="form">
-        <span className="id">Pseudo</span>
-        <input type="text" placeholder="Nom d'aventurier" />
+        <span className="reg-mail">mail</span>
+        <input type="text" 
+        placeholder="email@" 
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        />
 
-        <span className="mdp">Mot de passe</span>
-        <input type="password" placeholder="••••••••" />
+        <span className="reg-dob">Date de naissance</span>
+        <input type="date" 
+        value={dob}
+        onChange={(e) => setDob(e.target.value)}/>
 
-        <button className="btn-entrer" type="submit">Entrer</button>
-        </form>
+        <span className="reg-mdp">Mot de passe</span>
+        <input type="password" 
+        placeholder="••••••••" 
+        value={mdp}
+        onChange={(e) => setMdp(e.target.value)}
+        />
 
-        <p className="sub">
-    Nouveau parmi nous ? <Link to="/sub" className="sub-link">Créer un compte</Link>
-        </p>
-      </main>
+        <label className="reg-cgu">
+          <input type="checkbox" checked={cguAcceptees}  required 
+          onChange={(e) => setCguAcceptees(e.target.checked)}/>
+          
+          J'accepte les <Link to="/conditions-generales" className="cg-link">conditions générales</Link>
+        </label>
+
+        <button className="btn-reg-entrer" type="submit">Entrer</button>
+      </form>
     </div>
   )
 }
 
-
-export default Connexion
+export default Registration
