@@ -44,6 +44,25 @@ def _parse_tool_content(content) -> dict | str | None:
             return content
     return content
 
+def _apply_pickup_item(state: State, result: dict) -> dict:
+    """If pickup_item succeeded, add the item to the inventory."""
+    player_stats = dict(state.get("player_stats") or {})
+    inventory = list(player_stats.get("inventory") or [])
+
+    item = result.get("item")
+    if not item:
+        return player_stats
+
+    item_name = item.get("name", "").lower()
+    for existing in inventory:
+        if existing.get("name", "").lower() == item_name:
+            result["error"] = f"Item '{item['name']}' already in inventory."
+            result["success"] = False
+            return player_stats
+
+    inventory.append(item)
+    player_stats["inventory"] = inventory
+    return player_stats
 
 async def execute_tools(state: State) -> dict:
     result = await _tool_node.ainvoke(state)
@@ -63,6 +82,22 @@ async def execute_tools(state: State) -> dict:
             "result": parsed_result,
             "error": parsed_result.get("error") if isinstance(parsed_result, dict) else None,
         }
+
+        updates: dict = {**result, "last_tool": last_tool}
+        player_stats = state.get("player_stats")
+
+        if (
+            last_tool.get("tool_name") == "pickup_item"
+            and isinstance(parsed_result, dict)
+            and parsed_result.get("success")
+        ):
+            player_stats = _apply_pickup_item(state, parsed_result)
+            last_tool["result"] = parsed_result
+            last_tool["error"] = parsed_result.get("error")
+            updates["last_tool"] = last_tool
+            updates["player_stats"] = player_stats
+
+        return updates
 
     return {**result, "last_tool": last_tool}
 

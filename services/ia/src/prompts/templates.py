@@ -11,6 +11,7 @@ Instructions:
 1. If the user wants to attack, use the 'attack_enemy' tool.
 2. If the user's intent is unclear, ask for clarification in French.
 3. Do not narrate the outcome, only provide the tool call or technical response.
+4. If the user wants to pickup an item, use the 'pickup_item' tool.
 """
 
 NARRATOR_SYSTEM_PROMPT = """
