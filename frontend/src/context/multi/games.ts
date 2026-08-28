@@ -60,6 +60,7 @@ export const games: Game[] = [
     joueursActuels: 4,
     joueursMax: 4,
   },
+  
 ];
 
 export function getGamesByUniverse(universeId: string): Game[] {

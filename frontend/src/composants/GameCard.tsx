@@ -1,11 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Game, GameMode, modeLabels } from '../context/multi/games';
-import '../css/multi/PartieCard.css';
-import {
-  IconeGlobe,
-  IconeCadenas,
-  IconePersonnes,
-} from './Icones';
+import { Globe, Key, UserRound } from 'lucide-react';
+import '../css/multi/GameCard.css';
 
 interface PartieCardProps {
   partie: Game;
@@ -20,7 +16,6 @@ const ClasseParMode: Record<GameMode, string> = {
 export default function GameCard({ partie }: PartieCardProps) {
   const navigate = useNavigate();
   const complet = partie.joueursActuels >= partie.joueursMax;
-  const IconeMode = [partie.mode];
 
   const rejoindre = () => {
     if (complet) return;
@@ -32,7 +27,7 @@ export default function GameCard({ partie }: PartieCardProps) {
       <header className="carte-partie__entete">
         <h3 className="carte-partie__titre">{partie.titre}</h3>
         <span className={`badge-visibilite badge-visibilite--${partie.visibilite}`}>
-          {partie.visibilite === 'public' ? <IconeGlobe taille={12} /> : <IconeCadenas taille={12} />}
+          {partie.visibilite === 'public' ? <Globe taille={10} /> : <Key taille={12} />}
           {partie.visibilite === 'public' ? 'Public' : 'Privé'}
         </span>
       </header>
@@ -42,11 +37,10 @@ export default function GameCard({ partie }: PartieCardProps) {
       <footer className="carte-partie__pied">
         <div className="carte-partie__infos">
           <span className={`badge-mode badge-mode--${ClasseParMode[partie.mode]}`}>
-            <IconeMode taille={13} />
             {modeLabels[partie.mode]}
           </span>
           <span className="carte-partie__joueurs">
-            <IconePersonnes taille={14} />
+            <UserRound taille={14} />
             {partie.joueursActuels}/{partie.joueursMax}
           </span>
         </div>
