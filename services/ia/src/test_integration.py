@@ -58,7 +58,10 @@ def _base_state(user_message: str) -> dict:
             "inventory": [{"name": "épée", "type": "weapon"}],
         },
         "universe_context": "Médiéval Fantastique",
-        "world_state": {"current_room": "Donjon de test"},
+        "world_state": {
+            "current_room": "Donjon de test",
+            "room_items": [{"name": "potion", "type": "consumable"}],
+        },
         "last_tool": {},
     }
 
@@ -109,8 +112,28 @@ async def read_monster_hp() -> int | None:
         )
 
 
-async def run_graph(user_message: str) -> dict:
-    return await game_graph.ainvoke(_base_state(user_message))
+async def run_graph(user_message: str, state: dict | None = None) -> dict:
+    return await game_graph.ainvoke(state or _base_state(user_message))
+
+
+def _use_item_state(user_message: str) -> dict:
+    """Potion already in inventory + low HP so healing is visible."""
+    state = _base_state(user_message)
+    state["player_stats"] = {
+        "hp": 50,
+        "max_hp": 100,
+        "location": "Donjon de test",
+        "inventory": [
+            {"name": "épée", "type": "weapon"},
+            {"name": "potion", "type": "consumable"},
+        ],
+    }
+    # No potion on the floor — it is already in the bag.
+    state["world_state"] = {
+        "current_room": "Donjon de test",
+        "room_items": [],
+    }
+    return state
 
 
 async def test_combat_attack(report: SuiteReport) -> None:
@@ -188,6 +211,7 @@ async def test_pickup_item(report: SuiteReport) -> None:
 
     state = await run_graph("Je ramasse une potion")
     inventory = (state.get("player_stats") or {}).get("inventory") or []
+    room_items = (state.get("world_state") or {}).get("room_items") or []
 
     report.add(
         "pickup_item invoked in graph",
@@ -204,6 +228,42 @@ async def test_pickup_item(report: SuiteReport) -> None:
         len(inventory) >= 2,
         f"count={len(inventory)}",
     )
+    report.add(
+        "potion removed from room_items",
+        not any("potion" in (item.get("name") or "").lower() for item in room_items),
+        f"room_items={room_items}",
+    )
+
+
+async def test_use_item(report: SuiteReport) -> None:
+    print("\n=== Scenario: use item ===")
+
+    user_message = "J'utilise la potion"
+    state = await run_graph(user_message, _use_item_state(user_message))
+    stats = state.get("player_stats") or {}
+    inventory = stats.get("inventory") or []
+    hp = stats.get("hp")
+
+    report.add(
+        "use_item invoked in graph",
+        _tool_was_called(state, "use_item"),
+        "checked messages, not last_tool",
+    )
+    report.add(
+        "potion removed from inventory",
+        not any("potion" in (item.get("name") or "").lower() for item in inventory),
+        f"inventory={inventory}",
+    )
+    report.add(
+        "HP increased after consumable",
+        isinstance(hp, int) and hp > 50,
+        f"hp={hp} (started at 50)",
+    )
+    report.add(
+        "sword still in inventory",
+        any("épée" in (item.get("name") or "").lower() for item in inventory),
+        f"inventory={inventory}",
+    )
 
 
 async def main() -> int:
@@ -218,6 +278,7 @@ async def main() -> int:
         await test_combat_attack(report)
         await test_clarification_path(report)
         await test_pickup_item(report)
+        await test_use_item(report)
     finally:
         await close_pool()
 

@@ -1,6 +1,6 @@
 import json
 
-import src.core.config  # noqa: F401 — charge le .env avant les agents
+import src.core.config
 
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
@@ -48,20 +48,79 @@ def _apply_pickup_item(state: State, result: dict) -> dict:
     """If pickup_item succeeded, add the item to the inventory."""
     player_stats = dict(state.get("player_stats") or {})
     inventory = list(player_stats.get("inventory") or [])
+    world_state = dict(state.get("world_state") or {})
+    room_items = list(world_state.get("room_items") or [])
 
     item = result.get("item")
     if not item:
-        return player_stats
+        return player_stats, world_state
 
-    item_name = item.get("name", "").lower()
+    item_name = item.get("name", "").strip().lower()
     for existing in inventory:
         if existing.get("name", "").lower() == item_name:
             result["error"] = f"Item '{item['name']}' already in inventory."
             result["success"] = False
-            return player_stats
+            return player_stats, world_state
 
-    inventory.append(item)
+    found_index = None
+    found_item = None
+    for i, existing in enumerate(room_items):
+        if existing.get("name", "").lower() == item_name:
+            found_index = i
+            found_item = existing
+            break
+
+    if found_index is None:
+        result["success"] = False
+        result["error"] = f"Item '{result.get('item_name')}' not in this room."
+        return player_stats, world_state
+    
+    room_items.pop(found_index)
+    inventory.append(found_item)
+
     player_stats["inventory"] = inventory
+    world_state["room_items"] = room_items
+
+
+    return player_stats, world_state
+
+def _apply_use_item(state: State, result: dict) -> dict:
+    """If use_item succeeded, remove the item and apply effects."""
+    player_stats = dict(state.get("player_stats") or {})
+    inventory = list(player_stats.get("inventory") or [])
+
+    item_name = (result.get("item_name") or "").strip().lower()
+    if not item_name:
+        result["success"] = False
+        result["error"] = "Item name is required."
+        return player_stats
+
+    found_index = None
+    found_item = None
+    for i, existing in enumerate(inventory):
+        if existing.get("name", "").lower() == item_name:
+            found_index = i
+            found_item = existing
+            break
+
+    if found_index is None:
+        result["success"] = False
+        result["error"] = f"Item '{result.get('item_name')}' not in inventory."
+        return player_stats
+
+    inventory.pop(found_index)
+    player_stats["inventory"] = inventory
+
+    if found_item.get("type") == "consumable":
+        hp = int(player_stats.get("hp", 0))
+        max_hp = int(player_stats.get("max_hp", hp))
+        healed = 20
+        new_hp = min(max_hp, hp + healed)
+        player_stats["hp"] = new_hp
+        result["hp_restored"] = new_hp - hp
+        result["hp"] = new_hp
+
+    result["item"] = found_item
     return player_stats
 
 async def execute_tools(state: State) -> dict:
@@ -91,7 +150,19 @@ async def execute_tools(state: State) -> dict:
             and isinstance(parsed_result, dict)
             and parsed_result.get("success")
         ):
-            player_stats = _apply_pickup_item(state, parsed_result)
+            player_stats, world_state = _apply_pickup_item(state, parsed_result)
+            last_tool["result"] = parsed_result
+            last_tool["error"] = parsed_result.get("error")
+            updates["last_tool"] = last_tool
+            updates["player_stats"] = player_stats
+            updates["world_state"] = world_state
+        
+        if (
+            last_tool.get("tool_name") == "use_item"
+            and isinstance(parsed_result, dict)
+            and parsed_result.get("success")
+        ):
+            player_stats = _apply_use_item(state, parsed_result)
             last_tool["result"] = parsed_result
             last_tool["error"] = parsed_result.get("error")
             updates["last_tool"] = last_tool

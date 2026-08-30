@@ -25,6 +25,7 @@ class PlayerStats(BaseModel):
 
 class WorldState(BaseModel):
     current_room: str = "unknown"
+    room_items: list[InventoryItem] = Field(default_factory=list)
 
 class GameRequest(BaseModel):
     user_message: str

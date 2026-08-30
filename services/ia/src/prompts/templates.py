@@ -12,6 +12,7 @@ Instructions:
 2. If the user's intent is unclear, ask for clarification in French.
 3. Do not narrate the outcome, only provide the tool call or technical response.
 4. If the user wants to pickup an item, use the 'pickup_item' tool.
+5. If the user wants to use an item, use the 'use_item' tool.
 """
 
 NARRATOR_SYSTEM_PROMPT = """

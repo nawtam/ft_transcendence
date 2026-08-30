@@ -31,41 +31,23 @@ async def pickup_item(item_name: str, item_type: str) -> str:
 @tool
 async def use_item(item_name: str) -> str:
     """
-        Use a named item from inventory.
+    Records the player's intent to use an item from inventory.
 
-        args:
-            -item_name: the name of the item to use.
+    Args:
+        item_name: Name of the item to use (e.g. 'potion').
 
-        Requirements:
-            Only use this tool if the user's itent is clearly to use an item.
-            If the item is not provided, do not guess; ask for clarification.
+    Requirements:
+        Only use if the user clearly wants to use an item.
+        Do not guess the item name.
     """
-
-    try:
-        async with get_pool().acquire() as conn:
-            item = await conn.fetchrow(
-                "SELECT name FROM items WHERE name =$1",
-                item_name,
-            )
-        
-        if not item:
-            return json.dumps(
-            {
-                "success": False,
-                "error": f"item '{item_name}' not found in the database.",
-                "name": item_name,
-                "type": item_type,
-            })
-        
-        return json.dumps({
-            "success": True,
-            "item": {"name": item_name},
-            "action": "used",
-        })
-
-    except Exception as exc:
+    if not item_name.strip():
         return json.dumps({
             "success": False,
-            "error": f"Technical error during the use of an item: {exc}",
-            "name": item_name,
+            "error": "Item name is required.",
         })
+
+    return json.dumps({
+        "success": True,
+        "action": "used",
+        "item_name": item_name.strip(),
+    })
