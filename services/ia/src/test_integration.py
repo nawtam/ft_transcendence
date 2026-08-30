@@ -58,7 +58,10 @@ def _base_state(user_message: str) -> dict:
             "inventory": [{"name": "épée", "type": "weapon"}],
         },
         "universe_context": "Médiéval Fantastique",
-        "world_state": {"current_room": "Donjon de test"},
+        "world_state": {
+            "current_room": "Donjon de test",
+            "room_items": [{"name": "potion", "type": "consumable"}],
+        },
         "last_tool": {},
     }
 
@@ -124,6 +127,11 @@ def _use_item_state(user_message: str) -> dict:
             {"name": "épée", "type": "weapon"},
             {"name": "potion", "type": "consumable"},
         ],
+    }
+    # No potion on the floor — it is already in the bag.
+    state["world_state"] = {
+        "current_room": "Donjon de test",
+        "room_items": [],
     }
     return state
 
@@ -203,6 +211,7 @@ async def test_pickup_item(report: SuiteReport) -> None:
 
     state = await run_graph("Je ramasse une potion")
     inventory = (state.get("player_stats") or {}).get("inventory") or []
+    room_items = (state.get("world_state") or {}).get("room_items") or []
 
     report.add(
         "pickup_item invoked in graph",
@@ -218,6 +227,11 @@ async def test_pickup_item(report: SuiteReport) -> None:
         "inventory has at least two items",
         len(inventory) >= 2,
         f"count={len(inventory)}",
+    )
+    report.add(
+        "potion removed from room_items",
+        not any("potion" in (item.get("name") or "").lower() for item in room_items),
+        f"room_items={room_items}",
     )
 
 
