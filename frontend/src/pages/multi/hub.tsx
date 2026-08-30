@@ -1,12 +1,9 @@
 import { Link } from 'react-router-dom';
 import { universeList } from '../../context/multi/universe';
-import { games } from '../../context/multi/games';
 import { UniverseCard } from '../../composants/UniversCard';
 import '../../css/multi/hub.css';
 
 export function Hub() {
-  const nombrePartiesOuvertes = games.length;
-
   return (
     <div>
 

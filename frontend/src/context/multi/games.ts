@@ -8,6 +8,13 @@ export const modeLabels: Record<GameMode, string> = {
   equipeVsEquipe: 'Équipe vs Équipe',
 };
 
+// Descriptions courtes affichées dans le lobby, à côté du mode figé de la partie.
+export const modeDescriptions: Record<GameMode, string> = {
+  cooperatif: 'Le groupe partage un objectif commun — vous gagnez ensemble.',
+  chacunPourSoi: 'Un seul héros triomphe. Les récompenses sont personnelles.',
+  equipeVsEquipe: 'Deux factions s\'affrontent pour la même relique.',
+};
+
 export interface Game {
   gameId: string;
   universeId: string;
@@ -17,9 +24,17 @@ export interface Game {
   visibilite: GameVisibility;
   joueursActuels: number;
   joueursMax: number;
+  narration: string;
+  recompensePA: number;
+  recompenseXP: number;
+  difficulte: number; // sur 5
 }
 
-export const games: Game[] = [
+// Mock en attendant le back. Non exporté — seules getGamesByUniverse() et
+// getGameById() sortent de ce fichier, donc le jour où l'API existe, seul le
+// corps de ces deux fonctions change (fetch au lieu de filter/find sur ce
+// tableau), rien côté appelants (universePage.tsx, lobby.tsx).
+const gamesMockees: Game[] = [
   {
     gameId: 'sceau-dragon-celeste',
     universeId: 'fantastique',
@@ -29,6 +44,10 @@ export const games: Game[] = [
     visibilite: 'public',
     joueursActuels: 3,
     joueursMax: 4,
+    narration: 'Un sceau ancestral retient un dragon endormi sous la citadelle. Une prophétie parle de son réveil imminent.',
+    recompensePA: 50,
+    recompenseXP: 350,
+    difficulte: 3,
   },
   {
     gameId: 'duel-des-arcanes',
@@ -39,6 +58,10 @@ export const games: Game[] = [
     visibilite: 'public',
     joueursActuels: 4,
     joueursMax: 6,
+    narration: 'Un tournoi de sorciers où seule la ruse magique décide du vainqueur.',
+    recompensePA: 40,
+    recompenseXP: 300,
+    difficulte: 2,
   },
   {
     gameId: 'cercle-prive-de-lyra',
@@ -49,6 +72,10 @@ export const games: Game[] = [
     visibilite: 'prive',
     joueursActuels: 2,
     joueursMax: 8,
+    narration: 'Une conjuration discrète se prépare dans l\'ombre d\'une tour oubliée.',
+    recompensePA: 70,
+    recompenseXP: 450,
+    difficulte: 4,
   },
   {
     gameId: 'la-faille-de-valor',
@@ -59,14 +86,34 @@ export const games: Game[] = [
     visibilite: 'public',
     joueursActuels: 4,
     joueursMax: 4,
+    narration: 'Une faille dimensionnelle menace d\'engloutir le royaume de Valor.',
+    recompensePA: 60,
+    recompenseXP: 400,
+    difficulte: 3,
   },
-  
+  {
+    gameId: 'trahison-blackreach',
+    universeId: 'medieval',
+    titre: 'La Trahison de Blackreach',
+    hote: 'Vous',
+    mode: 'cooperatif',
+    visibilite: 'public',
+    joueursActuels: 4,
+    joueursMax: 4,
+    narration:
+      'Le baron Aldric a été assassiné dans son propre donjon. Vous êtes convoqués pour démêler complots, alliances brisées et poignards dans le dos — et découvrir qui régnera sur Blackreach à l\'aube.',
+    recompensePA: 65,
+    recompenseXP: 400,
+    difficulte: 2,
+  },
 ];
 
-export function getGamesByUniverse(universeId: string): Game[] {
-  return games.filter((game) => game.universeId === universeId);
+// TODO backend : remplacer par fetch(`/api/univers/${universeId}/parties`)
+export async function getGamesByUniverse(universeId: string): Promise<Game[]> {
+  return gamesMockees.filter((game) => game.universeId === universeId);
 }
 
-export function getGameById(gameId: string): Game | undefined {
-  return games.find((game) => game.gameId === gameId);
+// TODO backend : remplacer par fetch(`/api/parties/${gameId}`)
+export async function getGameById(gameId: string): Promise<Game | undefined> {
+  return gamesMockees.find((game) => game.gameId === gameId);
 }

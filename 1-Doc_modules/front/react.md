@@ -42,6 +42,15 @@ Quand on l'appelle avec un chemin,
 4- useParams() lit cet objet déjà construit
 va juste chercher, dans le Context interne de React Router, l'objet que l'étape 3 vient de préparer, et le renvoie.
 
+### useMemo()
+sert à mémoriser le résultat d'un calcul entre deux rendus, pour ne pas le refaire à chaque fois
+
+### useEffect()
+
+Sert à exécuter du code **après** que le composant s'est affiché
+Dans notre code, on l'utilise dans `universePage.tsx` et `lobby.tsx` pour aller chercher les parties/personnages via une fonction async *(`getGamesByUniverse`, etc.)*, 
+useEffect peut lancer une action et mettre à jour l'état une fois la réponse arrivée. (opti pour le back)
+
 ## Connexion
 
 La fonction onChange vas recuperer ce qui est mis dans les inputs a chaque changement.

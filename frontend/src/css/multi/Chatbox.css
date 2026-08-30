@@ -1,0 +1,71 @@
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: rgba(20, 15, 11, 0.5);
+  border: 1px solid var(--bordure-carte);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.chat-box__messages {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chat-box__message {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--texte-clair);
+  line-height: 1.4;
+}
+
+.chat-box__auteur {
+  color: var(--or-clair);
+  font-weight: 600;
+}
+
+.chat-box__saisie {
+  display: flex;
+  gap: 6px;
+}
+
+.chat-box__saisie input {
+  flex: 1;
+  min-width: 0;
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--bordure-carte);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--texte-clair);
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+.chat-box__saisie input:focus {
+  outline: none;
+  border-color: var(--or);
+}
+.chat-box__saisie input::placeholder {
+  color: var(--texte-attenue);
+}
+
+.chat-box__saisie button {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--or);
+  border-radius: 6px;
+  color: var(--or-clair);
+  font-family: inherit;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.chat-box__saisie button:hover {
+  background-color: rgba(202, 161, 83, 0.12);
+}

@@ -1,0 +1,60 @@
+.carte-joueur {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background-color: rgba(20, 15, 11, 0.5);
+  border: 1px solid var(--bordure-carte);
+  border-radius: 8px;
+}
+
+.carte-joueur__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: rgba(202, 161, 83, 0.18);
+  color: var(--or-clair);
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+}
+
+.carte-joueur__infos {
+  flex: 1;
+  min-width: 0;
+}
+
+.carte-joueur__pseudo {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.88rem;
+  color: var(--texte-clair);
+}
+
+.carte-joueur__couronne {
+  font-size: 0.75rem;
+}
+
+.carte-joueur__classe {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--texte-attenue);
+}
+
+.carte-joueur__statut {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--texte-attenue);
+  white-space: nowrap;
+}
+
+.carte-joueur__statut--pret {
+  color: var(--teal);
+}
