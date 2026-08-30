@@ -1,4 +1,3 @@
-
 import fantastiqueImg from '../../assets/univers/cover/fantastique.jpg';
 import medievalImg from '../../assets/univers/cover/medieval.jpg';
 import cyberpunkImg from '../../assets/univers/cover/cyberpunk.jpg';
@@ -26,6 +25,8 @@ export interface Universe {
   cover: string;
   disponible: boolean;
   joueursEnLigne: number | null;
+  // Phrase d'ambiance affichée en haut du lobby, sous le nom de l'univers.
+  ambiance: string;
 }
 
 export const universes: Record<UniverseId, Universe> = {
@@ -36,6 +37,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: fantastiqueImg,
     disponible: true,
     joueursEnLigne: 148,
+    ambiance: 'Le vent porte une odeur de magie et de poussière d\'étoiles.',
   },
   medieval: {
     id: 'medieval',
@@ -44,6 +46,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: medievalImg,
     disponible: true,
     joueursEnLigne: 96,
+    ambiance: 'Les torches crépitent le long des bannières. Un héraut attend votre serment.',
   },
   cyberpunk: {
     id: 'cyberpunk',
@@ -52,6 +55,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: cyberpunkImg,
     disponible: true,
     joueursEnLigne: 114,
+    ambiance: 'La pluie efface les néons. Le réseau, lui, ne dort jamais.',
   },
   pirate: {
     id: 'pirate',
@@ -60,6 +64,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: pirateImg,
     disponible: true,
     joueursEnLigne: 67,
+    ambiance: 'Le vent tourne, les voiles se tendent. L\'horizon vous attend.',
   },
   western: {
     id: 'western',
@@ -68,6 +73,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: westernImg,
     disponible: false,
     joueursEnLigne: null,
+    ambiance: 'La poussière retombe lentement sur la grand-rue déserte.',
   },
   apocalyptique: {
     id: 'apocalyptique',
@@ -76,6 +82,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: apocalyptiqueImg,
     disponible: false,
     joueursEnLigne: null,
+    ambiance: 'Le silence a englouti les villes. Seuls les braves osent encore avancer.',
   },
   spatial: {
     id: 'spatial',
@@ -84,6 +91,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: spatialImg,
     disponible: false,
     joueursEnLigne: null,
+    ambiance: 'Les étoiles regardent, indifférentes, la flotte se rassembler.',
   },
   greceAntique: {
     id: 'greceAntique',
@@ -92,6 +100,7 @@ export const universes: Record<UniverseId, Universe> = {
     cover: greceAntiqueImg,
     disponible: false,
     joueursEnLigne: null,
+    ambiance: 'Les colonnes de marbre gardent encore l\'écho des oracles.',
   },
 };
 

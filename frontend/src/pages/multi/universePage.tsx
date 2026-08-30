@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useUniverse } from '../../context/multi/universeContext';
 import { getGamesByUniverse, modeLabels } from '../../context/multi/games';
-import type { GameMode } from '../../context/multi/games';
+import type { Game, GameMode } from '../../context/multi/games';
 import GameCard from '../../composants/GameCard';
-import { Search, Plus } from 'lucide-react';
+import { ArrowLeft, Plus, Key } from 'lucide-react';
 import '../../css/multi/universePage.css';
 
 type FiltreMode = 'tous' | GameMode;
@@ -17,15 +17,35 @@ const modesFiltres: { valeur: FiltreMode; label: string }[] = [
   { valeur: 'equipeVsEquipe', label: modeLabels.equipeVsEquipe },
 ];
 
-
+// NB : le nom de la fonction commence en minuscule pour suivre la convention du
+// projet (hub, universePage, lobby, game). Comme l'export est "default", il suffit
+// de l'importer avec une majuscule dans App.tsx :
+//   import UniversePage from './pages/multi/universePage';
 export default function universePage() {
   const universe = useUniverse();
   const [filtre, setFiltre] = useState<FiltreMode>('tous');
 
-  const parties = useMemo(
-    () => (universe ? getGamesByUniverse(universe.id) : []),
-    [universe],
-  );
+  // Hooks appelés avant le early return (règle des hooks) : `universe` peut être
+  // undefined le temps que la vérification ci-dessous s'exécute.
+  const [parties, setParties] = useState<Game[]>([]);
+  const [chargementParties, setChargementParties] = useState(true);
+
+  useEffect(() => {
+    if (!universe) return;
+    let annule = false;
+    setChargementParties(true);
+
+    getGamesByUniverse(universe.id).then((liste) => {
+      if (!annule) {
+        setParties(liste);
+        setChargementParties(false);
+      }
+    });
+
+    return () => {
+      annule = true;
+    };
+  }, [universe]);
 
   const partiesFiltrees = useMemo(
     () => (filtre === 'tous' ? parties : parties.filter((partie) => partie.mode === filtre)),
@@ -36,11 +56,13 @@ export default function universePage() {
     return (
       <div className="page-univers page-univers--introuvable">
         <p>Univers introuvable.</p>
-        <Link to="/hub"> ← Retour</Link>
+        <Link to="/hub">Retour aux univers</Link>
       </div>
     );
   }
 
+  // TODO : brancher ces deux actions sur les futurs flux (modale de création,
+  // connexion par code d'invitation) une fois le back en place.
   const creerPartie = () => {
     console.log('Créer une partie');
   };
@@ -54,13 +76,10 @@ export default function universePage() {
       className="page-univers"
       style={{ '--image-fond': `url(${universe.cover})` } as CSSProperties}
     >
-      <header className="header">
-        <span className="Transcendence">Transcendence</span>
-      </header>
       <div className="page-univers__contenu">
         <Link to="/hub" className="page-univers__retour">
-
-          ← Retour
+          <ArrowLeft size={13} />
+          Retour aux univers
         </Link>
 
         <div className="page-univers__entete">
@@ -68,20 +87,17 @@ export default function universePage() {
             <p className="page-univers__label">Univers {universe.nom}</p>
             <h1 className="page-univers__titre">Parties en cours</h1>
             <p className="page-univers__sous-titre">
-              {parties.length} table(s) ouverte(s)
-            </p>
-            <p className="page-univers__sous-titre">
-              rejoignez ou créez votre aventure!
+              {parties.length} table(s) ouverte(s) — rejoignez ou créez la vôtre.
             </p>
           </div>
 
           <div className="page-univers__actions">
             <button type="button" className="bouton-creer" onClick={creerPartie}>
-              <Plus></Plus>
+              <Plus size={14} />
               Créer une partie
             </button>
             <button type="button" className="bouton-rejoindre-code" onClick={rejoindreParCode}>
-              <Search></Search>
+              <Key size={14} />
               Rejoindre une partie
             </button>
           </div>
@@ -100,7 +116,9 @@ export default function universePage() {
           ))}
         </nav>
 
-        {partiesFiltrees.length > 0 ? (
+        {chargementParties ? (
+          <p className="page-univers__vide">Chargement des parties…</p>
+        ) : partiesFiltrees.length > 0 ? (
           <div className="page-univers__grille">
             {partiesFiltrees.map((partie) => (
               <GameCard key={partie.gameId} partie={partie} />
