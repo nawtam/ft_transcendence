@@ -108,12 +108,52 @@ const gamesMockees: Game[] = [
   },
 ];
 
+
+
 // TODO backend : remplacer par fetch(`/api/univers/${universeId}/parties`)
 export async function getGamesByUniverse(universeId: string): Promise<Game[]> {
   return gamesMockees.filter((game) => game.universeId === universeId);
 }
-
+ 
 // TODO backend : remplacer par fetch(`/api/parties/${gameId}`)
 export async function getGameById(gameId: string): Promise<Game | undefined> {
   return gamesMockees.find((game) => game.gameId === gameId);
+}
+ 
+// Champs qu'un hôte choisit réellement à la création — le reste (narration,
+// récompenses, difficulté) sera généré par le service IA côté back.
+export interface NouvellePartie {
+  titre: string;
+  mode: GameMode;
+  visibilite: GameVisibility;
+  joueursMax: number;
+}
+ 
+// TODO backend : remplacer par un vrai POST /api/univers/{universeId}/parties.
+// Le hote est codé en dur en attendant le branchement sur le contexte joueur
+// global (JoueurContext) mentionné dans l'archi existante.
+export async function creerPartie(universeId: string, donnees: NouvellePartie): Promise<Game> {
+  const nouvellePartie: Game = {
+    gameId: `partie-${Date.now()}`,
+    universeId,
+    titre: donnees.titre,
+    hote: 'Vous',
+    mode: donnees.mode,
+    visibilite: donnees.visibilite,
+    joueursActuels: 1,
+    joueursMax: donnees.joueursMax,
+    narration: 'Le briefing sera généré par l\'IA à la création de la partie.',
+    recompensePA: 0,
+    recompenseXP: 0,
+    difficulte: 1,
+  };
+ 
+  gamesMockees.push(nouvellePartie);
+  return nouvellePartie;
+}
+ 
+// TODO backend : remplacer par un vrai GET /api/parties/code/{code} (ou
+// équivalent selon comment le back identifie une partie privée par code).
+export async function rejoindreParCode(code: string): Promise<Game | undefined> {
+  return gamesMockees.find((game) => game.gameId === code.trim());
 }

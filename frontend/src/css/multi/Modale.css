@@ -1,0 +1,124 @@
+.modale__fond {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 4, 3, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modale__boite {
+  width: 100%;
+  max-width: 420px;
+  background-color: #1a130d;
+  border: 1px solid var(--bordure-carte, rgba(202, 161, 83, 0.22));
+  border-radius: 10px;
+  padding: 22px 24px;
+  color: var(--texte-clair, #f1e9db);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.modale__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.modale__titre {
+  margin: 0;
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: var(--or, #caa153);
+}
+
+.modale__fermer {
+  background: transparent;
+  border: none;
+  color: var(--texte-attenue, #b7ab98);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+}
+.modale__fermer:hover {
+  color: var(--texte-clair, #f1e9db);
+}
+
+/* Champs de formulaire génériques, partagés par les deux modales */
+.modale__champ {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.modale__champ label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texte-attenue, #b7ab98);
+}
+
+.modale__champ input,
+.modale__champ select {
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--bordure-carte, rgba(202, 161, 83, 0.22));
+  border-radius: 6px;
+  padding: 9px 10px;
+  color: var(--texte-clair, #f1e9db);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.modale__champ input:focus,
+.modale__champ select:focus {
+  outline: none;
+  border-color: var(--or, #caa153);
+}
+
+.modale__visibilite {
+  display: flex;
+  gap: 8px;
+}
+.modale__visibilite button {
+  flex: 1;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--bordure-carte, rgba(202, 161, 83, 0.22));
+  border-radius: 6px;
+  color: var(--texte-attenue, #b7ab98);
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.modale__visibilite button.actif {
+  border-color: var(--or, #caa153);
+  color: var(--or-clair, #e3c179);
+  background-color: rgba(202, 161, 83, 0.1);
+}
+
+.modale__erreur {
+  color: var(--rouge, #c1445f);
+  font-size: 0.8rem;
+  margin: -6px 0 12px;
+}
+
+.modale__valider {
+  width: 100%;
+  padding: 11px;
+  background-color: var(--or, #caa153);
+  border: 1px solid var(--or, #caa153);
+  border-radius: 6px;
+  color: #1a1208;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.modale__valider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
