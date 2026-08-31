@@ -1,17 +1,15 @@
 from src.tools.combat import attack_enemy
-from src.tools.world import record_world_event
+from src.tools.world import move_to
 from src.tools.inventory import pickup_item, use_item
 
 
-REFEREE_TOOLS = [attack_enemy, pickup_item, use_item]
-WEAVER_TOOLS = [record_world_event]
-ALL_TOOLS = REFEREE_TOOLS + WEAVER_TOOLS
+REFEREE_TOOLS = [attack_enemy, pickup_item, use_item, move_to]
+ALL_TOOLS = REFEREE_TOOLS
 
 
 __all__ = [
     "REFEREE_TOOLS",
-    "WEAVER_TOOLS",
     "ALL_TOOLS",
     "attack_enemy",
-    "record_world_event",    
+    "move_to",    
 ]

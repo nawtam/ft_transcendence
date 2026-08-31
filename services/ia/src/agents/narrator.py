@@ -21,21 +21,18 @@ def get_narrator_llm() -> ChatGroq:
     return _narrator_llm
 
 
-def _format_last_tool(last_tool: dict) -> str:
+def _format_game_result(last_tool: dict) -> str:
     if not last_tool:
-        return "No recent technical result."
-    return (
-        f"Tool: {last_tool.get('tool_name', 'unknown')}\n"
-        f"Args: {last_tool.get('args', {})}\n"
-        f"Result: {last_tool.get('result', {})}"
-    )
+        return "No official game result."
+    result = last_tool.get("result") or last_tool
+    return str(result)
 
 
 async def call_narrator(state: State) -> dict:
     system = SystemMessage(
         content=NARRATOR_SYSTEM_PROMPT.format(
             universe_context=state["universe_context"],
-            last_tool_summary=_format_last_tool(state.get("last_tool", {})),
+            game_result=_format_game_result(state.get("last_tool", {})),
         )
     )
 
