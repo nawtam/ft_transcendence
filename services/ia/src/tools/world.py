@@ -25,3 +25,24 @@ async def move_to(destination: str) -> str:
         "action": "move",
         "destination": destination.strip(),
     })
+
+@tool
+async def examine(target: str = "room") -> str:
+    """
+    Records the player's intent to look around or inspect something.
+
+    Args:
+        target: What to examine ('room', an item name, an NPC id). Default 'room'.
+
+    Requirements:
+        Use when the user wants to look, inspect, or observe — not to pick up or move.
+        Do not guess exotic targets; use 'room' for general look-around.
+    """
+    if not target.strip():
+        return json.dumps({"success": False, "error": "Target is required."})
+
+    return json.dumps({
+        "success": True,
+        "action": "examine",
+        "target": target.strip(),
+    })

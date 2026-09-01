@@ -1,12 +1,24 @@
 """
-CONTRACT: Game State Schemas
+CONTRACT: Game <-> IA (internal HTTP, game service only)
 
-This module defines the data structures used for game state management, including request and response schemas for game interactions.
-It defines the models for the communication between the game engine (JavaScript) and the AI (Python) components, ensuring consistent data exchange and validation.
+Flow per player message:
+  1. POST /interpret  → intent OR clarification
+  2. If clarification → send text to player, STOP
+  3. Game applies rules from intent.result.action -> updates db_game
+  4. POST /narrate with game_result (official mechanical outcome)
+  5. Send narrator_message to player
 
-Utility:
-- InterpretRequest / InterpretResponse : POST /interpret
-- NarrateRequest / NarrateResponse : POST /narrate
+Intent shape (InterpretResponse.intent):
+  { "tool_name": "...", "args": {...}, "result": { "success": true, "action": "...", ... } }
+
+Actions game must handle (intent.result.action):
+  attack   -> combat, HP enemies/player
+  picked_up -> inventory + room_items
+  used     -> consumable effects
+  move     -> location + reload room
+  examine  -> flavor_only, no DB required (describe room)
+
+IA never mutates gameplay state — game persists everything.
 """
 
 from pydantic import BaseModel, Field

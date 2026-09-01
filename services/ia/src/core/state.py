@@ -9,3 +9,5 @@ class	State(TypedDict):
 	universe_context: str
 	last_tool: dict[str, Any]
 	world_state: dict[str, Any]
+	world_flags: list[str]
+	recent_events: list[dict[str, Any]]

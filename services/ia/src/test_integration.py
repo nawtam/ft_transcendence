@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 
 from langchain_core.messages import HumanMessage
 
-import src.core.config  # noqa: F401 — load .env
+import src.core.config
 from src.core.config import GROQ_API_KEY
 from src.core.graph import interpret_graph, narrate_graph
 
@@ -61,6 +61,8 @@ def _base_state(user_message: str) -> dict:
             "available_exits": ["forge"],
         },
         "last_tool": {},
+        "world_flags": [],
+        "recent_events": [],
     }
 
 
@@ -132,7 +134,7 @@ async def test_combat_attack(report: SuiteReport) -> None:
 
 async def test_clarification_path(report: SuiteReport) -> None:
     print("\n=== Scenario: unclear action ===")
-    state = await run_interpret("Je regarde autour de moi")
+    state = await run_interpret("Euh... je sais pas quoi faire")
     tool = _intent(state)
     last_msg = state["messages"][-1]
     clarification = getattr(last_msg, "content", "") or ""
@@ -140,7 +142,7 @@ async def test_clarification_path(report: SuiteReport) -> None:
     report.add(
         "attack_enemy not invoked",
         not _tool_was_called(state, "attack_enemy"),
-        "look-around should not trigger combat",
+        "vague message should not trigger combat",
     )
     report.add(
         "no gameplay intent",
@@ -151,6 +153,28 @@ async def test_clarification_path(report: SuiteReport) -> None:
         "referee asked for clarification",
         bool(str(clarification).strip()),
         f"got {str(clarification)[:80]!r}",
+    )
+
+
+async def test_examine(report: SuiteReport) -> None:
+    print("\n=== Scenario: interpret examine ===")
+    state = await run_interpret("Je regarde autour de moi")
+    tool = _intent(state)
+    result = tool.get("result") or {}
+
+    report.add(
+        "examine invoked",
+        _tool_was_called(state, "examine"),
+    )
+    report.add(
+        "last_tool is examine",
+        tool.get("tool_name") == "examine",
+        f"got {tool.get('tool_name')}",
+    )
+    report.add(
+        "intent action is examine",
+        isinstance(result, dict) and result.get("action") == "examine",
+        f"result={result}",
     )
 
 
@@ -255,6 +279,7 @@ async def main() -> int:
     report = SuiteReport()
     await test_combat_attack(report)
     await test_clarification_path(report)
+    await test_examine(report)
     await test_pickup_item(report)
     await test_use_item(report)
     await test_move_to(report)
