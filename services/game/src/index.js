@@ -4,6 +4,9 @@ const { WebSocketServer } = require('ws');
 const { Pool } = require('pg');
 
 const app = express();
+app.use(express.json());
+const { handleTurn } = require('./game/handleTurn');
+
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 app.get('/health', async (req, res) => {
@@ -13,6 +16,22 @@ app.get('/health', async (req, res) => {
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message });
   }
+});
+
+app.post('/test-turn', async (req, res) => {
+  try {
+    const result = await handleTurn(req.body.message || 'Bonjour');
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+const { resetSession } = require('./game/sessionStore');
+
+app.post('/reset-session', (req, res) => {
+  resetSession();
+  res.json({ ok: true });
 });
 
 const server = http.createServer(app);
