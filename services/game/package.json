@@ -2,10 +2,14 @@
   "name": "game",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": { "start": "node index.js" },
+  "scripts": {
+    "start": "node index.js",
+    "test:integration": "node src/test_integration.js"
+  },
   "dependencies": {
     "express": "^4.19.2",
     "pg": "^8.11.5",
-    "ws": "^8.17.0"
+    "ws": "^8.17.0",
+    "axios": "^1.6.2"
   }
 }
