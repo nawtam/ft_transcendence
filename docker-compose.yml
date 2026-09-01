@@ -4,6 +4,7 @@ networks:
 
 volumes:
   pgdata:
+  vault-data:
 
 services:
 
@@ -21,17 +22,41 @@ services:
       - auth
       - game
 
+  vault:
+    image: docker.io/hashicorp/vault:1.17
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault-data:/vault/data:Z
+      - ./vault/config:/vault/config:Z
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    entrypoint: vault server -config=/vault/config/vault.hcl
+    networks:
+      - jdr-network
+
+
   auth:
     build:
       context: ./services/auth
       dockerfile: containerfile
     environment:
-      DATABASE_URL: postgres://auth_user:${AUTH_DB_PASSWORD}@postgres:5432/db_auth
-      JWT_SECRET: ${JWT_SECRET}
+      VAULT_ADDR: "http://vault:8200"
+      VAULT_ROLE_ID: ${AUTH_VAULT_ROLE_ID}
+      VAULT_SECRET_ID_FILE: /run/secrets/auth_vault_secret_id
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: db_auth
+      VAULT_DB_ROLE: auth-db-role
+      ACCESS_TOKEN_TTL_MINUTES: "15"
+      REFRESH_TOKEN_TTL_DAYS: "7"
+    secrets:
+      - auth_vault_secret_id
     networks:
       - jdr-network
     depends_on:
       - postgres
+      - vault
 
   game:
     build:
@@ -40,7 +65,7 @@ services:
     environment:
       DATABASE_URL: postgres://game_user:${GAME_DB_PASSWORD}@postgres:5432/db_game
       IA_SERVICE_URL: http://ia:8000
-      JWT_SECRET: ${JWT_SECRET}
+      # À revoir avec game pour récupération de la clé publique JWT
     networks:
       - jdr-network
     depends_on:
@@ -69,7 +94,6 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_ADMIN_USER}
       POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
-      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD}
       GAME_DB_PASSWORD: ${GAME_DB_PASSWORD}
       AI_DB_PASSWORD: ${AI_DB_PASSWORD}
     ports:
@@ -79,3 +103,7 @@ services:
       - ./database/init:/docker-entrypoint-initdb.d:Z
     networks:
       - jdr-network
+
+secrets:
+  auth_vault_secret_id:
+    file: ./services/auth/secrets/vault_secret_id.txt
