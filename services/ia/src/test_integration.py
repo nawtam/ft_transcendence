@@ -1,9 +1,8 @@
 """
-Integration test for the IA game graph (Referee → Tools → Narrator → Weaver).
+Integration tests for interpret (Referee → Tools) and narrate graphs.
 
 Requires:
-  - .env with DATABASE_URL / AI_DATABASE_URL and GROQ_API_KEY
-  - Postgres reachable (e.g. docker compose up postgres ia)
+  - .env with GROQ_API_KEY (and GROQ_MODEL)
 
 Run from repo root:
   docker compose exec ia python -m src.test_integration
@@ -16,13 +15,11 @@ from dataclasses import dataclass, field
 
 from langchain_core.messages import HumanMessage
 
-import src.core.config  # noqa: F401 — load .env
-from src.core.config import DATABASE_URL
-from src.core.graph import game_graph
-from src.memory.database import close_pool, get_pool, init_pool
+import src.core.config
+from src.core.config import GROQ_API_KEY
+from src.core.graph import interpret_graph, narrate_graph
 
 MONSTER_NAME = "Orc"
-MONSTER_START_HP = 50
 
 
 @dataclass
@@ -61,13 +58,15 @@ def _base_state(user_message: str) -> dict:
         "world_state": {
             "current_room": "Donjon de test",
             "room_items": [{"name": "potion", "type": "consumable"}],
+            "available_exits": ["forge"],
         },
         "last_tool": {},
+        "world_flags": [],
+        "recent_events": [],
     }
 
 
 def _tool_was_called(state: dict, tool_name: str) -> bool:
-    """Scan message history — last_tool alone is unreliable (Weaver runs last)."""
     for msg in state.get("messages", []):
         tool_calls = getattr(msg, "tool_calls", None)
         if not tool_calls:
@@ -79,45 +78,15 @@ def _tool_was_called(state: dict, tool_name: str) -> bool:
     return False
 
 
-def _narrator_ok(state: dict) -> tuple[bool, str]:
-    text = (state.get("narrator_message") or "").strip()
-    ok = bool(text) and text != "NO_CHANGE"
-    preview = f"{text[:80]}..." if len(text) > 80 else text
-    return ok, preview
+def _intent(state: dict) -> dict:
+    return state.get("last_tool") or {}
 
 
-async def seed_monster() -> None:
-    async with get_pool().acquire() as conn:
-        await conn.execute("""
-            CREATE TABLE IF NOT EXISTS monsters (
-                id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                hp INTEGER NOT NULL,
-                max_hp INTEGER NOT NULL
-            );
-        """)
-        await conn.execute("DELETE FROM monsters WHERE name = $1", MONSTER_NAME)
-        await conn.execute(
-            "INSERT INTO monsters (name, hp, max_hp) VALUES ($1, $2, $2)",
-            MONSTER_NAME,
-            MONSTER_START_HP,
-        )
-
-
-async def read_monster_hp() -> int | None:
-    async with get_pool().acquire() as conn:
-        return await conn.fetchval(
-            "SELECT hp FROM monsters WHERE name = $1",
-            MONSTER_NAME,
-        )
-
-
-async def run_graph(user_message: str, state: dict | None = None) -> dict:
-    return await game_graph.ainvoke(state or _base_state(user_message))
+async def run_interpret(user_message: str, state: dict | None = None) -> dict:
+    return await interpret_graph.ainvoke(state or _base_state(user_message))
 
 
 def _use_item_state(user_message: str) -> dict:
-    """Potion already in inventory + low HP so healing is visible."""
     state = _base_state(user_message)
     state["player_stats"] = {
         "hp": 50,
@@ -128,159 +97,193 @@ def _use_item_state(user_message: str) -> dict:
             {"name": "potion", "type": "consumable"},
         ],
     }
-    # No potion on the floor — it is already in the bag.
     state["world_state"] = {
         "current_room": "Donjon de test",
         "room_items": [],
+        "available_exits": ["forge"],
     }
     return state
 
 
 async def test_combat_attack(report: SuiteReport) -> None:
-    print("\n=== Scenario: attack monster ===")
-    await seed_monster()
-
-    state = await run_graph(f"J'attaque l'{MONSTER_NAME} avec mon épée")
-    narrator_ok, narrator_preview = _narrator_ok(state)
-    hp_after = await read_monster_hp()
+    print("\n=== Scenario: interpret attack ===")
+    state = await run_interpret(f"J'attaque l'{MONSTER_NAME} avec mon épée")
+    tool = _intent(state)
+    result = tool.get("result") or {}
 
     report.add(
-        "attack_enemy invoked in graph",
+        "attack_enemy invoked",
         _tool_was_called(state, "attack_enemy"),
-        "checked messages, not last_tool",
     )
     report.add(
-        "narrator_message is set",
-        narrator_ok,
-        f"got {narrator_preview!r}",
+        "last_tool is attack_enemy",
+        tool.get("tool_name") == "attack_enemy",
+        f"got {tool.get('tool_name')}",
     )
     report.add(
-        "monster still exists in DB",
-        hp_after is not None,
-        f"hp={hp_after}",
+        "intent action is attack",
+        isinstance(result, dict) and result.get("action") == "attack",
+        f"result={result}",
     )
-
-    if hp_after == MONSTER_START_HP:
-        report.add(
-            "HP unchanged (critical miss accepted)",
-            True,
-            f"hp={hp_after}",
-        )
-    elif isinstance(hp_after, int) and 0 <= hp_after < MONSTER_START_HP:
-        report.add(
-            "successful hit lowered HP",
-            True,
-            f"hp {MONSTER_START_HP} → {hp_after}",
-        )
-    else:
-        report.add(
-            "combat outcome plausible",
-            False,
-            f"unexpected hp={hp_after}",
-        )
+    report.add(
+        "player_stats unchanged (game owns HP)",
+        (state.get("player_stats") or {}).get("hp") == 100,
+        f"hp={((state.get('player_stats') or {}).get('hp'))}",
+    )
 
 
 async def test_clarification_path(report: SuiteReport) -> None:
-    print("\n=== Scenario: unclear action (no combat) ===")
-    await seed_monster()
-    hp_before = await read_monster_hp()
-
-    state = await run_graph("Je regarde autour de moi")
-    narrator_ok, narrator_preview = _narrator_ok(state)
-    hp_after = await read_monster_hp()
+    print("\n=== Scenario: unclear action ===")
+    state = await run_interpret("Euh... je sais pas quoi faire")
+    tool = _intent(state)
+    last_msg = state["messages"][-1]
+    clarification = getattr(last_msg, "content", "") or ""
 
     report.add(
         "attack_enemy not invoked",
         not _tool_was_called(state, "attack_enemy"),
-        "look-around should not trigger combat",
+        "vague message should not trigger combat",
     )
     report.add(
-        "narrator_message is set",
-        narrator_ok,
-        f"got {narrator_preview!r}",
+        "no gameplay intent",
+        not tool.get("tool_name"),
+        f"got {tool}",
     )
     report.add(
-        "monster HP unchanged",
-        hp_after == hp_before == MONSTER_START_HP,
-        f"{hp_before} → {hp_after}",
+        "referee asked for clarification",
+        bool(str(clarification).strip()),
+        f"got {str(clarification)[:80]!r}",
+    )
+
+
+async def test_examine(report: SuiteReport) -> None:
+    print("\n=== Scenario: interpret examine ===")
+    state = await run_interpret("Je regarde autour de moi")
+    tool = _intent(state)
+    result = tool.get("result") or {}
+
+    report.add(
+        "examine invoked",
+        _tool_was_called(state, "examine"),
+    )
+    report.add(
+        "last_tool is examine",
+        tool.get("tool_name") == "examine",
+        f"got {tool.get('tool_name')}",
+    )
+    report.add(
+        "intent action is examine",
+        isinstance(result, dict) and result.get("action") == "examine",
+        f"result={result}",
     )
 
 
 async def test_pickup_item(report: SuiteReport) -> None:
-    print("\n=== Scenario: pick up item ===")
-
-    state = await run_graph("Je ramasse une potion")
+    print("\n=== Scenario: interpret pickup ===")
+    state = await run_interpret("Je ramasse une potion")
+    tool = _intent(state)
     inventory = (state.get("player_stats") or {}).get("inventory") or []
-    room_items = (state.get("world_state") or {}).get("room_items") or []
 
     report.add(
-        "pickup_item invoked in graph",
+        "pickup_item invoked",
         _tool_was_called(state, "pickup_item"),
-        "checked messages, not last_tool",
     )
     report.add(
-        "potion added to inventory",
-        any("potion" in (item.get("name") or "").lower() for item in inventory),
+        "last_tool is pickup_item",
+        tool.get("tool_name") == "pickup_item",
+        f"got {tool.get('tool_name')}",
+    )
+    report.add(
+        "inventory not mutated by IA",
+        len(inventory) == 1,
         f"inventory={inventory}",
-    )
-    report.add(
-        "inventory has at least two items",
-        len(inventory) >= 2,
-        f"count={len(inventory)}",
-    )
-    report.add(
-        "potion removed from room_items",
-        not any("potion" in (item.get("name") or "").lower() for item in room_items),
-        f"room_items={room_items}",
     )
 
 
 async def test_use_item(report: SuiteReport) -> None:
-    print("\n=== Scenario: use item ===")
-
+    print("\n=== Scenario: interpret use item ===")
     user_message = "J'utilise la potion"
-    state = await run_graph(user_message, _use_item_state(user_message))
+    state = await run_interpret(user_message, _use_item_state(user_message))
+    tool = _intent(state)
     stats = state.get("player_stats") or {}
-    inventory = stats.get("inventory") or []
-    hp = stats.get("hp")
 
     report.add(
-        "use_item invoked in graph",
+        "use_item invoked",
         _tool_was_called(state, "use_item"),
-        "checked messages, not last_tool",
     )
     report.add(
-        "potion removed from inventory",
-        not any("potion" in (item.get("name") or "").lower() for item in inventory),
-        f"inventory={inventory}",
+        "last_tool is use_item",
+        tool.get("tool_name") == "use_item",
+        f"got {tool.get('tool_name')}",
     )
     report.add(
-        "HP increased after consumable",
-        isinstance(hp, int) and hp > 50,
-        f"hp={hp} (started at 50)",
+        "HP not mutated by IA",
+        stats.get("hp") == 50,
+        f"hp={stats.get('hp')}",
+    )
+
+
+async def test_move_to(report: SuiteReport) -> None:
+    print("\n=== Scenario: interpret move ===")
+    state = await run_interpret("Je vais à la forge")
+    tool = _intent(state)
+    location = (state.get("player_stats") or {}).get("location")
+
+    report.add(
+        "move_to invoked",
+        _tool_was_called(state, "move_to"),
     )
     report.add(
-        "sword still in inventory",
-        any("épée" in (item.get("name") or "").lower() for item in inventory),
-        f"inventory={inventory}",
+        "last_tool is move_to",
+        tool.get("tool_name") == "move_to",
+        f"got {tool.get('tool_name')}",
+    )
+    report.add(
+        "location not mutated by IA",
+        location == "Donjon de test",
+        f"location={location}",
+    )
+
+
+async def test_narrate(report: SuiteReport) -> None:
+    print("\n=== Scenario: narrate official game_result ===")
+    state = await narrate_graph.ainvoke({
+        "messages": [HumanMessage(content="J'attaque l'Orc avec mon épée")],
+        "narrator_message": "",
+        "player_stats": {},
+        "universe_context": "Médiéval Fantastique",
+        "world_state": {},
+        "last_tool": {
+            "result": {
+                "success": True,
+                "action": "attack",
+                "target": "Orc",
+                "damage": 12,
+                "hp_left": 18,
+            }
+        },
+    })
+    text = (state.get("narrator_message") or "").strip()
+    report.add(
+        "narrator_message is set",
+        bool(text),
+        f"got {text[:80]!r}",
     )
 
 
 async def main() -> int:
-    print(f"DB -> {DATABASE_URL}")
-    if not DATABASE_URL:
-        print("FATAL: DATABASE_URL / AI_DATABASE_URL missing")
+    if not GROQ_API_KEY:
+        print("FATAL: GROQ_API_KEY missing")
         return 1
 
     report = SuiteReport()
-    await init_pool()
-    try:
-        await test_combat_attack(report)
-        await test_clarification_path(report)
-        await test_pickup_item(report)
-        await test_use_item(report)
-    finally:
-        await close_pool()
+    await test_combat_attack(report)
+    await test_clarification_path(report)
+    await test_examine(report)
+    await test_pickup_item(report)
+    await test_use_item(report)
+    await test_move_to(report)
+    await test_narrate(report)
 
     print("\n" + "=" * 44)
     ok = sum(1 for c in report.checks if c.ok)
