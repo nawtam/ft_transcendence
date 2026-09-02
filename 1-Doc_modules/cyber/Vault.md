@@ -65,3 +65,14 @@ HCL (HashiCorp Configuration Language) est le format de config natif des outils 
 *storage* = ou vault va persisté, on va les mettre dans un file c'esst un choix standard
 
 *listener* = interface resau de l'API vault
+
+
+
+une clé privée (private.pem) et une clé publique (public.pem) correspondante. Ce sont ces deux clés qui serviront plus tard pour signer/vérifier les JWT en RS256 :
+auth utilisera la clé privée pour signer les tokens (prouver "c'est bien moi qui ai émis ce token").
+game utilisera la clé publique pour vérifier les tokens (confirmer que le token a bien été signé par auth) — sans jamais pouvoir en fabriquer lui-même, puisqu'il n'a pas la clé privée.
+
+commande pour lire ces clé :
+```docker compose exec vault vault kv get -field=private_key secret/auth/jwt```
+
+```docker compose exec vault vault kv get -field=public_key secret/auth/jwt```
