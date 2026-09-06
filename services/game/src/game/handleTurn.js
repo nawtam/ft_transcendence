@@ -2,8 +2,8 @@ const { interpret, narrate } = require('../ia/client');
 const { getSession } = require('./sessionStore');
 const { applyAction } = require('./applyAction');
 
-async function handleTurn(userMessage, userId) {
-  const session = getSession(userId);
+async function handleTurn(userMessage, userId, gameId) {
+  const session = getSession(gameId, userId);
 
   const interpretRes = await interpret({
     user_message: userMessage,

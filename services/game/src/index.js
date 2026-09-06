@@ -3,11 +3,12 @@ const http = require('http');
 const { WebSocketServer } = require('ws');
 const { Pool } = require('pg');
 const { onMessage } = require('./ws/onMessage');
-const { resetSession, DEFAULT_USER_ID } = require('./game/sessionStore');
+const { resetGame, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
+const { handleTurn } = require('./game/handleTurn');
+const { verifyJwtFromUrl } = require('./ws/verifyJwt');
 
 const app = express();
 app.use(express.json());
-const { handleTurn } = require('./game/handleTurn');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -23,25 +24,24 @@ app.get('/health', async (req, res) => {
 app.post('/test-turn', async (req, res) => {
   try {
     const userId = req.body.userId || DEFAULT_USER_ID;
-    const result = await handleTurn(req.body.message || 'Bonjour', userId);
+    const gameId = req.body.gameId || DEFAULT_GAME_ID;
+    const result = await handleTurn(req.body.message || 'Bonjour', userId, gameId);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 app.post('/reset-session', (req, res) => {
-  const userId = req.body?.userId || DEFAULT_USER_ID;
-  resetSession(userId);
-  res.json({ ok: true, userId });
+  const gameId = req.body?.gameId || DEFAULT_GAME_ID;
+  resetGame(gameId);
+  res.json({ ok: true, gameId });
 });
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-const { verifyJwtFromUrl } = require('./ws/verifyJwt');
-
 wss.on('connection', (ws, req) => {
-  // Dev only : bypass si SKIP_JWT=1 (tests sans auth)
   if (process.env.SKIP_JWT !== '1') {
     const auth = verifyJwtFromUrl(req.url || '');
     if (!auth.ok) {
@@ -50,6 +50,9 @@ wss.on('connection', (ws, req) => {
       return;
     }
     ws.user = auth.user;
+    ws.gameId = auth.gameId;
+  } else {
+    ws.gameId = DEFAULT_GAME_ID;
   }
 
   ws.on('message', (raw) => onMessage(ws, raw));
