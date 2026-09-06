@@ -1,9 +1,32 @@
-const { getRoom } = require('./worldData');
+const { getRoom, ROOMS } = require('./worldData');
 
 const DEFAULT_USER_ID = 'dev-user';
+const DEFAULT_GAME_ID = 'solo-dev';
 
-function createDefaultSession() {
-  const startRoom = getRoom('donjon_test');
+function cloneRoom(roomId) {
+  const template = getRoom(roomId);
+  if (!template) return null;
+  return {
+    room_items: [...(template.room_items || [])],
+    available_exits: [...(template.available_exits || [])],
+    room_enemies: (template.room_enemies || []).map((e) => ({ ...e })),
+  };
+}
+
+function createWorld() {
+  const rooms = {};
+  for (const roomId of Object.keys(ROOMS)) {
+    rooms[roomId] = cloneRoom(roomId);
+  }
+  return {
+    rooms,
+    universeContext: 'Médiéval Fantastique',
+    worldFlags: [],
+    recentEvents: [],
+  };
+}
+
+function createPlayer() {
   return {
     messagesHistory: [],
     playerStats: {
@@ -12,34 +35,78 @@ function createDefaultSession() {
       location: 'donjon_test',
       inventory: [{ name: 'épée', type: 'weapon' }],
     },
-    worldState: {
-      current_room: 'donjon_test',
-      room_items: [...(startRoom?.room_items || [])],
-      available_exits: [...(startRoom?.available_exits || [])],
-      room_enemies: (startRoom?.room_enemies || []).map((e) => ({ ...e })),
-    },
-    universeContext: 'Médiéval Fantastique',
-    worldFlags: [],
-    recentEvents: [],
   };
 }
 
-const sessions = new Map();
+const worlds = new Map();
+const players = new Map();
 
-function getSession(userId = DEFAULT_USER_ID) {
-  if (!sessions.has(userId)) {
-    sessions.set(userId, createDefaultSession());
-  }
-  return sessions.get(userId);
+function playerKey(gameId, userId) {
+  return `${gameId}:${userId}`;
 }
 
-function resetSession(userId = DEFAULT_USER_ID) {
-  sessions.set(userId, createDefaultSession());
+function getWorld(gameId = DEFAULT_GAME_ID) {
+  if (!worlds.has(gameId)) {
+    worlds.set(gameId, createWorld());
+  }
+  return worlds.get(gameId);
+}
+
+function getPlayer(gameId = DEFAULT_GAME_ID, userId = DEFAULT_USER_ID) {
+  const key = playerKey(gameId, userId);
+  if (!players.has(key)) {
+    players.set(key, createPlayer());
+  }
+  return players.get(key);
+}
+
+function getSession(gameId = DEFAULT_GAME_ID, userId = DEFAULT_USER_ID) {
+  const world = getWorld(gameId);
+  const player = getPlayer(gameId, userId);
+  const location = player.playerStats.location;
+  const room = world.rooms[location] || cloneRoom(location);
+
+  if (!world.rooms[location]) {
+    world.rooms[location] = room;
+  }
+
+  return {
+    gameId,
+    userId,
+    messagesHistory: player.messagesHistory,
+    playerStats: player.playerStats,
+    worldState: {
+      current_room: location,
+      room_items: room.room_items,
+      available_exits: room.available_exits,
+      room_enemies: room.room_enemies,
+    },
+    universeContext: world.universeContext,
+    worldFlags: world.worldFlags,
+    recentEvents: world.recentEvents,
+  };
+}
+
+function resetSession(gameId = DEFAULT_GAME_ID, userId = DEFAULT_USER_ID) {
+  worlds.set(gameId, createWorld());
+  players.set(playerKey(gameId, userId), createPlayer());
+}
+
+function resetGame(gameId = DEFAULT_GAME_ID) {
+  worlds.set(gameId, createWorld());
+  for (const key of [...players.keys()]) {
+    if (key.startsWith(`${gameId}:`)) {
+      players.delete(key);
+    }
+  }
 }
 
 module.exports = {
   getSession,
   resetSession,
-  createDefaultSession,
+  resetGame,
+  getWorld,
+  getPlayer,
   DEFAULT_USER_ID,
+  DEFAULT_GAME_ID,
 };

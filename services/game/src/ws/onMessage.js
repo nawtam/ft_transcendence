@@ -25,7 +25,8 @@ async function onMessage(ws, raw) {
 
   try {
     const userId = ws.user?.sub || 'dev-user';
-    const result = await handleTurn(data.message.trim(), userId);
+    const gameId = ws.gameId || 'solo-dev';
+    const result = await handleTurn(data.message.trim(), userId, gameId);
     safeSend(ws, result);
   } catch (err) {
     safeSend(ws, { type: 'error', text: err.message || 'Turn failed.' });
