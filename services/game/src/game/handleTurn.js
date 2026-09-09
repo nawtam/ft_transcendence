@@ -21,6 +21,15 @@ async function handleTurn(userMessage, userId, gameId) {
 
   const gameResult = applyAction(session, interpretRes.intent);
 
+  if (!gameResult.success) {
+    return {
+      type: 'narration',
+      text: gameResult.error || 'Action impossible.',
+      intent: interpretRes.intent,
+      game_result: gameResult,
+    };
+  }
+
   const narrateRes = await narrate({
     user_message: userMessage,
     messages_history: session.messagesHistory,
