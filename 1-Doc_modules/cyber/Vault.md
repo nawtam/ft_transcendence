@@ -12,6 +12,7 @@ quand le serv tourne utiliser un client vault pour recupéré des secret stocké
 
 
 Les identifiants sont des données statiques 
+Une policy, dans Vault, c'est une liste de permissions
 
 
 # Vault dans Docker-compose
@@ -76,3 +77,75 @@ commande pour lire ces clé :
 ```docker compose exec vault vault kv get -field=private_key secret/auth/jwt```
 
 ```docker compose exec vault vault kv get -field=public_key secret/auth/jwt```
+
+
+auth-db-role : configuration à l'intérieur de Vault (database/roles/auth-db-role), cest lui qui distribue des badge d'accès temporaire
+
+auth-db-role (une config de compte DANS Vault)
+        │
+        │ Vault LIT cette config quand on la lui demande
+        ▼
+Vault génère lui-même un mot de passe aléatoire
+        │
+        │ Vault remplit la config sur Postgres (via vault_manager)
+        ▼
+Un nouveau compte Postgres apparaît, avec ce mot de passe généré
+        │
+        │ Vault RENVOIE ce compte (username + password) au demandeur
+        ▼
+Le service `auth` reçoit ce credential et s'en sert.
+
+Vault va chercher la définition/config stockée à database/roles/auth-db-role.
+Vault génère aléatoirement un nom de compte (v-token-...) et un mot de passe, personne ne les choisit à l'avance.
+Vault exécute le SQL défini dedans (le creation_statements, le CREATE ROLE ...), en se connectant à Postgres avec l'identité vault_manager.
+Un vrai compte Postgres, temporaire, membre de auth_role.
+Le service auth peut mtn se connecter à postgres par l'intermédiaire de ce compte
+
+
+```docker compose exec vault vault write database/roles/auth-db-role \
+  db_name=postgres-db \
+  creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}' IN ROLE auth_role;" \
+  default_ttl="1h" \
+  max_ttl="24h"```
+
+---- 
+docker compose exec vault
+
+Exécute ce qui suit à l'intérieur du conteneur vault — là où le binaire vault (le CLI) est installé. Comme d'habitude, c'est juste le moyen d'atteindre l'outil, pas la commande Vault elle-même.
+vault write = la commande générique pour "écrire/créer une configuration" dans Vault, à un chemin donné. Ici le chemin est database/roles/auth-db-role :
+
+db_name=postgres-db
+Indique à Vault sur quelle connexion exécuter le SQL qui va suivre. postgres-db est le nom qu'on a donné à la connexion Postgres, à l'étape 2 (vault write database/config/postgres-db ...). Sans ce paramètre, Vault ne saurait pas quel serveur Postgres contacter.
+
+creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}' IN ROLE auth_role;"
+C'est le cœur de la commande — le SQL brut que Vault va exécuter littéralement, tel quel, à chaque fois qu'on lui demandera un credential. Décomposons ce SQL :
+
+CREATE ROLE "{{name}}" : crée un rôle Postgres. {{name}} est un placeholder — Vault le remplace, au moment de l'exécution, par un nom qu'il génère lui-même (format type v-token-auth-db-role-x7f2a9). Les guillemets doubles \"..\" sont nécessaires en SQL Postgres parce que ce nom contient des tirets, que Postgres n'accepterait pas dans un identifiant non-quoté.
+WITH LOGIN : ce rôle a le droit de se connecter (sinon ce serait juste un groupe, comme auth_role).
+PASSWORD '{{password}}' : autre placeholder, remplacé par un mot de passe aléatoire généré par Vault.
+VALID UNTIL '{{expiration}}' : troisième placeholder, remplacé par une date/heure calculée par Vault (maintenant + default_ttl). C'est une contrainte native de Postgres — même si Vault oubliait de supprimer ce compte, Postgres refuserait lui-même toute connexion après cette date.
+IN ROLE auth_role : rattache ce nouveau compte au rôle-conteneur auth_role créé dans 02-auth-schema.sql — c'est ce qui lui donne accès aux tables users/refresh_tokens, sans GRANT explicite à écrire ici.
+Les \" : des guillemets échappés, nécessaires parce qu'on est déjà à l'intérieur d'une chaîne de caractères bash délimitée par des guillemets doubles — sans l'échappement, bash penserait que la chaîne s'arrête plus tôt qu'elle ne le devrait.
+default_ttl="1h"
+
+Durée de vie par défaut d'un compte généré par cette règle — si personne ne précise autre chose au moment de la demande, chaque compte vivra 1h avant expiration automatique (Postgres le refuse après, et Vault le supprime activement de son côté aussi).
+
+max_ttl="24h"
+Plafond absolu, même avec des renouvellements (renew) successifs. Un compte ne peut jamais dépasser 24h d'existence totale, peu importe combien de fois on l'a renouvelé.
+
+
+Policy pour auth-service: lire la clé JWT, et générer un credential Postgres via auth-db-role
+AppRole, c'est une méthode d'authentification conçue spécifiquement pour les machines/services
+
+créer l'apRole commande : 
+docker compose exec vault vault write auth/approle/role/auth-service \
+  token_policies="auth-service" \
+  token_ttl=1h \
+  token_max_ttl=4h \
+  secret_id_ttl=0 \
+  secret_id_num_uses=0
+
+  token_policies="auth-service" : à chaque authentification réussie via cette AppRole, Vault émettra un token qui porte cette policy — donc limité aux deux permissions qu'on a définies (lire la clé JWT, générer des credentials Postgres).
+token_ttl=1h / token_max_ttl=4h : durée de vie du token Vault que le service auth reçoit après authentification (différent du bail Postgres qu'on a testé plus tôt — ici c'est le token qui autorise auth à parler à Vault lui-même). auth devra renouveler ce token périodiquement, comme pour les credentials Postgres.
+secret_id_ttl=0 : le secret_id (la deuxième moitié du couple d'authentification) n'expire jamais tout seul — cohérent avec le fait qu'on va le générer une fois et le stocker dans un fichier Docker secret, pas le renouveler en continu comme un credential Postgres.
+secret_id_num_uses=0 : le secret_id peut être utilisé un nombre illimité de fois (pas "à usage unique") — nécessaire puisque auth va s'authentifier à chaque redémarrage du conteneur, pas juste une fois.

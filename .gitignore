@@ -1,2 +1,3 @@
 .env
-/gateway/certs/
+/gateway/certs/services/auth/secrets/
+services/auth/secrets/
