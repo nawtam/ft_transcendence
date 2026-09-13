@@ -1,2 +1,4 @@
 .env
 /gateway/certs/
+node_modules/
+
