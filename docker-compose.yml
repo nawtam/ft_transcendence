@@ -65,7 +65,9 @@ services:
     environment:
       DATABASE_URL: postgres://game_user:${GAME_DB_PASSWORD}@postgres:5432/db_game
       IA_SERVICE_URL: http://ia:8000
-      # À revoir avec game pour récupération de la clé publique JWT
+      SKIP_JWT: "1"
+    ports:
+      - "3001:3001"
     networks:
       - jdr-network
     depends_on:

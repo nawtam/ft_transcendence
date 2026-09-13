@@ -1,4 +1,5 @@
 const { handleTurn } = require('../game/handleTurn');
+const { getGame, isMember } = require('../game/gameRegistry');
 
 function safeSend(ws, payload) {
   if (ws.readyState === 1) {
@@ -26,6 +27,13 @@ async function onMessage(ws, raw) {
   try {
     const userId = ws.user?.sub || 'dev-user';
     const gameId = ws.gameId || 'solo-dev';
+
+    const game = getGame(gameId);
+    if (game && !isMember(gameId, userId)) {
+      safeSend(ws, { type: 'error', text: 'Not a member of this game.' });
+      return;
+    }
+
     const result = await handleTurn(data.message.trim(), userId, gameId);
     safeSend(ws, result);
   } catch (err) {
