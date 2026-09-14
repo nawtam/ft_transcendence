@@ -12,7 +12,10 @@ function createGame({
 	hostUserId = 'dev-user',
 	visibilite = 'public',
 	password = null,
-  } = {}) {
+	titre = null,
+	universeId = null,
+} = {}) {
+
 	if (visibilite === 'prive') {
 	  const pwd = typeof password === 'string' ? password.trim() : '';
 	  if (!pwd) {
@@ -23,7 +26,7 @@ function createGame({
 	  visibilite = 'public';
 	  password = null;
 	}
-  
+
 	const gameId = createGameId();
 	const meta = {
 	  gameId,
@@ -32,15 +35,17 @@ function createGame({
 	  hostUserId,
 	  visibilite,
 	  password,
+	  titre: typeof titre === 'string' && titre.trim() ? titre.trim() : `Partie ${gameId}`,
+	  universeId: universeId || null,
 	  playerIds: [],
 	  createdAt: new Date().toISOString(),
 	};
-  
+	
 	games.set(gameId, meta);
 	resetGame(gameId);
 	meta.playerIds.push(hostUserId);
 	getPlayer(gameId, hostUserId);
-  
+	
 	return { ok: true, game: meta };
 }
 

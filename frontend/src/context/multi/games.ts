@@ -8,7 +8,6 @@ export const modeLabels: Record<GameMode, string> = {
   equipeVsEquipe: 'Équipe vs Équipe',
 };
 
-// Descriptions courtes affichées dans le lobby, à côté du mode figé de la partie.
 export const modeDescriptions: Record<GameMode, string> = {
   cooperatif: 'Le groupe partage un objectif commun — vous gagnez ensemble.',
   chacunPourSoi: 'Un seul héros triomphe. Les récompenses sont personnelles.',
@@ -27,133 +26,129 @@ export interface Game {
   narration: string;
   recompensePA: number;
   recompenseXP: number;
-  difficulte: number; // sur 5
+  difficulte: number;
 }
 
-// Mock en attendant le back. Non exporté — seules getGamesByUniverse() et
-// getGameById() sortent de ce fichier, donc le jour où l'API existe, seul le
-// corps de ces deux fonctions change (fetch au lieu de filter/find sur ce
-// tableau), rien côté appelants (universePage.tsx, lobby.tsx).
-const gamesMockees: Game[] = [
-  {
-    gameId: 'sceau-dragon-celeste',
-    universeId: 'fantastique',
-    titre: 'Le Sceau du Dragon Céleste',
-    hote: 'Elyndra',
-    mode: 'cooperatif',
-    visibilite: 'public',
-    joueursActuels: 3,
-    joueursMax: 4,
-    narration: 'Un sceau ancestral retient un dragon endormi sous la citadelle. Une prophétie parle de son réveil imminent.',
-    recompensePA: 50,
-    recompenseXP: 350,
-    difficulte: 3,
-  },
-  {
-    gameId: 'duel-des-arcanes',
-    universeId: 'fantastique',
-    titre: 'Duel des Arcanes',
-    hote: 'Theron',
-    mode: 'chacunPourSoi',
-    visibilite: 'public',
-    joueursActuels: 4,
-    joueursMax: 6,
-    narration: 'Un tournoi de sorciers où seule la ruse magique décide du vainqueur.',
-    recompensePA: 40,
-    recompenseXP: 300,
-    difficulte: 2,
-  },
-  {
-    gameId: 'cercle-prive-de-lyra',
-    universeId: 'fantastique',
-    titre: 'Cercle Privé de Lyra',
-    hote: 'Lyra',
-    mode: 'equipeVsEquipe',
-    visibilite: 'prive',
-    joueursActuels: 2,
-    joueursMax: 8,
-    narration: 'Une conjuration discrète se prépare dans l\'ombre d\'une tour oubliée.',
-    recompensePA: 70,
-    recompenseXP: 450,
-    difficulte: 4,
-  },
-  {
-    gameId: 'la-faille-de-valor',
-    universeId: 'fantastique',
-    titre: 'La Faille de Valor',
-    hote: 'Yola',
-    mode: 'cooperatif',
-    visibilite: 'public',
-    joueursActuels: 4,
-    joueursMax: 4,
-    narration: 'Une faille dimensionnelle menace d\'engloutir le royaume de Valor.',
-    recompensePA: 60,
-    recompenseXP: 400,
-    difficulte: 3,
-  },
-  {
-    gameId: 'trahison-blackreach',
-    universeId: 'medieval',
-    titre: 'La Trahison de Blackreach',
-    hote: 'Vous',
-    mode: 'cooperatif',
-    visibilite: 'public',
-    joueursActuels: 4,
-    joueursMax: 4,
-    narration:
-      'Le baron Aldric a été assassiné dans son propre donjon. Vous êtes convoqués pour démêler complots, alliances brisées et poignards dans le dos — et découvrir qui régnera sur Blackreach à l\'aube.',
-    recompensePA: 65,
-    recompenseXP: 400,
-    difficulte: 2,
-  },
-];
+const API = '/api/game';
+const DEFAULT_USER_ID = 'dev-user';
 
+type GameApi = {
+  gameId: string;
+  mode: GameMode;
+  maxPlayers: number;
+  hostUserId: string;
+  visibilite: GameVisibility;
+  playerIds: string[];
+  titre?: string;
+  universeId?: string | null;
+  hasPassword?: boolean;
+  createdAt?: string;
+};
 
-
-// TODO backend : remplacer par fetch(`/api/univers/${universeId}/parties`)
-export async function getGamesByUniverse(universeId: string): Promise<Game[]> {
-  return gamesMockees.filter((game) => game.universeId === universeId);
+function mapGame(raw: GameApi, universeIdFallback?: string): Game {
+  return {
+    gameId: raw.gameId,
+    universeId: raw.universeId || universeIdFallback || 'fantastique',
+    titre: raw.titre || `Partie ${raw.gameId}`,
+    hote: raw.hostUserId,
+    mode: raw.mode,
+    visibilite: raw.visibilite,
+    joueursActuels: raw.playerIds?.length ?? 0,
+    joueursMax: raw.maxPlayers,
+    narration: 'Le briefing sera généré par l\'IA.',
+    recompensePA: 0,
+    recompenseXP: 0,
+    difficulte: 1,
+  };
 }
- 
-// TODO backend : remplacer par fetch(`/api/parties/${gameId}`)
-export async function getGameById(gameId: string): Promise<Game | undefined> {
-  return gamesMockees.find((game) => game.gameId === gameId);
+
+async function readError(res: Response): Promise<string> {
+  try {
+    const body = await res.json();
+    return body.error || res.statusText;
+  } catch {
+    return res.statusText;
+  }
 }
- 
-// Champs qu'un hôte choisit réellement à la création — le reste (narration,
-// récompenses, difficulté) sera généré par le service IA côté back.
+
 export interface NouvellePartie {
   titre: string;
   mode: GameMode;
   visibilite: GameVisibility;
   joueursMax: number;
+  password?: string;
 }
- 
-// TODO backend : remplacer par un vrai POST /api/univers/{universeId}/parties.
-// Le hote est codé en dur en attendant le branchement sur le contexte joueur
-// global (JoueurContext) mentionné dans l'archi existante.
-export async function creerPartie(universeId: string, donnees: NouvellePartie): Promise<Game> {
-  const nouvellePartie: Game = {
-    gameId: `partie-${Date.now()}`,
-    universeId,
-    titre: donnees.titre,
-    hote: 'Vous',
-    mode: donnees.mode,
-    visibilite: donnees.visibilite,
-    joueursActuels: 1,
-    joueursMax: donnees.joueursMax,
-    narration: 'Le briefing sera généré par l\'IA à la création de la partie.',
-    recompensePA: 0,
-    recompenseXP: 0,
-    difficulte: 1,
-  };
- 
-  gamesMockees.push(nouvellePartie);
-  return nouvellePartie;
+
+export async function getGamesByUniverse(universeId: string): Promise<Game[]> {
+  const res = await fetch(`${API}/games`);
+  if (!res.ok) throw new Error(await readError(res));
+  const data = await res.json();
+  return (data.games as GameApi[])
+    .map((g) => mapGame(g, universeId))
+    .filter((g) => !g.universeId || g.universeId === universeId);
 }
- 
-// TODO backend : remplacer par un vrai GET /api/parties/code/{code} (ou
-// équivalent selon comment le back identifie une partie privée par code).
-export async function rejoindreParCode(code: string): Promise<Game | undefined> {
-  return gamesMockees.find((game) => game.gameId === code.trim());
+
+export async function getGameById(
+  gameId: string,
+  universeId?: string,
+): Promise<Game | undefined> {
+  const res = await fetch(`${API}/games/${encodeURIComponent(gameId)}`);
+  if (res.status === 404) return undefined;
+  if (!res.ok) throw new Error(await readError(res));
+  return mapGame(await res.json(), universeId);
+}
+
+export async function creerPartie(
+  universeId: string,
+  donnees: NouvellePartie,
+  hostUserId = DEFAULT_USER_ID,
+): Promise<Game> {
+  const res = await fetch(`${API}/games`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      mode: donnees.mode,
+      maxPlayers: donnees.joueursMax,
+      visibilite: donnees.visibilite,
+      password: donnees.visibilite === 'prive' ? donnees.password : null,
+      hostUserId,
+      titre: donnees.titre,
+      universeId,
+    }),
+  });
+  if (!res.ok) throw new Error(await readError(res));
+  return mapGame(await res.json(), universeId);
+}
+
+export async function rejoindrePartie(
+  gameId: string,
+  options: { userId?: string; password?: string; universeId?: string } = {},
+): Promise<Game> {
+  const res = await fetch(`${API}/games/${encodeURIComponent(gameId)}/join`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: options.userId || DEFAULT_USER_ID,
+      password: options.password ?? null,
+    }),
+  });
+  if (!res.ok) throw new Error(await readError(res));
+  return mapGame(await res.json(), options.universeId);
+}
+
+/** Code = gameId. Join + retourne la partie. */
+export async function rejoindreParCode(
+  code: string,
+  password?: string,
+  userId = DEFAULT_USER_ID,
+): Promise<Game | undefined> {
+  const gameId = code.trim();
+  if (!gameId) return undefined;
+  const existing = await getGameById(gameId);
+  if (!existing) return undefined;
+  return rejoindrePartie(gameId, {
+    userId,
+    password,
+    universeId: existing.universeId,
+  });
 }
