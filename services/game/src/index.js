@@ -23,21 +23,23 @@ app.get('/health', async (req, res) => {
 });
 
 app.post('/games', (req, res) => {
-  const mode = req.body?.mode || 'solo';
-  const maxPlayers = Number(req.body?.maxPlayers) || (mode === 'solo' ? 1 : 4);
-  const hostUserId = req.body?.hostUserId || DEFAULT_USER_ID;
-  const visibilite = req.body?.visibilite || 'public';
-  const password = req.body?.password ?? null;
-
-  const result = createGame({ mode, maxPlayers, hostUserId, visibilite, password });
-  if (!result.ok) {
-    return res.status(400).json({ error: result.error });
-  }
-  res.status(201).json(toPublicGame(result.game));
+	const mode = req.body?.mode || 'solo';
+	const maxPlayers = Number(req.body?.maxPlayers) || (mode === 'solo' ? 1 : 4);
+	const hostUserId = req.body?.hostUserId || DEFAULT_USER_ID;
+	const visibilite = req.body?.visibilite || 'public';
+	const password = req.body?.password ?? null;
+	const titre = req.body?.titre ?? null;
+	const universeId = req.body?.universeId ?? null;
+	
+	const result = createGame({ mode, maxPlayers, hostUserId, visibilite, password, titre, universeId });
+	if (!result.ok) {
+		return res.status(400).json({ error: result.error });
+	}
+	res.status(201).json(toPublicGame(result.game));
 });
 
 app.get('/games', (req, res) => {
-  res.json({ games: listGames({ publicOnly: true }) });
+	res.json({ games: listGames({ publicOnly: true }) });
 });
 
 app.get('/games/:gameId', (req, res) => {
@@ -47,31 +49,31 @@ app.get('/games/:gameId', (req, res) => {
 });
 
 app.post('/games/:gameId/join', (req, res) => {
-  const userId = req.body?.userId || DEFAULT_USER_ID;
-  const password = req.body?.password ?? null;
-  const result = joinGame(req.params.gameId, userId, password);
-  if (!result.ok) {
-    const status = result.error === 'Game not found.' ? 404 : 400;
-    return res.status(status).json({ error: result.error });
-  }
-  res.json(toPublicGame(result.game));
+	const userId = req.body?.userId || DEFAULT_USER_ID;
+	const password = req.body?.password ?? null;
+	const result = joinGame(req.params.gameId, userId, password);
+	if (!result.ok) {
+		const status = result.error === 'Game not found.' ? 404 : 400;
+		return res.status(status).json({ error: result.error });
+	}
+	res.json(toPublicGame(result.game));
 });
 
 app.post('/test-turn', async (req, res) => {
-  try {
-    const userId = req.body.userId || DEFAULT_USER_ID;
-    const gameId = req.body.gameId || DEFAULT_GAME_ID;
+	try {
+		const userId = req.body.userId || DEFAULT_USER_ID;
+		const gameId = req.body.gameId || DEFAULT_GAME_ID;
 
-    const game = getGame(gameId);
-    if (game && !isMember(gameId, userId)) {
-      return res.status(403).json({ error: 'Not a member of this game.' });
-    }
+		const game = getGame(gameId);
+		if (game && !isMember(gameId, userId)) {
+			return res.status(403).json({ error: 'Not a member of this game.' });
+		}
 
-    const result = await handleTurn(req.body.message || 'Hello', userId, gameId);
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+		const result = await handleTurn(req.body.message || 'Hello', userId, gameId);
+		res.json(result);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 });
 
 app.post('/reset-session', (req, res) => {
