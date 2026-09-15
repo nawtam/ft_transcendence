@@ -87,23 +87,21 @@ const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws, req) => {
 	if (process.env.SKIP_JWT !== '1') {
-		const auth = verifyJwtFromUrl(req.url || '');
-		if (!auth.ok) {
-			ws.send(JSON.stringify({ type: 'error', text: auth.error }));
-			ws.close(1008, auth.error);
-			return;
-		}else {
-			const params = new URL(req.url || '', 'http://localhost').searchParams;
-			ws.gameId = params.get('gameId') || DEFAULT_GAME_ID;
-			ws.user = { sub: params.get('userId') || DEFAULT_USER_ID };
-		}
-		ws.user = auth.user;
-		ws.gameId = auth.gameId;
+	  const auth = verifyJwtFromUrl(req.url || '');
+	  if (!auth.ok) {
+		ws.send(JSON.stringify({ type: 'error', text: auth.error }));
+		ws.close(1008, auth.error);
+		return;
+	  }
+	  ws.user = auth.user;
+	  ws.gameId = auth.gameId;
 	} else {
-		ws.gameId = DEFAULT_GAME_ID;
+	  const params = new URL(req.url || '', 'http://localhost').searchParams;
+	  ws.gameId = params.get('gameId') || DEFAULT_GAME_ID;
+	  ws.user = { sub: params.get('userId') || DEFAULT_USER_ID };
 	}
-
+  
 	ws.on('message', (raw) => onMessage(ws, raw));
-});
+  });
 
 server.listen(3001, () => console.log('game listening on 3001'));
