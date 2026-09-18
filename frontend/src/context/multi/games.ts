@@ -27,6 +27,7 @@ export interface Game {
   recompensePA: number;
   recompenseXP: number;
   difficulte: number;
+  playerIds: string[];
 }
 
 const API = '/api/game';
@@ -55,6 +56,7 @@ function mapGame(raw: GameApi, universeIdFallback?: string): Game {
     visibilite: raw.visibilite,
     joueursActuels: raw.playerIds?.length ?? 0,
     joueursMax: raw.maxPlayers,
+    playerIds: raw.playerIds ?? [],
     narration: 'Le briefing sera généré par l\'IA.',
     recompensePA: 0,
     recompenseXP: 0,

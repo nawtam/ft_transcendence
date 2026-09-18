@@ -17,20 +17,34 @@ export default function ModaleCreerPartie({ universeId, onFermer, onCreee }: Mod
   const [visibilite, setVisibilite] = useState<GameVisibility>('public');
   const [joueursMax, setJoueursMax] = useState(4);
   const [enCours, setEnCours] = useState(false);
+  const [password, setPassword] = useState('');
+  const [erreur, setErreur] = useState('');
 
   const valider = async () => {
     if (!titre.trim()) return;
+
+    if (visibilite === 'prive' && !password.trim()) {
+      setErreur('Mot de passe requis pour une partie privée.');
+      return;
+    }
+
+    setErreur('');
     setEnCours(true);
 
-    const game = await creerPartie(universeId, {
-      titre: titre.trim(),
-      mode,
-      visibilite,
-      joueursMax,
-    });
-
-    setEnCours(false);
-    onCreee(game);
+    try {
+      const game = await creerPartie(universeId, {
+        titre: titre.trim(),
+        mode,
+        visibilite,
+        joueursMax,
+        password: visibilite === 'prive' ? password : undefined,
+      });
+      onCreee(game);
+    } catch (err) {
+      setErreur(err instanceof Error ? err.message : 'Création impossible.');
+    } finally {
+      setEnCours(false);
+    }
   };
 
   return (
@@ -81,6 +95,19 @@ export default function ModaleCreerPartie({ universeId, onFermer, onCreee }: Mod
         </div>
       </div>
 
+      {visibilite === 'prive' && (
+        <div className="modale__champ">
+          <label htmlFor="mdp-partie">Mot de passe</label>
+          <input
+            id="mdp-partie"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Mot de passe de la partie…"
+          />
+        </div>
+      )}
+
       <div className="modale__champ">
         <label htmlFor="joueurs-max">Joueurs max</label>
         <input
@@ -93,7 +120,14 @@ export default function ModaleCreerPartie({ universeId, onFermer, onCreee }: Mod
         />
       </div>
 
-      <button type="button" className="modale__valider" onClick={valider} disabled={!titre.trim() || enCours}>
+      {erreur && <p className="modale__erreur">{erreur}</p>}
+
+      <button
+        type="button"
+        className="modale__valider"
+        onClick={valider}
+        disabled={!titre.trim() || enCours || (visibilite === 'prive' && !password.trim())}
+      >
         {enCours ? 'Création…' : 'Créer la partie'}
       </button>
     </Modale>
