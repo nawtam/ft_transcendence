@@ -87,12 +87,19 @@ export default function lobby() {
   const vous = joueurs.find((joueur) => joueur.id === ID_JOUEUR_LOCAL);
   const nombrePrets = joueurs.filter((joueur) => joueur.pret).length;
   const placesMax = game.joueursMax;
-  const tousPrets = joueurs.length > 0 && joueurs.length >= placesMax && nombrePrets === joueurs.length;
- 
+
+  const minimumPourLancer = game.mode === 'solo' ? 1 : 2;
+  
+  const presentsPrets =
+    joueurs.length > 0 && nombrePrets === joueurs.length;
+  const assezDeJoueurs = joueurs.length >= minimumPourLancer;
+  const estHote = ID_JOUEUR_LOCAL === game.hote;
+  const peutLancer = estHote && presentsPrets && assezDeJoueurs;
+  
   const basculerMonStatut = () => basculerPret(ID_JOUEUR_LOCAL);
- 
+  
   const lancerLaPartie = () => {
-    if (!tousPrets) return;
+    if (!peutLancer) return;
     navigate(`/univers/${universe.id}/partie/${game.gameId}/jouer`);
   };
  
@@ -197,9 +204,13 @@ export default function lobby() {
               type="button"
               className="bouton-lancer"
               onClick={lancerLaPartie}
-              disabled={!tousPrets}
+              disabled={!peutLancer}
             >
-              {tousPrets ? 'Lancer la partie' : `En attente (${joueurs.length}/${placesMax})`}
+              {peutLancer
+                ? 'Lancer la partie'
+                : !assezDeJoueurs
+                  ? `Il faut au moins ${minimumPourLancer} joueurs (${joueurs.length}/${placesMax})`
+                  : `En attente (${joueurs.length}/${placesMax} · ${nombrePrets} prêts)`}
             </button>
           </aside>
         </div>
