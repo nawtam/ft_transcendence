@@ -57,6 +57,8 @@ services:
     depends_on:
       - postgres
       - vault
+    ports:
+      - "8000:8000"
 
   game:
     build:
