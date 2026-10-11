@@ -1,78 +1,105 @@
-# src/db/session.py
-"""Porte l'engine SQLAlchemy courant et permet de le remplacer à chaud.
+"""Engine SQLAlchemy remplaçable à chaud.
 
-C'est le seul endroit du service qui connaît l'engine "actif". init_engine
-est appelé une fois au démarrage ; replace_engine est appelé par la boucle
-de renouvellement Vault (vault_client.py) chaque fois qu'un nouveau
-credential Postgres remplace l'ancien, sans jamais couper le service.
+Les identifiants Postgres changent au fil de l'eau (credentials dynamiques
+Vault). DatabaseManager détient l'engine courant et permet de le remplacer
+de façon atomique :
+
+  - les nouvelles requêtes obtiennent une Session liée au nouvel engine dès
+    que swap() a rendu la main ;
+  - les requêtes déjà en cours gardent leur Session (et donc l'ancien
+    engine) jusqu'à la fin ; l'ancien engine n'est fermé qu'après un délai
+    de grâce (géré par le CredentialRotator dans src/vault_client.py).
 """
 
-import threading
-from collections.abc import Generator
+from __future__ import annotations
 
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine, URL
+import logging
+import threading
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Engine, create_engine, text
+from sqlalchemy.engine import URL
 from sqlalchemy.orm import Session, sessionmaker
 
-_lock = threading.Lock()
-_engine: Engine | None = None
-_session_factory: sessionmaker[Session] | None = None
+if TYPE_CHECKING:
+    from src.config import Settings
+
+logger = logging.getLogger(__name__)
 
 
-def init_engine(database_url: str | URL) -> None:
-    """Premier appel, fait au démarrage du service (lifespan de main.py)."""
-    global _engine, _session_factory
-    engine = create_engine(database_url, pool_pre_ping=True)
-    factory = sessionmaker(bind=engine, autoflush=False, autocommit=False)
-    with _lock:
-        _engine = engine
-        _session_factory = factory
+class DatabaseNotReadyError(RuntimeError):
+    pass
 
 
-def replace_engine(database_url: str | URL) -> None:
-    """Bascule à chaud vers un nouvel engine (nouveau credential Vault).
+class DatabaseManager:
+    def __init__(self, settings: Settings) -> None:
+        self._settings = settings
+        self._lock = threading.Lock()
+        self._engine: Engine | None = None
+        self._session_factory: sessionmaker[Session] | None = None
 
-    create_engine() ne se connecte pas immédiatement (il est paresseux), donc
-    le construire hors du verrou ne bloque personne longtemps : seul
-    l'échange de référence est protégé. dispose() sur l'ancien engine ferme
-    les connexions inactives du pool mais n'interrompt jamais une connexion
-    déjà empruntée par une requête en cours.
-    """
-    global _engine, _session_factory
-    new_engine = create_engine(database_url, pool_pre_ping=True)
-    new_factory = sessionmaker(bind=new_engine, autoflush=False, autocommit=False)
+    # --- Construction ----------------------------------------------------
 
-    with _lock:
-        old_engine = _engine
-        _engine = new_engine
-        _session_factory = new_factory
+    def build_engine(self, username: str, password: str) -> Engine:
+        """Crée un engine pour ces identifiants et vérifie qu'il fonctionne.
 
-    if old_engine is not None:
-        old_engine.dispose()
+        Lève une exception si la connexion échoue : on ne bascule jamais
+        vers un engine qui n'a pas prouvé qu'il marche.
+        """
+        url = URL.create(
+            drivername="postgresql+psycopg",
+            username=username,
+            password=password,
+            host=self._settings.db_host,
+            port=self._settings.db_port,
+            database=self._settings.db_name,
+        )
+        engine = create_engine(
+            url,
+            pool_size=self._settings.db_pool_size,
+            max_overflow=self._settings.db_max_overflow,
+            pool_pre_ping=True,
+        )
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("SELECT 1"))
+        except Exception:
+            engine.dispose()
+            raise
+        return engine
 
+    # --- Bascule -----------------------------------------------------------
 
-def dispose_engine() -> None:
-    """Appelé au shutdown du service."""
-    global _engine, _session_factory
-    with _lock:
-        engine = _engine
-        _engine = None
-        _session_factory = None
-    if engine is not None:
-        engine.dispose()
+    def swap(self, new_engine: Engine) -> Engine | None:
+        """Installe new_engine comme engine courant et renvoie l'ancien.
 
+        L'appelant est responsable de disposer l'ancien engine (après un
+        délai de grâce).
+        """
+        factory = sessionmaker(bind=new_engine, expire_on_commit=False, autoflush=False)
+        with self._lock:
+            old = self._engine
+            self._engine = new_engine
+            self._session_factory = factory
+        return old
 
-def get_session() -> Generator[Session, None, None]:
-    """Dépendance FastAPI : ouvre une session sur l'engine courant."""
-    if _session_factory is None:
-        raise RuntimeError("db.session.init_engine() n'a pas été appelé au démarrage")
-    session = _session_factory()
-    try:
-        yield session
-    finally:
-        session.close()
+    # --- Utilisation -------------------------------------------------------
 
+    def session(self) -> Session:
+        with self._lock:
+            factory = self._session_factory
+        if factory is None:
+            raise DatabaseNotReadyError("Aucun engine Postgres disponible")
+        return factory()
 
-def current_engine() -> Engine | None:
-    """Utilitaire de lecture (tests, diagnostics)."""
-    return _engine
+    def ping(self) -> None:
+        with self.session() as s:
+            s.execute(text("SELECT 1"))
+
+    def dispose(self) -> None:
+        with self._lock:
+            engine = self._engine
+            self._engine = None
+            self._session_factory = None
+        if engine is not None:
+            engine.dispose()
