@@ -50,6 +50,8 @@ services:
       VAULT_DB_ROLE: auth-db-role
       ACCESS_TOKEN_TTL_MINUTES: "15"
       REFRESH_TOKEN_TTL_DAYS: "7"
+      REFRESH_COOKIE_PATH: "/api/auth"
+      COOKIE_SECURE: "false"
     secrets:
       - auth_vault_secret_id
     networks:
