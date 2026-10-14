@@ -55,27 +55,69 @@ function normalizeName(name) {
         error: `Enemy '${target}' not in this room.`,
       };
     }
-  
+
     const enemy = enemies[index];
-    const damage = rollD6();
-    enemy.hp = Math.max(0, enemy.hp - damage);
+    
+    const MAX_ROUNDS = 20;
+    const rounds = [];
+    let totalPlayerDamage = 0;
+    let totalEnemyDamage = 0;
+    let enemyKilled = false;
+    let playerDefeated = false;
+
+    for (let roundNum = 1; roundNum <= MAX_ROUNDS; roundNum += 1) {
+
+      const playerDamage = rollD6();
+      enemy.hp = Math.max(0, enemy.hp - playerDamage);
+      totalPlayerDamage += playerDamage;
+
+      enemyKilled = enemy.hp === 0;
+      const round = {
+        round: roundNum,
+        player_damage: playerDamage,
+        enemy_hp_left: enemy.hp,
+      };
+
+      if (enemyKilled) {
+        enemies.splice(index, 1);
+        rounds.push(round);
+        break;
+      }
+      
+      const enemyDamage = rollD6();
+      session.playerStats.hp = Math.max(0, session.playerStats.hp - enemyDamage);
+      totalEnemyDamage += enemyDamage;
+      round.enemy_damage = enemyDamage;
+      round.player_hp_left = session.playerStats.hp;
+      playerDefeated = session.playerStats.hp === 0;
+      rounds.push(round);
+      if (playerDefeated) {
+        break;
+      }
+    }
   
-    const result = {
+    let outcome = 'ongoing';
+
+    if (enemyKilled) outcome = 'victory';
+    else if (playerDefeated) outcome = 'defeat';
+    return {
       success: true,
       action: 'attack',
       target: enemy.name,
       weapon,
-      damage,
-      hp_left: enemy.hp,
-      enemy_killed: false,
+      auto_resolve: true,
+      rounds,
+      rounds_count: rounds.length,
+      total_player_damage: totalPlayerDamage,
+      total_enemy_damage: totalEnemyDamage,
+      enemy_killed: enemyKilled,
+      player_defeated: playerDefeated,
+      outcome,
+      player_hp_left: session.playerStats.hp,
+      damage: totalPlayerDamage,
+      hp_left: enemyKilled ? 0 : enemy.hp,
     };
-  
-    if (enemy.hp === 0) {
-      enemies.splice(index, 1);
-      result.enemy_killed = true;
-    }
-  
-    return result;
-  }
+
+}
   
   module.exports = { applyAttack };

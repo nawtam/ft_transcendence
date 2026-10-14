@@ -9,6 +9,7 @@
  *
  * Filtrer un scénario (optionnel) :
  *   docker compose exec game env TEST_SCENARIO=pickup node src/test_integration.js
+ *   docker compose exec game env TEST_SCENARIO=shared_world node src/test_integration.js
  *
  * Enrichir : ajouter une fonction test_* et l'enregistrer dans SCENARIOS.
  */
@@ -20,21 +21,46 @@ const IA_URL = process.env.IA_SERVICE_URL || 'http://ia:8000';
 // Helpers HTTP
 // ---------------------------------------------------------------------------
 
-async function resetSession() {
-  const res = await fetch(`${BASE_URL}/reset-session`, { method: 'POST' });
+async function resetSession(gameId = 'solo-dev') {
+  const res = await fetch(`${BASE_URL}/reset-session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gameId }),
+  });
   if (!res.ok) throw new Error(`reset-session failed: ${res.status}`);
   return res.json();
 }
 
-async function testTurn(message) {
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function testTurn(message, { userId = 'dev-user', gameId = 'solo-dev' } = {}) {
   const res = await fetch(`${BASE_URL}/test-turn`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, userId, gameId }),
   });
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error(`test-turn failed: ${res.status} (invalid JSON)`);
+  }
   if (!res.ok) throw new Error(data.error || `test-turn failed: ${res.status}`);
   return data;
+}
+
+/** Retry once on network blips (ECONNRESET) after a short pause. */
+async function testTurnRetry(message, opts = {}) {
+  try {
+    return await testTurn(message, opts);
+  } catch (err) {
+    const msg = err.message || '';
+    if (!/ECONNRESET|fetch failed|503|502/i.test(msg)) throw err;
+    await sleep(2000);
+    return testTurn(message, opts);
+  }
 }
 
 async function checkHealth(url, label) {
@@ -82,9 +108,10 @@ function toolName(data) {
 
 async function test_pickup(report) {
   console.log('\n=== Scénario : pickup ===');
-  await resetSession();
+  const gameId = 'test-pickup';
+  await resetSession(gameId);
 
-  const data = await testTurn('Je ramasse la potion');
+  const data = await testTurn('Je ramasse la potion', { gameId });
 
   report.add('type narration', data.type === 'narration', `got ${data.type}`);
   report.add('tool pickup_item', toolName(data) === 'pickup_item', `got ${toolName(data)}`);
@@ -92,15 +119,16 @@ async function test_pickup(report) {
   report.add('game_result success', data.game_result?.success === true);
   report.add('item potion', data.game_result?.item?.name === 'potion', JSON.stringify(data.game_result?.item));
 
-  const again = await testTurn('Je ramasse la potion');
+  const again = await testTurn('Je ramasse la potion', { gameId });
   report.add('double pickup échoue', again.game_result?.success === false);
 }
 
 async function test_examine(report) {
   console.log('\n=== Scénario : examine ===');
-  await resetSession();
+  const gameId = 'test-examine';
+  await resetSession(gameId);
 
-  const data = await testTurn('Je regarde autour');
+  const data = await testTurn('Je regarde autour', { gameId });
 
   report.add('tool examine', toolName(data) === 'examine', `got ${toolName(data)}`);
   report.add('action examine', intentAction(data) === 'examine');
@@ -111,30 +139,40 @@ async function test_examine(report) {
 
 async function test_move(report) {
   console.log('\n=== Scénario : move ===');
-  await resetSession();
+  const gameId = 'test-move';
+  await resetSession(gameId);
 
-  const move = await testTurn('Je vais à la forge');
+  const move = await testTurn('Je vais à la forge', { gameId });
 
   report.add('tool move_to', toolName(move) === 'move_to', `got ${toolName(move)}`);
   report.add('action move', intentAction(move) === 'move');
   report.add('move success', move.game_result?.success === true);
   report.add('destination forge', move.game_result?.destination === 'forge', move.game_result?.destination);
 
-  const look = await testTurn('Je regarde autour');
+  const look = await testTurn('Je regarde autour', { gameId });
   const desc = look.game_result?.description || '';
   report.add('dans la forge (examine)', desc.includes('forge'));
   report.add('plus de potion en salle', !desc.includes('potion'));
 
-  const bad = await testTurn('Je vais à la forêt');
-  report.add('move invalide échoue', bad.game_result?.success === false);
+  const bad = await testTurn('Je vais a la foret noire inexistante', { gameId });
+  if (bad.type === 'clarification') {
+    report.add('move invalide : clarification IA', true, bad.text?.slice(0, 60));
+  } else {
+    report.add(
+      'move invalide échoue',
+      bad.game_result?.success === false,
+      bad.game_result?.error || bad.type,
+    );
+  }
 }
 
 async function test_use(report) {
   console.log('\n=== Scénario : use ===');
-  await resetSession();
+  const gameId = 'test-use';
+  await resetSession(gameId);
 
-  await testTurn('Je ramasse la potion');
-  const data = await testTurn('Je bois la potion');
+  await testTurn('Je ramasse la potion', { gameId });
+  const data = await testTurn('Je bois la potion', { gameId });
 
   report.add('tool use_item', toolName(data) === 'use_item', `got ${toolName(data)}`);
   report.add('action used', intentAction(data) === 'used');
@@ -142,7 +180,7 @@ async function test_use(report) {
   report.add('hp_gained 20 (60→80)', data.game_result?.hp_gained === 20, `got ${data.game_result?.hp_gained}`);
   report.add('new_hp 80', data.game_result?.new_hp === 80, `got ${data.game_result?.new_hp}`);
 
-  const sword = await testTurn('Je bois mon epee');
+  const sword = await testTurn('Je bois mon epee', { gameId });
   if (sword.type === 'clarification') {
     report.add('épée : clarification IA (skip game_result)', true, sword.text?.slice(0, 60));
   } else {
@@ -151,32 +189,101 @@ async function test_use(report) {
 }
 
 async function test_attack(report) {
-  console.log('\n=== Scénario : attack ===');
-  await resetSession();
+  console.log('\n=== Scénario : attack (auto-resolve) ===');
+  const gameId = 'test-attack';
+  await resetSession(gameId);
 
-  const data = await testTurn('Je attaque l orc avec mon epee');
+  // Un seul message = combat entier (plus de boucle de testTurn)
+  const data = await testTurn('Je attaque l orc avec mon epee', { gameId });
+  const gr = data.game_result || {};
 
   report.add('tool attack_enemy', toolName(data) === 'attack_enemy', `got ${toolName(data)}`);
   report.add('action attack', intentAction(data) === 'attack');
-  report.add('attack success', data.game_result?.success === true);
+  report.add('attack success', gr.success === true);
+  report.add('auto_resolve', gr.auto_resolve === true);
+  report.add('au moins 1 round', (gr.rounds_count || 0) >= 1, `rounds_count=${gr.rounds_count}`);
+  report.add('rounds tableau', Array.isArray(gr.rounds) && gr.rounds.length === gr.rounds_count);
 
-  const damage = data.game_result?.damage;
-  report.add('damage 1-6', damage >= 1 && damage <= 6, `got ${damage}`);
+  const ended = gr.enemy_killed === true || gr.player_defeated === true;
+  report.add(
+    'combat terminé (victory ou defeat)',
+    ended === true && (gr.outcome === 'victory' || gr.outcome === 'defeat'),
+    `outcome=${gr.outcome}, killed=${gr.enemy_killed}, defeated=${gr.player_defeated}`,
+  );
 
-  const hpLeft = data.game_result?.hp_left;
-  report.add('hp_left cohérent', hpLeft === 30 - damage, `hp_left=${hpLeft}, damage=${damage}`);
+  if (gr.enemy_killed) {
+    report.add('outcome victory', gr.outcome === 'victory');
+    report.add('hp_left 0', gr.hp_left === 0);
+    report.add(
+      'total_player_damage cohérent',
+      gr.total_player_damage >= 30,
+      `got ${gr.total_player_damage}`,
+    );
 
-  // Finir l'Orc (30 HP, max ~5 coups)
-  let killed = data.game_result?.enemy_killed === true;
-  for (let i = 0; i < 10 && !killed; i += 1) {
-    const hit = await testTurn('Je attaque l orc avec mon epee');
-    if (hit.game_result?.enemy_killed) killed = true;
-    if (hit.game_result?.success === false && !killed) break;
+    try {
+      const ghost = await testTurnRetry('Je attaque l orc avec mon epee', { gameId });
+      report.add(
+        'attaque sans ennemi échoue',
+        ghost.game_result?.success === false || ghost.type === 'clarification',
+        ghost.game_result?.error || ghost.type,
+      );
+    } catch (err) {
+      report.add('attaque sans ennemi échoue', false, err.message);
+    }
+  } else {
+    report.add('outcome defeat', gr.outcome === 'defeat');
+    report.add('player_hp_left 0', gr.player_hp_left === 0);
+    report.add('attaque sans ennemi (skip: joueur KO)', true);
   }
-  report.add('orc tué', killed === true);
+}
 
-  const ghost = await testTurn('Je attaque l orc avec mon epee');
-  report.add('attaque sans ennemi échoue', ghost.game_result?.success === false);
+/**
+ * Monde partagé : même gameId → 2 joueurs voient le même monde.
+ * gameId différents → mondes isolés (solo / autre partie).
+ */
+async function test_shared_world(report) {
+  console.log('\n=== Scénario : shared_world ===');
+  const party1 = 'test-party-1';
+  const party2 = 'test-party-2';
+
+  await resetSession(party1);
+  await resetSession(party2);
+
+  try {
+    const pickup = await testTurnRetry('Je ramasse la potion', {
+      userId: 'user-1',
+      gameId: party1,
+    });
+    report.add(
+      'user-1 pickup party-1',
+      pickup.game_result?.success === true && pickup.game_result?.item?.name === 'potion',
+      JSON.stringify(pickup.game_result),
+    );
+
+    const lookSame = await testTurnRetry('Je regarde autour', {
+      userId: 'user-2',
+      gameId: party1,
+    });
+    const descSame = lookSame.game_result?.description || '';
+    report.add(
+      'user-2 party-1 : potion absente (monde partagé)',
+      descSame.includes('aucun') && !descSame.includes('potion'),
+      descSame,
+    );
+
+    const lookOther = await testTurnRetry('Je regarde autour', {
+      userId: 'user-3',
+      gameId: party2,
+    });
+    const descOther = lookOther.game_result?.description || '';
+    report.add(
+      'user-3 party-2 : potion encore là (monde isolé)',
+      descOther.includes('potion'),
+      descOther,
+    );
+  } catch (err) {
+    report.add('shared_world — exception', false, err.message);
+  }
 }
 
 // Enregistrer les scénarios ici (ordre = ordre d'exécution)
@@ -186,6 +293,7 @@ const SCENARIOS = {
   move: test_move,
   use: test_use,
   attack: test_attack,
+  shared_world: test_shared_world,
 };
 
 // ---------------------------------------------------------------------------

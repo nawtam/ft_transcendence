@@ -2,8 +2,8 @@ const { interpret, narrate } = require('../ia/client');
 const { getSession } = require('./sessionStore');
 const { applyAction } = require('./applyAction');
 
-async function handleTurn(userMessage) {
-  const session = getSession();
+async function handleTurn(userMessage, userId, gameId) {
+  const session = getSession(gameId, userId);
 
   const interpretRes = await interpret({
     user_message: userMessage,
@@ -20,6 +20,15 @@ async function handleTurn(userMessage) {
   }
 
   const gameResult = applyAction(session, interpretRes.intent);
+
+  if (!gameResult.success) {
+    return {
+      type: 'narration',
+      text: gameResult.error || 'Action impossible.',
+      intent: interpretRes.intent,
+      game_result: gameResult,
+    };
+  }
 
   const narrateRes = await narrate({
     user_message: userMessage,

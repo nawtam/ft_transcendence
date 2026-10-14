@@ -39,12 +39,7 @@ function applyMove(session, intent) {
   }
 
   const previousRoom = session.worldState.current_room;
-
   session.playerStats.location = dest;
-  session.worldState.current_room = dest;
-  session.worldState.room_items = [...(room.room_items || [])];
-  session.worldState.room_enemies = (room.room_enemies || []).map((e) => ({ ...e }));
-  session.worldState.available_exits = [...(room.available_exits || [])];
 
     return {
     success: true,

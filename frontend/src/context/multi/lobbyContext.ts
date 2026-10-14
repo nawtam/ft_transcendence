@@ -16,19 +16,11 @@ export interface LobbyMessage {
 
 // Id fixe représentant "Vous" (le joueur local) dans les données mockées.
 // Permet à lobby.tsx d'identifier sa propre ligne sans comparer des pseudos.
-export const ID_JOUEUR_LOCAL = '1';
+export const ID_JOUEUR_LOCAL = 'dev-user';
 
 export function useLobby() {
-  const [joueurs, setJoueurs] = useState<LobbyPlayer[]>([
-    { id: '1', pseudo: 'Vous', classe: '', personnageId: null, pret: false },
-    { id: '2', pseudo: 'Sire Aldwin', classe: 'Chevalier', personnageId: 'sire-aldwin', pret: true },
-    { id: '3', pseudo: 'Dame Yseult', classe: 'Voleuse', personnageId: 'dame-yseult', pret: true },
-    { id: '4', pseudo: 'Morvan', classe: 'Mage', personnageId: 'morvan', pret: true },
-  ]);
-
-  const [messages, setMessages] = useState<LobbyMessage[]>([
-    { id: '1', auteur: 'Sire Aldwin', texte: 'Le baron n\'attendra pas éternellement. Choisissez vite.' },
-  ]);
+  const [joueurs, setJoueurs] = useState<LobbyPlayer[]>([]);
+  const [messages, setMessages] = useState<LobbyMessage[]>([]);
 
   function envoyerMessage(texte: string) {
     const nouveauMessage: LobbyMessage = {
@@ -61,5 +53,29 @@ export function useLobby() {
     );
   }
 
-  return { joueurs, messages, envoyerMessage, basculerPret, choisirPersonnage };
+  function synchroniserJoueurs(playerIds: string[]) {
+    setJoueurs((anciens) =>
+      playerIds.map((id) => {
+        const dejaLa = anciens.find((j) => j.id === id);
+        if (dejaLa) return dejaLa;
+  
+        return {
+          id,
+          pseudo: id === ID_JOUEUR_LOCAL ? 'Vous' : id,
+          classe: '',
+          personnageId: null,
+          pret: false,
+        };
+      }),
+    );
+  }
+
+  return {
+    joueurs,
+    messages,
+    envoyerMessage,
+    basculerPret,
+    choisirPersonnage,
+    synchroniserJoueurs,
+  };
 }

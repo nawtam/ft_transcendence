@@ -2,7 +2,7 @@ const ROOMS = {
     donjon_test: {
       room_items: [{ name: 'potion', type: 'consumable' }],
       available_exits: ['forge'],
-      room_enemies: [{ name: 'Orc', hp: 30, max_hp: 30 }],
+      room_enemies: [{ name: 'Orc', hp: 30, max_hp: 30, damage: 6 }],
     },
     forge: {
       room_items: [],

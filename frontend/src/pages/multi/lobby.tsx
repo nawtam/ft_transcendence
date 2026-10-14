@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUniverse } from '../../context/multi/universeContext';
 import { getGameById, modeLabels, modeDescriptions } from '../../context/multi/games';
+import type { Game } from '../../context/multi/games';
 import { getPersonnagesByUniverse } from '../../context/multi/Personnages';
 import type { Personnage } from '../../context/multi/Personnages';
 import { useLobby, ID_JOUEUR_LOCAL } from '../../context/multi/lobbyContext';
@@ -18,11 +19,11 @@ export default function lobby() {
   const { gameId } = useParams<{ gameId: string }>();
   const universe = useUniverse();
   const navigate = useNavigate();
-  const { joueurs, messages, envoyerMessage, basculerPret, choisirPersonnage } = useLobby();
+  const { joueurs, messages, envoyerMessage, basculerPret, choisirPersonnage, synchroniserJoueurs } = useLobby();
  
   const [game, setGame] = useState<Game | undefined>(undefined);
   const [chargementGame, setChargementGame] = useState(true);
- 
+
   useEffect(() => {
     if (!gameId) {
       setChargementGame(false);
@@ -34,6 +35,9 @@ export default function lobby() {
     getGameById(gameId).then((resultat) => {
       if (!annule) {
         setGame(resultat);
+        if (resultat) {
+          synchroniserJoueurs(resultat.playerIds);
+        }
         setChargementGame(false);
       }
     });
@@ -82,12 +86,20 @@ export default function lobby() {
  
   const vous = joueurs.find((joueur) => joueur.id === ID_JOUEUR_LOCAL);
   const nombrePrets = joueurs.filter((joueur) => joueur.pret).length;
-  const tousPrets = joueurs.length >= game.joueursMax && nombrePrets === joueurs.length;
- 
+  const placesMax = game.joueursMax;
+
+  const minimumPourLancer = game.mode === 'solo' ? 1 : 2;
+  
+  const presentsPrets =
+    joueurs.length > 0 && nombrePrets === joueurs.length;
+  const assezDeJoueurs = joueurs.length >= minimumPourLancer;
+  const estHote = ID_JOUEUR_LOCAL === game.hote;
+  const peutLancer = estHote && presentsPrets && assezDeJoueurs;
+  
   const basculerMonStatut = () => basculerPret(ID_JOUEUR_LOCAL);
- 
+  
   const lancerLaPartie = () => {
-    if (!tousPrets) return;
+    if (!peutLancer) return;
     navigate(`/univers/${universe.id}/partie/${game.gameId}/jouer`);
   };
  
@@ -163,20 +175,22 @@ export default function lobby() {
             <div className="panneau-joueurs__entete">
               <p className="panneau-joueurs__label">Joueurs</p>
               <span className="panneau-joueurs__compte">
-                {nombrePrets}/{joueurs.length} prêts
+                {joueurs.length}/{placesMax} joueurs · {nombrePrets} prêts
               </span>
             </div>
- 
+
             <div className="panneau-joueurs__barre">
               <div
                 className="panneau-joueurs__progression"
-                style={{ width: `${(nombrePrets / joueurs.length) * 100}%` }}
+                style={{
+                  width: `${placesMax === 0 ? 0 : (joueurs.length / placesMax) * 100}%`,
+                }}
               />
             </div>
  
             <div className="panneau-joueurs__liste">
               {joueurs.map((joueur) => (
-                <JoueurCard key={joueur.id} joueur={joueur} estHote={joueur.pseudo === game.hote} />
+                <JoueurCard key={joueur.id} joueur={joueur} estHote={joueur.id === game.hote} />
               ))}
             </div>
  
@@ -190,9 +204,13 @@ export default function lobby() {
               type="button"
               className="bouton-lancer"
               onClick={lancerLaPartie}
-              disabled={!tousPrets}
+              disabled={!peutLancer}
             >
-              {tousPrets ? 'Lancer la partie' : `En attente (${nombrePrets}/${joueurs.length})`}
+              {peutLancer
+                ? 'Lancer la partie'
+                : !assezDeJoueurs
+                  ? `Il faut au moins ${minimumPourLancer} joueurs (${joueurs.length}/${placesMax})`
+                  : `En attente (${joueurs.length}/${placesMax} · ${nombrePrets} prêts)`}
             </button>
           </aside>
         </div>

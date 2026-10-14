@@ -10,24 +10,30 @@ interface ModaleRejoindrePartieProps {
 
 export default function ModaleRejoindrePartie({ onFermer, onRejointe }: ModaleRejoindrePartieProps) {
   const [code, setCode] = useState('');
+  const [password, setPassword] = useState('');
   const [enCours, setEnCours] = useState(false);
   const [erreur, setErreur] = useState('');
 
   const valider = async () => {
     if (!code.trim()) return;
+
     setEnCours(true);
     setErreur('');
 
-    const game = await rejoindreParCode(code);
+    try {
+      const game = await rejoindreParCode(code, password.trim() || undefined);
 
-    setEnCours(false);
+      if (!game) {
+        setErreur('Aucune partie ne correspond à ce code.');
+        return;
+      }
 
-    if (!game) {
-      setErreur('Aucune partie ne correspond à ce code.');
-      return;
+      onRejointe(game);
+    } catch (err) {
+      setErreur(err instanceof Error ? err.message : 'Impossible de rejoindre.');
+    } finally {
+      setEnCours(false);
     }
-
-    onRejointe(game);
   };
 
   return (
@@ -39,7 +45,21 @@ export default function ModaleRejoindrePartie({ onFermer, onRejointe }: ModaleRe
           type="text"
           value={code}
           onChange={(event) => setCode(event.target.value)}
-          placeholder="ex : trahison-blackreach"
+          placeholder="ex : game-1789…"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') valider();
+          }}
+        />
+      </div>
+
+      <div className="modale__champ">
+        <label htmlFor="mdp-rejoindre">Mot de passe (si privée)</label>
+        <input
+          id="mdp-rejoindre"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="Laisser vide si publique"
           onKeyDown={(event) => {
             if (event.key === 'Enter') valider();
           }}
@@ -48,7 +68,12 @@ export default function ModaleRejoindrePartie({ onFermer, onRejointe }: ModaleRe
 
       {erreur && <p className="modale__erreur">{erreur}</p>}
 
-      <button type="button" className="modale__valider" onClick={valider} disabled={!code.trim() || enCours}>
+      <button
+        type="button"
+        className="modale__valider"
+        onClick={valider}
+        disabled={!code.trim() || enCours}
+      >
         {enCours ? 'Recherche…' : 'Rejoindre'}
       </button>
     </Modale>

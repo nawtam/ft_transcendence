@@ -2,13 +2,28 @@ import { Link } from 'react-router-dom';
 import type { Universe } from '../../context/multi/universes';
 import { getGamesByUniverse } from '../context/multi/games';
 import '../css/multi/UniversCard.css';
+import { useEffect, useState } from 'react';
 
 interface UniverseCardProps {
   universe: Universe;
 }
 
 export function UniverseCard({ universe }: UniverseCardProps) {
-  const nombrePartiesEnAttente = getGamesByUniverse(universe.id).length;
+  const [nombrePartiesEnAttente, setNombrePartiesEnAttente] = useState(0);
+
+  useEffect(() => {
+    let annule = false;
+
+    getGamesByUniverse(universe.id).then((liste) => {
+      if (!annule) {
+        setNombrePartiesEnAttente(liste.length);
+      }
+    });
+
+    return () => {
+      annule = true;
+    };
+  }, [universe.id]);
 
   return (
     <div
