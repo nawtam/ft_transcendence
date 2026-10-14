@@ -88,7 +88,7 @@ const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws, req) => {
 	if (process.env.SKIP_JWT !== '1') {
-	  const auth = verifyJwtFromUrl(req.url || '');
+		const auth = verifyJwtFromUrl(req.url || '', req.headers.cookie || '');
 	  if (!auth.ok) {
 		ws.send(JSON.stringify({ type: 'error', text: auth.error }));
 		ws.close(1008, auth.error);
