@@ -1,9 +1,4 @@
 .env
-<<<<<<< HEAD
-/gateway/certs/services/auth/secrets/
-services/auth/secrets/
-=======
 /gateway/certs/
 node_modules/
-
->>>>>>> a1eba8c16be89254c83577709cc4032ec9407ed6
+services/game/secrets/
