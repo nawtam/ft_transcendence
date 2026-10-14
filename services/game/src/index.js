@@ -6,6 +6,7 @@ const { onMessage } = require('./ws/onMessage');
 const { resetGame, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
 const { handleTurn } = require('./game/handleTurn');
 const { verifyJwtFromUrl } = require('./ws/verifyJwt');
+const { joinRoom, leaveRoom } = require('./ws/rooms');
 const { createGame, getGame, listGames, joinGame, toPublicGame, isMember } = require('./game/gameRegistry');
 
 const app = express();
@@ -100,8 +101,14 @@ wss.on('connection', (ws, req) => {
 	  ws.gameId = params.get('gameId') || DEFAULT_GAME_ID;
 	  ws.user = { sub: params.get('userId') || DEFAULT_USER_ID };
 	}
-  
+
+	joinRoom(ws.gameId, ws);
+
 	ws.on('message', (raw) => onMessage(ws, raw));
-  });
+
+	ws.on('close', () => {
+	  leaveRoom(ws.gameId, ws);
+	});
+});
 
 server.listen(3001, () => console.log('game listening on 3001'));

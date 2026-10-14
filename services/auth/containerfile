@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-# syntax=docker/dockerfile:1
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 ENV UV_COMPILE_BYTECODE=1 \
@@ -11,18 +9,13 @@ ENV UV_COMPILE_BYTECODE=1 \
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
+
 RUN uv sync --frozen --no-dev
 
 COPY src/ ./src/
 
 RUN useradd --create-home --uid 1000 appuser
+
 USER appuser
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
-=======
-FROM docker.io/node:20-alpine
-COPY package*.json ./
-RUN npm install
-COPY src ./src
-CMD ["node", "src/index.js"]
->>>>>>> a1eba8c16be89254c83577709cc4032ec9407ed6
