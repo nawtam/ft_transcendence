@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Modale from './Modale';
 import { creerPartie, modeLabels } from '../context/multi/games';
 import type { Game, GameMode, GameVisibility } from '../context/multi/games';
+import { getMoi } from '../context/authSession';
 
 interface ModaleCreerPartieProps {
   universeId: string;
@@ -32,13 +33,18 @@ export default function ModaleCreerPartie({ universeId, onFermer, onCreee }: Mod
     setEnCours(true);
 
     try {
-      const game = await creerPartie(universeId, {
-        titre: titre.trim(),
-        mode,
-        visibilite,
-        joueursMax,
-        password: visibilite === 'prive' ? password : undefined,
-      });
+      const moi = await getMoi();
+      const game = await creerPartie(
+        universeId,
+        {
+          titre: titre.trim(),
+          mode,
+          visibilite,
+          joueursMax,
+          password: visibilite === 'prive' ? password : undefined,
+        },
+        moi.id,
+      );
       onCreee(game);
     } catch (err) {
       setErreur(err instanceof Error ? err.message : 'Création impossible.');
