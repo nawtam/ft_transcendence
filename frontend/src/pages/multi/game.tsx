@@ -3,15 +3,6 @@ import { useParams } from 'react-router-dom';
 import ChatBox from '../../composants/Chatbox';
 import type { LobbyMessage } from '../../context/multi/lobbyContext';
 
-function lireCookie(nom: string): string | null {
-  const prefix = `${nom}=`;
-  for (const part of document.cookie.split(';')) {
-    const s = part.trim();
-    if (s.startsWith(prefix)) return decodeURIComponent(s.slice(prefix.length));
-  }
-  return null;
-}
-
 export default function Game() {
   const { universeId, gameId } = useParams<{ universeId: string; gameId: string }>();
   const [messages, setMessages] = useState<LobbyMessage[]>([]);
@@ -24,18 +15,8 @@ export default function Game() {
       return;
     }
 
-    const token = lireCookie('access_token');
-    if (!token) {
-      setStatut('Non connecté — login auth requis (cookie access_token)');
-      return;
-    }
-
     const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url =
-      `${proto}://${window.location.host}/api/game` +
-      `?gameId=${encodeURIComponent(gameId)}` +
-      `&token=${encodeURIComponent(token)}`;
-
+    const url = `${proto}://${window.location.host}/api/game?gameId=${encodeURIComponent(gameId)}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
 
@@ -59,7 +40,7 @@ export default function Game() {
             ...prev,
             {
               id: `${Date.now()}-u-${prev.length}`,
-              auteur: data.userId === '1' ? 'Joueur' : `Joueur ${data.userId}`,
+              auteur: `Joueur ${data.userId}`,
               texte: data.message,
             },
           ]);
