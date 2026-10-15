@@ -3,7 +3,14 @@ import { useParams } from 'react-router-dom';
 import ChatBox from '../../composants/Chatbox';
 import type { LobbyMessage } from '../../context/multi/lobbyContext';
 
-const USER_ID = 'dev-user';
+function lireCookie(nom: string): string | null {
+  const prefix = `${nom}=`;
+  for (const part of document.cookie.split(';')) {
+    const s = part.trim();
+    if (s.startsWith(prefix)) return decodeURIComponent(s.slice(prefix.length));
+  }
+  return null;
+}
 
 export default function Game() {
   const { universeId, gameId } = useParams<{ universeId: string; gameId: string }>();
@@ -17,8 +24,18 @@ export default function Game() {
       return;
     }
 
+    const token = lireCookie('access_token');
+    if (!token) {
+      setStatut('Non connecté — login auth requis (cookie access_token)');
+      return;
+    }
+
     const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${proto}://${window.location.host}/api/game?gameId=${encodeURIComponent(gameId)}&userId=${encodeURIComponent(USER_ID)}`;
+    const url =
+      `${proto}://${window.location.host}/api/game` +
+      `?gameId=${encodeURIComponent(gameId)}` +
+      `&token=${encodeURIComponent(token)}`;
+
     const ws = new WebSocket(url);
     wsRef.current = ws;
 
@@ -29,17 +46,32 @@ export default function Game() {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(String(event.data));
-        const texte =
-          data.text ||
-          data.error ||
-          (typeof data === 'string' ? data : JSON.stringify(data));
-        const auteur =
-          data.type === 'error' ? 'Erreur' : data.type === 'clarification' ? 'MJ' : 'MJ';
+        if (data.type === 'error') {
+          setMessages((prev) => [
+            ...prev,
+            { id: `${Date.now()}-${prev.length}`, auteur: 'Erreur', texte: data.text || data.error },
+          ]);
+          return;
+        }
 
-        setMessages((prev) => [
-          ...prev,
-          { id: `${Date.now()}-${prev.length}`, auteur, texte },
-        ]);
+        if (data.message && data.userId) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `${Date.now()}-u-${prev.length}`,
+              auteur: data.userId === '1' ? 'Joueur' : `Joueur ${data.userId}`,
+              texte: data.message,
+            },
+          ]);
+        }
+
+        const texte = data.text || (typeof data === 'string' ? data : null);
+        if (texte) {
+          setMessages((prev) => [
+            ...prev,
+            { id: `${Date.now()}-${prev.length}`, auteur: 'MJ', texte },
+          ]);
+        }
       } catch {
         setMessages((prev) => [
           ...prev,
@@ -55,11 +87,6 @@ export default function Game() {
   }, [gameId]);
 
   const envoyerAction = (texte: string) => {
-    setMessages((prev) => [
-      ...prev,
-      { id: `${Date.now()}-you`, auteur: 'Vous', texte },
-    ]);
-
     const ws = wsRef.current;
     if (!ws || ws.readyState !== WebSocket.OPEN) {
       setMessages((prev) => [
@@ -68,7 +95,6 @@ export default function Game() {
       ]);
       return;
     }
-
     ws.send(JSON.stringify({ type: 'action', message: texte }));
   };
 
