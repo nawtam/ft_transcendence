@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUniverse } from '../../context/multi/universeContext';
@@ -6,75 +6,102 @@ import { getGameById, modeLabels, modeDescriptions } from '../../context/multi/g
 import type { Game } from '../../context/multi/games';
 import { getPersonnagesByUniverse } from '../../context/multi/Personnages';
 import type { Personnage } from '../../context/multi/Personnages';
-import { useLobby, ID_JOUEUR_LOCAL } from '../../context/multi/lobbyContext';
+import { useLobby } from '../../context/multi/lobbyContext';
+import { getMoi } from '../../context/authSession';
 import JoueurCard from '../../composants/Joueurcard';
 import PersonnageCard from '../../composants/Personnagecard';
 import ChatBox from '../../composants/Chatbox';
 import RepartitionStats from '../../composants/Repartitionstats';
 import '../../css/multi/lobby.css';
 
-// NB : nom de fonction en minuscule par convention (voir universePage.tsx),
-// à importer avec une majuscule dans App.tsx.
 export default function lobby() {
   const { gameId } = useParams<{ gameId: string }>();
   const universe = useUniverse();
   const navigate = useNavigate();
   const { joueurs, messages, envoyerMessage, basculerPret, choisirPersonnage, synchroniserJoueurs } = useLobby();
- 
+
+  const [monId, setMonId] = useState<string | null>(null);
+  const [sessionPrête, setSessionPrête] = useState(false);
   const [game, setGame] = useState<Game | undefined>(undefined);
   const [chargementGame, setChargementGame] = useState(true);
 
   useEffect(() => {
-    if (!gameId) {
-      setChargementGame(false);
+    let annule = false;
+    getMoi()
+      .then((moi) => {
+        if (!annule) setMonId(moi.id);
+      })
+      .catch(() => {
+        if (!annule) setMonId(null);
+      })
+      .finally(() => {
+        if (!annule) setSessionPrête(true);
+      });
+    return () => {
+      annule = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!gameId || !monId) {
+      if (!gameId) setChargementGame(false);
       return;
     }
     let annule = false;
     setChargementGame(true);
- 
+
     getGameById(gameId).then((resultat) => {
       if (!annule) {
         setGame(resultat);
         if (resultat) {
-          synchroniserJoueurs(resultat.playerIds);
+          synchroniserJoueurs(resultat.playerIds, monId);
         }
         setChargementGame(false);
       }
     });
- 
+
     return () => {
       annule = true;
     };
-  }, [gameId]);
- 
+  }, [gameId, monId]);
+
   const [personnagesDisponibles, setPersonnagesDisponibles] = useState<Personnage[]>([]);
   const [chargementPersonnages, setChargementPersonnages] = useState(true);
- 
+
   useEffect(() => {
     if (!universe) return;
     let annule = false;
     setChargementPersonnages(true);
- 
+
     getPersonnagesByUniverse(universe.id).then((liste) => {
       if (!annule) {
         setPersonnagesDisponibles(liste);
         setChargementPersonnages(false);
       }
     });
- 
+
     return () => {
       annule = true;
     };
   }, [universe]);
- 
-  if (chargementGame) {
+
+  if (!sessionPrête || chargementGame) {
     return (
       <div className="page-lobby page-lobby--introuvable">
         <p>Chargement de la partie…</p>
       </div>
     );
   }
- 
+
+  if (!monId) {
+    return (
+      <div className="page-lobby page-lobby--introuvable">
+        <p>Connecte-toi pour entrer dans le lobby.</p>
+        <Link to="/connexion">Connexion</Link>
+      </div>
+    );
+  }
+
   if (!universe || !game) {
     return (
       <div className="page-lobby page-lobby--introuvable">
@@ -83,26 +110,25 @@ export default function lobby() {
       </div>
     );
   }
- 
-  const vous = joueurs.find((joueur) => joueur.id === ID_JOUEUR_LOCAL);
+
+  const vous = joueurs.find((joueur) => joueur.id === monId);
   const nombrePrets = joueurs.filter((joueur) => joueur.pret).length;
   const placesMax = game.joueursMax;
 
   const minimumPourLancer = game.mode === 'solo' ? 1 : 2;
-  
-  const presentsPrets =
-    joueurs.length > 0 && nombrePrets === joueurs.length;
+
+  const presentsPrets = joueurs.length > 0 && nombrePrets === joueurs.length;
   const assezDeJoueurs = joueurs.length >= minimumPourLancer;
-  const estHote = ID_JOUEUR_LOCAL === game.hote;
+  const estHote = monId === game.hote;
   const peutLancer = estHote && presentsPrets && assezDeJoueurs;
-  
-  const basculerMonStatut = () => basculerPret(ID_JOUEUR_LOCAL);
-  
+
+  const basculerMonStatut = () => basculerPret(monId);
+
   const lancerLaPartie = () => {
     if (!peutLancer) return;
     navigate(`/univers/${universe.id}/partie/${game.gameId}/jouer`);
   };
- 
+
   return (
     <div
       className="page-lobby"
@@ -113,25 +139,25 @@ export default function lobby() {
           <h1 className="page-lobby__titre-univers">{universe.nom}</h1>
           <p className="page-lobby__ambiance">« {universe.ambiance} »</p>
         </header>
- 
+
         <div className="page-lobby__grille">
           <section className="panneau-briefing">
             <p className="panneau-briefing__label">Briefing de l'IA</p>
             <h2 className="panneau-briefing__titre">{game.titre}</h2>
             <p className="panneau-briefing__narration">« {game.narration} »</p>
- 
+
             <div className="panneau-briefing__recompenses">
               <span>
                 Récompense : <strong>{game.recompensePA} PA</strong> · <strong>{game.recompenseXP} XP</strong>
               </span>
               <span className="panneau-briefing__difficulte">Difficulté {game.difficulte}/5</span>
             </div>
- 
+
             <details className="panneau-briefing__info">
               <summary>Comment sont calculées ces récompenses ?</summary>
               <p>Basées sur la difficulté de la partie et le temps de jeu estimé.</p>
             </details>
- 
+
             <div className="panneau-briefing__section">
               <p className="panneau-briefing__sous-titre">Mode de jeu</p>
               <div className="mode-fige">
@@ -139,7 +165,7 @@ export default function lobby() {
                 <p className="mode-fige__description">{modeDescriptions[game.mode]}</p>
               </div>
             </div>
- 
+
             <div className="panneau-briefing__section">
               <p className="panneau-briefing__sous-titre">Personnage prédéfini</p>
               <div className="grille-personnages">
@@ -148,7 +174,7 @@ export default function lobby() {
                 ) : (
                   personnagesDisponibles.map((personnage) => {
                     const pris = joueurs.some(
-                      (joueur) => joueur.id !== ID_JOUEUR_LOCAL && joueur.personnageId === personnage.id,
+                      (joueur) => joueur.id !== monId && joueur.personnageId === personnage.id,
                     );
                     return (
                       <PersonnageCard
@@ -157,7 +183,7 @@ export default function lobby() {
                         selectionne={vous?.personnageId === personnage.id}
                         pris={pris}
                         onSelectionner={() =>
-                          choisirPersonnage(ID_JOUEUR_LOCAL, personnage.id, personnage.classe)
+                          choisirPersonnage(monId, personnage.id, personnage.classe)
                         }
                       />
                     );
@@ -165,12 +191,12 @@ export default function lobby() {
                 )}
               </div>
             </div>
- 
+
             <div className="panneau-briefing__section">
               <RepartitionStats />
             </div>
           </section>
- 
+
           <aside className="panneau-joueurs">
             <div className="panneau-joueurs__entete">
               <p className="panneau-joueurs__label">Joueurs</p>
@@ -187,19 +213,19 @@ export default function lobby() {
                 }}
               />
             </div>
- 
+
             <div className="panneau-joueurs__liste">
               {joueurs.map((joueur) => (
                 <JoueurCard key={joueur.id} joueur={joueur} estHote={joueur.id === game.hote} />
               ))}
             </div>
- 
+
             <ChatBox messages={messages} onEnvoyer={envoyerMessage} />
- 
+
             <button type="button" className="bouton-pret" onClick={basculerMonStatut}>
               {vous?.pret ? 'Rengainer' : 'Dégainer'}
             </button>
- 
+
             <button
               type="button"
               className="bouton-lancer"
@@ -218,4 +244,3 @@ export default function lobby() {
     </div>
   );
 }
- 

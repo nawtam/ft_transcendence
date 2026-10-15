@@ -14,10 +14,6 @@ export interface LobbyMessage {
   texte: string;
 }
 
-// Id fixe représentant "Vous" (le joueur local) dans les données mockées.
-// Permet à lobby.tsx d'identifier sa propre ligne sans comparer des pseudos.
-export const ID_JOUEUR_LOCAL = 'dev-user';
-
 export function useLobby() {
   const [joueurs, setJoueurs] = useState<LobbyPlayer[]>([]);
   const [messages, setMessages] = useState<LobbyMessage[]>([]);
@@ -39,7 +35,6 @@ export function useLobby() {
     );
   }
 
-  // Refuse silencieusement si un autre joueur a déjà ce personnage.
   function choisirPersonnage(id: string, personnageId: string, classe: string) {
     const dejaPris = joueurs.some(
       (joueur) => joueur.id !== id && joueur.personnageId === personnageId
@@ -53,15 +48,15 @@ export function useLobby() {
     );
   }
 
-  function synchroniserJoueurs(playerIds: string[]) {
+  function synchroniserJoueurs(playerIds: string[], monId: string) {
     setJoueurs((anciens) =>
       playerIds.map((id) => {
         const dejaLa = anciens.find((j) => j.id === id);
         if (dejaLa) return dejaLa;
-  
+
         return {
           id,
-          pseudo: id === ID_JOUEUR_LOCAL ? 'Vous' : id,
+          pseudo: id === monId ? 'Vous' : id,
           classe: '',
           personnageId: null,
           pret: false,

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Modale from './Modale';
 import { rejoindreParCode } from '../context/multi/games';
 import type { Game } from '../context/multi/games';
+import { getMoi } from '../context/authSession';
 
 interface ModaleRejoindrePartieProps {
   onFermer: () => void;
@@ -21,7 +22,8 @@ export default function ModaleRejoindrePartie({ onFermer, onRejointe }: ModaleRe
     setErreur('');
 
     try {
-      const game = await rejoindreParCode(code, password.trim() || undefined);
+      const moi = await getMoi();
+      const game = await rejoindreParCode(code, password.trim() || undefined, moi.id);
 
       if (!game) {
         setErreur('Aucune partie ne correspond à ce code.');

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { rejoindrePartie, modeLabels } from '../context/multi/games';
 import type { Game, GameMode } from '../context/multi/games';
+import { getMoi } from '../context/authSession';
 import { Globe, Key, UserRound } from 'lucide-react';
 import '../css/multi/GameCard.css';
 
@@ -28,7 +29,11 @@ export default function GameCard({ partie }: PartieCardProps) {
     setEnCours(true);
 
     try {
-      await rejoindrePartie(partie.gameId, { universeId: partie.universeId });
+      const moi = await getMoi();
+      await rejoindrePartie(partie.gameId, {
+        universeId: partie.universeId,
+        userId: moi.id,
+      });
       navigate(`/univers/${partie.universeId}/partie/${partie.gameId}`);
     } catch (err) {
       setErreur(err instanceof Error ? err.message : 'Impossible de rejoindre.');

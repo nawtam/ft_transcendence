@@ -11,6 +11,11 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/game/, ''),
         ws: true,
       },
+      '/api/auth': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/api\/auth/, '/auth'),
+      },
     },
   },
 });
