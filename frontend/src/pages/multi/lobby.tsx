@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUniverse } from '../../context/multi/universeContext';
@@ -7,6 +7,7 @@ import type { Game } from '../../context/multi/games';
 import { getPersonnagesByUniverse } from '../../context/multi/Personnages';
 import type { Personnage } from '../../context/multi/Personnages';
 import { useLobby } from '../../context/multi/lobbyContext';
+import type { LobbyStatePayload } from '../../context/multi/lobbyContext';
 import { getMoi } from '../../context/authSession';
 import JoueurCard from '../../composants/Joueurcard';
 import PersonnageCard from '../../composants/Personnagecard';
@@ -18,12 +19,14 @@ export default function lobby() {
   const { gameId } = useParams<{ gameId: string }>();
   const universe = useUniverse();
   const navigate = useNavigate();
-  const { joueurs, messages, envoyerMessage, basculerPret, choisirPersonnage, synchroniserJoueurs } = useLobby();
+  const { joueurs, messages, appliquerLobbyState, ajouterLobbyChat } = useLobby();
 
   const [monId, setMonId] = useState<string | null>(null);
   const [sessionPrête, setSessionPrête] = useState(false);
   const [game, setGame] = useState<Game | undefined>(undefined);
   const [chargementGame, setChargementGame] = useState(true);
+  const [wsStatut, setWsStatut] = useState('Connexion lobby…');
+  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     let annule = false;
@@ -53,15 +56,52 @@ export default function lobby() {
     getGameById(gameId).then((resultat) => {
       if (!annule) {
         setGame(resultat);
-        if (resultat) {
-          synchroniserJoueurs(resultat.playerIds, monId);
-        }
         setChargementGame(false);
       }
     });
 
     return () => {
       annule = true;
+    };
+  }, [gameId, monId]);
+
+  useEffect(() => {
+    if (!gameId || !monId) return;
+
+    const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const url = `${proto}://${window.location.host}/api/game?gameId=${encodeURIComponent(gameId)}`;
+    const ws = new WebSocket(url);
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      setWsStatut('Lobby sync');
+      ws.send(JSON.stringify({ type: 'lobby_sync' }));
+    };
+    ws.onclose = () => setWsStatut('Lobby déconnecté');
+    ws.onerror = () => setWsStatut('Erreur lobby WS');
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(String(event.data));
+        if (data.type === 'error') {
+          setWsStatut(data.text || 'Erreur lobby');
+          return;
+        }
+        if (data.type === 'lobby_state') {
+          appliquerLobbyState(data as LobbyStatePayload, monId);
+          return;
+        }
+        if (data.type === 'lobby_chat') {
+          ajouterLobbyChat(data, monId);
+        }
+      } catch {
+        /* ignore */
+      }
+    };
+
+    return () => {
+      ws.close();
+      wsRef.current = null;
     };
   }, [gameId, monId]);
 
@@ -84,6 +124,12 @@ export default function lobby() {
       annule = true;
     };
   }, [universe]);
+
+  const envoyerWs = (payload: object) => {
+    const ws = wsRef.current;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify(payload));
+  };
 
   if (!sessionPrête || chargementGame) {
     return (
@@ -114,15 +160,23 @@ export default function lobby() {
   const vous = joueurs.find((joueur) => joueur.id === monId);
   const nombrePrets = joueurs.filter((joueur) => joueur.pret).length;
   const placesMax = game.joueursMax;
-
   const minimumPourLancer = game.mode === 'solo' ? 1 : 2;
-
   const presentsPrets = joueurs.length > 0 && nombrePrets === joueurs.length;
   const assezDeJoueurs = joueurs.length >= minimumPourLancer;
   const estHote = monId === game.hote;
   const peutLancer = estHote && presentsPrets && assezDeJoueurs;
 
-  const basculerMonStatut = () => basculerPret(monId);
+  const basculerMonStatut = () => {
+    envoyerWs({ type: 'lobby_ready', ready: !vous?.pret });
+  };
+
+  const choisirPerso = (personnageId: string, classe: string) => {
+    envoyerWs({ type: 'lobby_pick', personnageId, classe });
+  };
+
+  const envoyerMessage = (texte: string) => {
+    envoyerWs({ type: 'lobby_chat', text: texte });
+  };
 
   const lancerLaPartie = () => {
     if (!peutLancer) return;
@@ -138,6 +192,7 @@ export default function lobby() {
         <header className="page-lobby__entete">
           <h1 className="page-lobby__titre-univers">{universe.nom}</h1>
           <p className="page-lobby__ambiance">« {universe.ambiance} »</p>
+          <p>{wsStatut}</p>
         </header>
 
         <div className="page-lobby__grille">
@@ -182,9 +237,7 @@ export default function lobby() {
                         personnage={personnage}
                         selectionne={vous?.personnageId === personnage.id}
                         pris={pris}
-                        onSelectionner={() =>
-                          choisirPersonnage(monId, personnage.id, personnage.classe)
-                        }
+                        onSelectionner={() => choisirPerso(personnage.id, personnage.classe)}
                       />
                     );
                   })
