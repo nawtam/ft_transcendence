@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-import { useEffect, useState } from 'react';
-=======
 import { useEffect, useRef, useState } from 'react';
->>>>>>> Stashed changes
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUniverse } from '../../context/multi/universeContext';
@@ -11,10 +7,7 @@ import type { Game } from '../../context/multi/games';
 import { getPersonnagesByUniverse } from '../../context/multi/Personnages';
 import type { Personnage } from '../../context/multi/Personnages';
 import { useLobby } from '../../context/multi/lobbyContext';
-<<<<<<< Updated upstream
-=======
 import type { LobbyStatePayload } from '../../context/multi/lobbyContext';
->>>>>>> Stashed changes
 import { getMoi } from '../../context/authSession';
 import JoueurCard from '../../composants/Joueurcard';
 import PersonnageCard from '../../composants/Personnagecard';
@@ -26,11 +19,7 @@ export default function lobby() {
   const { gameId } = useParams<{ gameId: string }>();
   const universe = useUniverse();
   const navigate = useNavigate();
-<<<<<<< Updated upstream
-  const { joueurs, messages, envoyerMessage, basculerPret, choisirPersonnage, synchroniserJoueurs } = useLobby();
-=======
   const { joueurs, messages, appliquerLobbyState, ajouterLobbyChat } = useLobby();
->>>>>>> Stashed changes
 
   const [monId, setMonId] = useState<string | null>(null);
   const [sessionPrête, setSessionPrête] = useState(false);
@@ -67,12 +56,6 @@ export default function lobby() {
     getGameById(gameId).then((resultat) => {
       if (!annule) {
         setGame(resultat);
-<<<<<<< Updated upstream
-        if (resultat) {
-          synchroniserJoueurs(resultat.playerIds, monId);
-        }
-=======
->>>>>>> Stashed changes
         setChargementGame(false);
       }
     });
@@ -82,8 +65,6 @@ export default function lobby() {
     };
   }, [gameId, monId]);
 
-<<<<<<< Updated upstream
-=======
   useEffect(() => {
     if (!gameId || !monId) return;
 
@@ -124,7 +105,6 @@ export default function lobby() {
     };
   }, [gameId, monId]);
 
->>>>>>> Stashed changes
   const [personnagesDisponibles, setPersonnagesDisponibles] = useState<Personnage[]>([]);
   const [chargementPersonnages, setChargementPersonnages] = useState(true);
 
@@ -145,15 +125,12 @@ export default function lobby() {
     };
   }, [universe]);
 
-<<<<<<< Updated upstream
-=======
   const envoyerWs = (payload: object) => {
     const ws = wsRef.current;
     if (!ws || ws.readyState !== WebSocket.OPEN) return;
     ws.send(JSON.stringify(payload));
   };
 
->>>>>>> Stashed changes
   if (!sessionPrête || chargementGame) {
     return (
       <div className="page-lobby page-lobby--introuvable">
@@ -184,18 +161,11 @@ export default function lobby() {
   const nombrePrets = joueurs.filter((joueur) => joueur.pret).length;
   const placesMax = game.joueursMax;
   const minimumPourLancer = game.mode === 'solo' ? 1 : 2;
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
   const presentsPrets = joueurs.length > 0 && nombrePrets === joueurs.length;
   const assezDeJoueurs = joueurs.length >= minimumPourLancer;
   const estHote = monId === game.hote;
   const peutLancer = estHote && presentsPrets && assezDeJoueurs;
 
-<<<<<<< Updated upstream
-  const basculerMonStatut = () => basculerPret(monId);
-=======
   const basculerMonStatut = () => {
     envoyerWs({ type: 'lobby_ready', ready: !vous?.pret });
   };
@@ -207,7 +177,6 @@ export default function lobby() {
   const envoyerMessage = (texte: string) => {
     envoyerWs({ type: 'lobby_chat', text: texte });
   };
->>>>>>> Stashed changes
 
   const lancerLaPartie = () => {
     if (!peutLancer) return;
@@ -268,13 +237,7 @@ export default function lobby() {
                         personnage={personnage}
                         selectionne={vous?.personnageId === personnage.id}
                         pris={pris}
-<<<<<<< Updated upstream
-                        onSelectionner={() =>
-                          choisirPersonnage(monId, personnage.id, personnage.classe)
-                        }
-=======
                         onSelectionner={() => choisirPerso(personnage.id, personnage.classe)}
->>>>>>> Stashed changes
                       />
                     );
                   })

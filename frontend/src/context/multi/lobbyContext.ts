@@ -14,8 +14,6 @@ export interface LobbyMessage {
   texte: string;
 }
 
-<<<<<<< Updated upstream
-=======
 export interface LobbyStatePlayer {
   id: string;
   username: string;
@@ -32,7 +30,6 @@ export interface LobbyStatePayload {
   players: LobbyStatePlayer[];
 }
 
->>>>>>> Stashed changes
 export function useLobby() {
   const [joueurs, setJoueurs] = useState<LobbyPlayer[]>([]);
   const [messages, setMessages] = useState<LobbyMessage[]>([]);
@@ -49,36 +46,6 @@ export function useLobby() {
     );
   }
 
-<<<<<<< Updated upstream
-  function choisirPersonnage(id: string, personnageId: string, classe: string) {
-    const dejaPris = joueurs.some(
-      (joueur) => joueur.id !== id && joueur.personnageId === personnageId
-    );
-    if (dejaPris) return;
-
-    setJoueurs(
-      joueurs.map((joueur) =>
-        joueur.id === id ? { ...joueur, personnageId, classe } : joueur
-      )
-    );
-  }
-
-  function synchroniserJoueurs(playerIds: string[], monId: string) {
-    setJoueurs((anciens) =>
-      playerIds.map((id) => {
-        const dejaLa = anciens.find((j) => j.id === id);
-        if (dejaLa) return dejaLa;
-
-        return {
-          id,
-          pseudo: id === monId ? 'Vous' : id,
-          classe: '',
-          personnageId: null,
-          pret: false,
-        };
-      }),
-    );
-=======
   function ajouterLobbyChat(
     msg: { id: string; userId: string; username: string; text: string },
     monId: string,
@@ -91,7 +58,6 @@ export function useLobby() {
         texte: msg.text,
       },
     ]);
->>>>>>> Stashed changes
   }
 
   return {
