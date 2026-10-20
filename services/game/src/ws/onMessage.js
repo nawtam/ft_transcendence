@@ -1,5 +1,13 @@
 const { handleTurn } = require('../game/handleTurn');
-const { getGame, isMember } = require('../game/gameRegistry');
+const {
+  getGame,
+  isMember,
+  setLobbyReady,
+  setLobbyPick,
+  addLobbyChat,
+  toLobbyState,
+  ensureLobbyPlayer,
+} = require('../game/gameRegistry');
 const { broadcast } = require('./rooms');
 
 function safeSend(ws, payload) {
@@ -17,19 +25,68 @@ async function onMessage(ws, raw) {
     return;
   }
 
-  if (data.type !== 'action' || typeof data.message !== 'string' || !data.message.trim()) {
+  const userId = ws.user?.sub || 'dev-user';
+  const gameId = ws.gameId || 'solo-dev';
+  const type = data.type;
+
+  if (type === 'lobby_sync') {
+    const game = getGame(gameId);
+    if (!game) {
+      safeSend(ws, { type: 'error', text: 'Game not found.' });
+      return;
+    }
+    if (!isMember(gameId, userId)) {
+      safeSend(ws, { type: 'error', text: 'Not a member of this game.' });
+      return;
+    }
+    ensureLobbyPlayer(game, userId, ws.user?.username || null);
+    safeSend(ws, toLobbyState(game));
+    return;
+  }
+
+  if (type === 'lobby_ready') {
+    const result = setLobbyReady(gameId, userId, data.ready);
+    if (!result.ok) {
+      safeSend(ws, { type: 'error', text: result.error });
+      return;
+    }
+    broadcast(gameId, result.state);
+    return;
+  }
+
+  if (type === 'lobby_pick') {
+    const result = setLobbyPick(gameId, userId, data.personnageId, data.classe);
+    if (!result.ok) {
+      safeSend(ws, { type: 'error', text: result.error });
+      return;
+    }
+    broadcast(gameId, result.state);
+    return;
+  }
+
+  if (type === 'lobby_chat') {
+    const result = addLobbyChat(gameId, userId, data.text);
+    if (!result.ok) {
+      safeSend(ws, { type: 'error', text: result.error });
+      return;
+    }
+    broadcast(gameId, {
+      type: 'lobby_chat',
+      ...result.message,
+    });
+    return;
+  }
+
+  if (type !== 'action' || typeof data.message !== 'string' || !data.message.trim()) {
     safeSend(ws, {
       type: 'error',
-      text: 'Expected { type: "action", message: "..." }',
+      text: 'Expected lobby_* or { type: "action", message: "..." }',
     });
     return;
   }
 
   try {
-    const userId = ws.user?.sub || 'dev-user';
-    const gameId = ws.gameId || 'solo-dev';
     const message = data.message.trim();
-
     const game = getGame(gameId);
     if (game && !isMember(gameId, userId)) {
       safeSend(ws, { type: 'error', text: 'Not a member of this game.' });
@@ -37,7 +94,6 @@ async function onMessage(ws, raw) {
     }
 
     const result = await handleTurn(message, userId, gameId);
-
     broadcast(gameId, {
       ...result,
       userId,
