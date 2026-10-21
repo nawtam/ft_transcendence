@@ -207,6 +207,40 @@ function isMember(gameId, userId) {
   return game.playerIds.includes(userId);
 }
 
+function startLobby(gameId, userId) {
+  const game = games.get(gameId);
+  if (!game) return { ok: false, error: 'Game not found.' };
+  if (String(game.hostUserId) !== String(userId)) {
+    return { ok: false, error: 'Only the host can start the game.' };
+  }
+
+  const lobby = ensureLobby(game);
+  if (lobby.started) {
+    return { ok: true, already: true, state: toLobbyState(game) };
+  }
+
+  const minimum = game.mode === 'solo' ? 1 : 2;
+  if (game.playerIds.length < minimum) {
+    return { ok: false, error: `Need at least ${minimum} players.` };
+  }
+
+  const players = game.playerIds.map((id) => ensureLobbyPlayer(game, id));
+  if (!players.every((p) => p.ready)) {
+    return { ok: false, error: 'All players must be ready.' };
+  }
+
+  lobby.started = true;
+  return {
+    ok: true,
+    state: toLobbyState(game),
+    start: {
+      type: 'lobby_start',
+      gameId: game.gameId,
+      universeId: game.universeId,
+    },
+  };
+}
+
 module.exports = {
   createGame,
   getGame,
@@ -219,4 +253,5 @@ module.exports = {
   setLobbyReady,
   setLobbyPick,
   addLobbyChat,
+  startLobby,
 };

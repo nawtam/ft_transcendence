@@ -94,6 +94,19 @@ export default function lobby() {
         if (data.type === 'lobby_chat') {
           ajouterLobbyChat(data, monId);
         }
+        if (data.type === 'lobby_start') {
+          const uid = data.universeId || universe?.id;
+          if (uid && data.gameId) {
+            navigate(`/univers/${uid}/partie/${data.gameId}/jouer`);
+          }
+          return;
+        }
+        if (data.type === 'lobby_state' && data.started) {
+          const uid = data.universeId || universe?.id;
+          if (uid && data.gameId) {
+            navigate(`/univers/${uid}/partie/${data.gameId}/jouer`);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -180,7 +193,7 @@ export default function lobby() {
 
   const lancerLaPartie = () => {
     if (!peutLancer) return;
-    navigate(`/univers/${universe.id}/partie/${game.gameId}/jouer`);
+    envoyerWs({ type: 'lobby_start' });
   };
 
   return (

@@ -7,6 +7,7 @@ const {
   addLobbyChat,
   toLobbyState,
   ensureLobbyPlayer,
+  startLobby,
 } = require('../game/gameRegistry');
 const { broadcast } = require('./rooms');
 
@@ -74,6 +75,19 @@ async function onMessage(ws, raw) {
       type: 'lobby_chat',
       ...result.message,
     });
+    return;
+  }
+
+  if (type === 'lobby_start') {
+    const result = startLobby(gameId, userId);
+    if (!result.ok) {
+      safeSend(ws, { type: 'error', text: result.error });
+      return;
+    }
+    broadcast(gameId, result.state);
+    if (result.start) {
+      broadcast(gameId, result.start);
+    }
     return;
   }
 
