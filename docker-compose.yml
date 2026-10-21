@@ -69,7 +69,12 @@ services:
     environment:
       DATABASE_URL: postgres://game_user:${GAME_DB_PASSWORD}@postgres:5432/db_game
       IA_SERVICE_URL: http://ia:8000
-      SKIP_JWT: "1"
+      SKIP_JWT: "0"
+      JWT_PUBLIC_KEY_FILE: /run/jwt_public.pem
+      JWT_ISSUER: "auth"
+      JWT_AUDIENCE: "rpg"
+    volumes:
+      - ./services/game/secrets/jwt_public.pem:/run/jwt_public.pem:ro
     ports:
       - "3001:3001"
     networks:

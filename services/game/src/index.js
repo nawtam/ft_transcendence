@@ -6,8 +6,9 @@ const { onMessage } = require('./ws/onMessage');
 const { resetGame, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
 const { handleTurn } = require('./game/handleTurn');
 const { verifyJwtFromUrl } = require('./ws/verifyJwt');
-const { joinRoom, leaveRoom } = require('./ws/rooms');
-const { createGame, getGame, listGames, joinGame, toPublicGame, isMember } = require('./game/gameRegistry');
+const { joinRoom, leaveRoom, broadcast } = require('./ws/rooms');
+const {createGame, getGame, listGames, joinGame, toPublicGame, isMember, ensureLobbyPlayer, toLobbyState} = require('./game/gameRegistry');
+
 
 const app = express();
 app.use(express.json());
@@ -89,25 +90,45 @@ const wss = new WebSocketServer({ server });
 wss.on('connection', (ws, req) => {
 	if (process.env.SKIP_JWT !== '1') {
 		const auth = verifyJwtFromUrl(req.url || '', req.headers.cookie || '');
-	  if (!auth.ok) {
-		ws.send(JSON.stringify({ type: 'error', text: auth.error }));
-		ws.close(1008, auth.error);
-		return;
-	  }
-	  ws.user = auth.user;
-	  ws.gameId = auth.gameId;
+		if (!auth.ok) {
+			ws.send(JSON.stringify({ type: 'error', text: auth.error }));
+			ws.close(1008, auth.error);
+			return;
+		}
+		ws.user = auth.user;
+		ws.gameId = auth.gameId;
 	} else {
-	  const params = new URL(req.url || '', 'http://localhost').searchParams;
-	  ws.gameId = params.get('gameId') || DEFAULT_GAME_ID;
-	  ws.user = { sub: params.get('userId') || DEFAULT_USER_ID };
+		const params = new URL(req.url || '', 'http://localhost').searchParams;
+		ws.gameId = params.get('gameId') || DEFAULT_GAME_ID;
+		ws.user = {
+			sub: params.get('userId') || DEFAULT_USER_ID,
+			username: params.get('username') || params.get('userId') || DEFAULT_USER_ID,
+		};
 	}
 
-	joinRoom(ws.gameId, ws);
+	const userId = ws.user?.sub || DEFAULT_USER_ID;
+	const gameId = ws.gameId;
+	const game = getGame(gameId);
+
+	if (game) {
+		if (!isMember(gameId, userId)) {
+			ws.send(JSON.stringify({ type: 'error', text: 'Not a member of this game.' }));
+			ws.close(1008, 'Not a member of this game.');
+			return;
+		}
+		ensureLobbyPlayer(game, userId, ws.user?.username || null);
+	}
+
+	joinRoom(gameId, ws);
+
+	if (game) {
+		broadcast(gameId, toLobbyState(game));
+	}
 
 	ws.on('message', (raw) => onMessage(ws, raw));
 
 	ws.on('close', () => {
-	  leaveRoom(ws.gameId, ws);
+		leaveRoom(gameId, ws);
 	});
 });
 
