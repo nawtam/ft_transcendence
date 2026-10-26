@@ -103,17 +103,17 @@ export async function getGameById(
 export async function creerPartie(
   universeId: string,
   donnees: NouvellePartie,
-  hostUserId = DEFAULT_USER_ID,
+  _hostUserId = DEFAULT_USER_ID,
 ): Promise<Game> {
   const res = await fetch(`${API}/games`, {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       mode: donnees.mode,
       maxPlayers: donnees.joueursMax,
       visibilite: donnees.visibilite,
       password: donnees.visibilite === 'prive' ? donnees.password : null,
-      hostUserId,
       titre: donnees.titre,
       universeId,
     }),
@@ -128,9 +128,9 @@ export async function rejoindrePartie(
 ): Promise<Game> {
   const res = await fetch(`${API}/games/${encodeURIComponent(gameId)}/join`, {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      userId: options.userId || DEFAULT_USER_ID,
       password: options.password ?? null,
     }),
   });
@@ -138,7 +138,6 @@ export async function rejoindrePartie(
   return mapGame(await res.json(), options.universeId);
 }
 
-/** Code = gameId. Join + retourne la partie. */
 export async function rejoindreParCode(
   code: string,
   password?: string,
