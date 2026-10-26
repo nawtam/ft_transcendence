@@ -190,7 +190,7 @@
 
 .xp-text {
   font-size: 0.7rem;
-  color: color-mix(in oklch, var(#ffffffb2) 60%, transparent);
+  color: #ffffffb2;
   font-variant-numeric: tabular-nums;
 }
 

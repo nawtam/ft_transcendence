@@ -14,7 +14,7 @@
     ajoute une classe "Victoire" ou "Défaite" (majuscule + accent) sur
     .multi-resultat : ciblé ici via ".multi-resultat.Victoire" et
     ".multi-resultat.Défaite" pour matcher exactement.
-  Dépend de refs.css (utilise --success-*/--danger-*).
+  Dépend de refs.css (utilise --success-* et --danger-*).
 */
 
 .stat-multi {
