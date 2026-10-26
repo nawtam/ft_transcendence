@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
-import { useParams } from "react-router-dom";
+import RequireAuth from './composants/RequireAuth'
 
 import Home from './pages/Home'
 import Connexion from './pages/Connexion'
@@ -19,12 +19,12 @@ function App() {
       <Route path="/connexion" element={<Connexion />} />
       <Route path="/Registration" element={<Registration />} />
       <Route path="/conditions-generales" element={<ConditionsGenerales />} />
-      <Route path="/Profil" element={<Profil />} />
-      <Route path="/Aventure" element={<Aventure />} />
-      <Route path="/hub" element={<Hub />} />
-      <Route path="/univers/:universeId" element={<UniversePage />} />
-      <Route path="/univers/:universeId/partie/:gameId" element={<Lobby />} />
-      <Route path="/univers/:universeId/partie/:gameId/jouer" element={<Game />} />
+      <Route path="/Profil" element={<RequireAuth><Profil /></RequireAuth>} />
+      <Route path="/Aventure" element={<RequireAuth><Aventure /></RequireAuth>} />
+      <Route path="/hub" element={<RequireAuth><Hub /></RequireAuth>} />
+      <Route path="/univers/:universeId" element={<RequireAuth><UniversePage /></RequireAuth>} />
+      <Route path="/univers/:universeId/partie/:gameId" element={<RequireAuth><Lobby /></RequireAuth>} />
+      <Route path="/univers/:universeId/partie/:gameId/jouer" element={<RequireAuth><Game /></RequireAuth>} />
     </Routes>
   )
 }
