@@ -1,6 +1,6 @@
 import { Coins, FlaskConical } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import '../css/Header.css';
 
 interface Joueur {
@@ -17,11 +17,13 @@ interface Joueur {
 
 interface HeaderProps {
   joueur: Joueur;
+  onDeconnexion?: () => void;
 }
 
-function Header({ joueur }: HeaderProps) {
+function Header({ joueur, onDeconnexion }: HeaderProps) {
   const pourcentageXP = (joueur.xpActuel / joueur.xpTotal) * 100;
   const [menuOuvert, setMenuOuvert] = useState(false);
+
   return (
     <header className="header-connecte">
       <span className="site-name">Transcendence</span>
@@ -44,13 +46,26 @@ function Header({ joueur }: HeaderProps) {
             <div className="avatar">{joueur.pseudo.charAt(0).toUpperCase()}</div>
             <div className="level-badge">Niv. {joueur.niveau}</div>
             {menuOuvert && (
-             <div className="dropdown-menu">
-            <Link to="/Profil" className="dropdown-item">Mon profil</Link>
-            <Link to="/Parametre" className="dropdown-item">Paramètres</Link>
-            <div className="dropdown-divider"></div>
-            <button className="dropdown-item dropdown-item-danger">Déconnexion</button>
-            </div>
-)}
+              <div className="dropdown-menu" onClick={(e) => e.stopPropagation()}>
+                <Link to="/Profil" className="dropdown-item">
+                  Mon profil
+                </Link>
+                <Link to="/Parametre" className="dropdown-item">
+                  Paramètres
+                </Link>
+                <div className="dropdown-divider"></div>
+                <button
+                  type="button"
+                  className="dropdown-item dropdown-item-danger"
+                  onClick={() => {
+                    setMenuOuvert(false);
+                    onDeconnexion?.();
+                  }}
+                >
+                  Déconnexion
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="player-info">
@@ -58,9 +73,14 @@ function Header({ joueur }: HeaderProps) {
             <span className="player-classe">{joueur.classe}</span>
             <div className="player-xp-row">
               <div className="xp-barre-fond">
-                <div className="xp-barre-remplie" style={{ width: `${pourcentageXP}%` }}></div>
+                <div
+                  className="xp-barre-remplie"
+                  style={{ width: `${pourcentageXP}%` }}
+                ></div>
               </div>
-              <span className="xp-text">{joueur.xpActuel}/{joueur.xpTotal} XP</span>
+              <span className="xp-text">
+                {joueur.xpActuel}/{joueur.xpTotal} XP
+              </span>
             </div>
           </div>
         </div>
