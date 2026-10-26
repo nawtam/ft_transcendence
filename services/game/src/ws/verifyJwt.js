@@ -23,32 +23,40 @@ function getCookie(header, name) {
   return null;
 }
 
-function verifyJwtFromUrl(url, cookieHeader = '') {
-  const publicKey = loadPublicKey();
-
-  const params = new URL(url, 'http://localhost').searchParams;
-  const gameId = params.get('gameId') || 'solo-dev';
-  const token = params.get('token') || getCookie(cookieHeader, ACCESS_COOKIE);
-
+function verifyAccessToken(token) {
   if (!token) {
-    return { ok: false, error: 'Missing access token (query or cookie).' };
+    return { ok: false, error: 'Missing access token.' };
   }
-
   try {
+    const publicKey = loadPublicKey();
     const payload = jwt.verify(token, publicKey, {
       algorithms: ['RS256'],
       issuer: process.env.JWT_ISSUER || 'auth',
       audience: process.env.JWT_AUDIENCE || 'rpg',
     });
-
     if (payload.type !== 'access') {
       return { ok: false, error: 'Invalid token type.' };
     }
-
-    return { ok: true, user: payload, gameId };
+    return { ok: true, user: payload };
   } catch {
     return { ok: false, error: 'Invalid or expired token.' };
   }
 }
 
-module.exports = { verifyJwtFromUrl };
+function verifyJwtFromUrl(url, cookieHeader = '') {
+  const params = new URL(url, 'http://localhost').searchParams;
+  const gameId = params.get('gameId') || 'solo-dev';
+  const token = params.get('token') || getCookie(cookieHeader, ACCESS_COOKIE);
+  const auth = verifyAccessToken(token);
+  if (!auth.ok) return auth;
+  return { ok: true, user: auth.user, gameId };
+}
+
+function verifyJwtFromRequest(req) {
+  const header = req.headers?.authorization || '';
+  const bearer = header.startsWith('Bearer ') ? header.slice(7) : null;
+  const token = bearer || getCookie(req.headers?.cookie || '', ACCESS_COOKIE);
+  return verifyAccessToken(token);
+}
+
+module.exports = { verifyJwtFromUrl, verifyJwtFromRequest, verifyAccessToken };

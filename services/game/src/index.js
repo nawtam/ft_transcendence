@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 const { onMessage } = require('./ws/onMessage');
 const { resetGame, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
 const { handleTurn } = require('./game/handleTurn');
-const { verifyJwtFromUrl } = require('./ws/verifyJwt');
+const { verifyJwtFromUrl, verifyJwtFromRequest } = require('./ws/verifyJwt');
 const { joinRoom, leaveRoom, broadcast } = require('./ws/rooms');
 const {createGame, getGame, listGames, joinGame, toPublicGame, isMember, ensureLobbyPlayer, toLobbyState} = require('./game/gameRegistry');
 
@@ -25,14 +25,17 @@ app.get('/health', async (req, res) => {
 });
 
 app.post('/games', (req, res) => {
+	const auth = verifyJwtFromRequest(req);
+	if (!auth.ok) {
+		return res.status(401).json({ error: auth.error });
+	}
 	const mode = req.body?.mode || 'solo';
 	const maxPlayers = Number(req.body?.maxPlayers) || (mode === 'solo' ? 1 : 4);
-	const hostUserId = req.body?.hostUserId || DEFAULT_USER_ID;
+	const hostUserId = String(auth.user.sub);
 	const visibilite = req.body?.visibilite || 'public';
 	const password = req.body?.password ?? null;
 	const titre = req.body?.titre ?? null;
 	const universeId = req.body?.universeId ?? null;
-	
 	const result = createGame({ mode, maxPlayers, hostUserId, visibilite, password, titre, universeId });
 	if (!result.ok) {
 		return res.status(400).json({ error: result.error });
@@ -51,7 +54,11 @@ app.get('/games/:gameId', (req, res) => {
 });
 
 app.post('/games/:gameId/join', (req, res) => {
-	const userId = req.body?.userId || DEFAULT_USER_ID;
+	const auth = verifyJwtFromRequest(req);
+	if (!auth.ok) {
+		return res.status(401).json({ error: auth.error });
+	}
+	const userId = String(auth.user.sub);
 	const password = req.body?.password ?? null;
 	const result = joinGame(req.params.gameId, userId, password);
 	if (!result.ok) {
