@@ -5,12 +5,20 @@ import '../css/multi/Chatbox.css';
 interface ChatBoxProps {
   messages: LobbyMessage[];
   onEnvoyer: (texte: string) => void;
+  disabled?: boolean;
+  placeholder?: string;
 }
 
-export default function ChatBox({ messages, onEnvoyer }: ChatBoxProps) {
+export default function ChatBox({
+  messages,
+  onEnvoyer,
+  disabled = false,
+  placeholder = 'Écrire un message…',
+}: ChatBoxProps) {
   const [brouillon, setBrouillon] = useState('');
 
   const envoyer = () => {
+    if (disabled) return;
     const texte = brouillon.trim();
     if (!texte) return;
     onEnvoyer(texte);
@@ -30,13 +38,14 @@ export default function ChatBox({ messages, onEnvoyer }: ChatBoxProps) {
         <input
           type="text"
           value={brouillon}
+          disabled={disabled}
           onChange={(event) => setBrouillon(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Enter') envoyer();
           }}
-          placeholder="Écrire un message…"
+          placeholder={placeholder}
         />
-        <button type="button" onClick={envoyer}>
+        <button type="button" onClick={envoyer} disabled={disabled}>
           Envoyer
         </button>
       </div>

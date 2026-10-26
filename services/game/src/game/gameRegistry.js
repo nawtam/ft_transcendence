@@ -19,18 +19,19 @@ function ensureLobby(game) {
 
 function ensureLobbyPlayer(game, userId, username = null) {
   const lobby = ensureLobby(game);
-  if (!lobby.players[userId]) {
-    lobby.players[userId] = {
-      id: String(userId),
-      username: username || String(userId),
+  const id = String(userId);
+  if (!lobby.players[id]) {
+    lobby.players[id] = {
+      id,
+      username: username || id,
       ready: false,
       personnageId: null,
       classe: '',
     };
   } else if (username) {
-    lobby.players[userId].username = username;
+    lobby.players[id].username = username;
   }
-  return lobby.players[userId];
+  return lobby.players[id];
 }
 
 function toLobbyState(game) {
@@ -39,10 +40,10 @@ function toLobbyState(game) {
   return {
     type: 'lobby_state',
     gameId: game.gameId,
-    hostUserId: game.hostUserId,
+    hostUserId: String(game.hostUserId),
     started: lobby.started,
     players: game.playerIds.map((id) => {
-      const p = lobby.players[id] || {
+      const p = lobby.players[String(id)] || {
         id: String(id),
         username: String(id),
         ready: false,
@@ -54,10 +55,102 @@ function toLobbyState(game) {
   };
 }
 
+function ensureCombat(game) {
+  if (!game.combat) {
+    game.combat = {
+      currentTurnUserId: null,
+      busy: false,
+      turnIndex: 0,
+      paByUser: {},
+      maxPa: 3,
+    };
+  }
+  return game.combat;
+}
+
+function toTurnState(game) {
+  const combat = ensureCombat(game);
+  return {
+    type: 'turn_state',
+    gameId: game.gameId,
+    currentTurnUserId: combat.currentTurnUserId,
+    busy: combat.busy,
+    maxPa: combat.maxPa,
+    paByUser: { ...combat.paByUser },
+  };
+}
+
+function initTurns(gameId) {
+  const game = games.get(gameId);
+  if (!game) return { ok: false, error: 'Game not found.' };
+  const combat = ensureCombat(game);
+  const ids = game.playerIds.map(String);
+  combat.turnIndex = 0;
+  combat.busy = false;
+  combat.currentTurnUserId = ids[0] || null;
+  combat.paByUser = {};
+  for (const id of ids) {
+    combat.paByUser[id] = combat.maxPa;
+  }
+  return { ok: true, state: toTurnState(game) };
+}
+
+function canAct(gameId, userId) {
+  const game = games.get(gameId);
+  if (!game || !game.lobby?.started) {
+    return { ok: false, error: 'Game has not started.' };
+  }
+  const combat = ensureCombat(game);
+  if (combat.busy) {
+    return { ok: false, error: 'A turn is already being resolved.' };
+  }
+  if (String(combat.currentTurnUserId) !== String(userId)) {
+    return { ok: false, error: 'Not your turn.' };
+  }
+  const pa = combat.paByUser[String(userId)] ?? 0;
+  if (pa <= 0) {
+    return { ok: false, error: 'No action points left. End your turn.' };
+  }
+  return { ok: true, pa, combat, game };
+}
+
+function setBusy(gameId, busy) {
+  const game = games.get(gameId);
+  if (!game) return;
+  ensureCombat(game).busy = Boolean(busy);
+}
+
+function spendPa(gameId, userId, cost) {
+  const game = games.get(gameId);
+  if (!game) return { ok: false, error: 'Game not found.' };
+  const combat = ensureCombat(game);
+  const id = String(userId);
+  const next = (combat.paByUser[id] ?? 0) - Number(cost);
+  if (next < 0) return { ok: false, error: 'Not enough action points.' };
+  combat.paByUser[id] = next;
+  return { ok: true, pa: next, state: toTurnState(game) };
+}
+
+function advanceTurn(gameId) {
+  const game = games.get(gameId);
+  if (!game) return { ok: false, error: 'Game not found.' };
+  const combat = ensureCombat(game);
+  const ids = game.playerIds.map(String);
+  if (ids.length === 0) return { ok: false, error: 'No players.' };
+
+  combat.turnIndex = (combat.turnIndex + 1) % ids.length;
+  combat.currentTurnUserId = ids[combat.turnIndex];
+  combat.busy = false;
+  for (const id of ids) {
+    combat.paByUser[id] = combat.maxPa;
+  }
+  return { ok: true, state: toTurnState(game) };
+}
+
 function setLobbyReady(gameId, userId, ready) {
   const game = games.get(gameId);
   if (!game) return { ok: false, error: 'Game not found.' };
-  if (!game.playerIds.includes(userId)) {
+  if (!game.playerIds.map(String).includes(String(userId))) {
     return { ok: false, error: 'Not a member of this game.' };
   }
   const player = ensureLobbyPlayer(game, userId);
@@ -68,7 +161,7 @@ function setLobbyReady(gameId, userId, ready) {
 function setLobbyPick(gameId, userId, personnageId, classe) {
   const game = games.get(gameId);
   if (!game) return { ok: false, error: 'Game not found.' };
-  if (!game.playerIds.includes(userId)) {
+  if (!game.playerIds.map(String).includes(String(userId))) {
     return { ok: false, error: 'Not a member of this game.' };
   }
 
@@ -87,7 +180,7 @@ function setLobbyPick(gameId, userId, personnageId, classe) {
 function addLobbyChat(gameId, userId, text) {
   const game = games.get(gameId);
   if (!game) return { ok: false, error: 'Game not found.' };
-  if (!game.playerIds.includes(userId)) {
+  if (!game.playerIds.map(String).includes(String(userId))) {
     return { ok: false, error: 'Not a member of this game.' };
   }
   const player = ensureLobbyPlayer(game, userId);
@@ -131,7 +224,7 @@ function createGame({
     gameId,
     mode,
     maxPlayers: mode === 'solo' ? 1 : maxPlayers,
-    hostUserId,
+    hostUserId: String(hostUserId),
     visibilite,
     password,
     titre: typeof titre === 'string' && titre.trim() ? titre.trim() : `Partie ${gameId}`,
@@ -142,8 +235,8 @@ function createGame({
 
   games.set(gameId, meta);
   resetGame(gameId);
-  meta.playerIds.push(hostUserId);
-  getPlayer(gameId, hostUserId);
+  meta.playerIds.push(String(hostUserId));
+  getPlayer(gameId, String(hostUserId));
   ensureLobbyPlayer(meta, hostUserId);
 
   return { ok: true, game: meta };
@@ -151,7 +244,7 @@ function createGame({
 
 function toPublicGame(game) {
   if (!game) return null;
-  const { password, lobby, ...safe } = game;
+  const { password, lobby, combat, ...safe } = game;
   return {
     ...safe,
     hasPassword: game.visibilite === 'prive',
@@ -177,9 +270,10 @@ function joinGame(gameId, userId, password = null) {
     return { ok: false, error: 'userId is required.' };
   }
 
-  if (game.playerIds.includes(userId)) {
-    getPlayer(gameId, userId);
-    ensureLobbyPlayer(game, userId);
+  const uid = String(userId);
+  if (game.playerIds.map(String).includes(uid)) {
+    getPlayer(gameId, uid);
+    ensureLobbyPlayer(game, uid);
     return { ok: true, game };
   }
 
@@ -194,9 +288,9 @@ function joinGame(gameId, userId, password = null) {
     }
   }
 
-  game.playerIds.push(userId);
-  getPlayer(gameId, userId);
-  ensureLobbyPlayer(game, userId);
+  game.playerIds.push(uid);
+  getPlayer(gameId, uid);
+  ensureLobbyPlayer(game, uid);
 
   return { ok: true, game };
 }
@@ -204,7 +298,7 @@ function joinGame(gameId, userId, password = null) {
 function isMember(gameId, userId) {
   const game = games.get(gameId);
   if (!game) return false;
-  return game.playerIds.includes(userId);
+  return game.playerIds.map(String).includes(String(userId));
 }
 
 function startLobby(gameId, userId) {
@@ -216,7 +310,17 @@ function startLobby(gameId, userId) {
 
   const lobby = ensureLobby(game);
   if (lobby.started) {
-    return { ok: true, already: true, state: toLobbyState(game) };
+    return {
+      ok: true,
+      already: true,
+      state: toLobbyState(game),
+      start: {
+        type: 'lobby_start',
+        gameId: game.gameId,
+        universeId: game.universeId,
+        turn: toTurnState(game),
+      },
+    };
   }
 
   const minimum = game.mode === 'solo' ? 1 : 2;
@@ -230,6 +334,8 @@ function startLobby(gameId, userId) {
   }
 
   lobby.started = true;
+  initTurns(gameId);
+
   return {
     ok: true,
     state: toLobbyState(game),
@@ -237,6 +343,7 @@ function startLobby(gameId, userId) {
       type: 'lobby_start',
       gameId: game.gameId,
       universeId: game.universeId,
+      turn: toTurnState(game),
     },
   };
 }
@@ -254,4 +361,10 @@ module.exports = {
   setLobbyPick,
   addLobbyChat,
   startLobby,
+  initTurns,
+  canAct,
+  setBusy,
+  spendPa,
+  advanceTurn,
+  toTurnState,
 };
