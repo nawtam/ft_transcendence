@@ -1,0 +1,88 @@
+
+.p-page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+
+/* ===================== Retour ===================== */
+.btn-retour {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--color-gold);
+  text-decoration: none;
+  margin-bottom: 1rem;
+  transition: color 0.2s ease;
+}
+
+.btn-retour:hover {
+  color: var(--color-gold-bright);
+}
+
+/* ===================== Carte principale ("le tome") ===================== */
+.box-main {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.3rem;
+  border: 1px solid var(--gold-30);
+  background: var(--bg-82);
+}
+
+.box-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, var(--arcane-25), transparent 70%);
+}
+
+/* ===================== Onglets ===================== */
+.barre-onglets {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--gold-25);
+  border-bottom: 1px solid var(--gold-25);
+  background: var(--bg-60);
+}
+
+.section-perso,
+.section-multi,
+.section-succes,
+.section-quetes {
+  padding: 0.75rem 0;
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-parchment);
+  opacity: 0.45;
+  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.section-perso:hover,
+.section-multi:hover,
+.section-succes:hover,
+.section-quetes:hover {
+  opacity: 0.8;
+}
+
+.section-perso.onglet-actif,
+.section-multi.onglet-actif,
+.section-succes.onglet-actif,
+.section-quetes.onglet-actif {
+  opacity: 1;
+  color: var(--color-gold-bright);
+  background: var(--gold-10);
+}
+/* ===================== Conteneur de contenu (commun à tous les onglets) ===================== */
+.zone-contenu {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem;
+}

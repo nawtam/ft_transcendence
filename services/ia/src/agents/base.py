@@ -1,1 +1,0 @@
-# Classe mere / interface pour les agents

@@ -1,0 +1,57 @@
+.carte-personnage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 10px 14px;
+  background-color: rgba(20, 15, 11, 0.55);
+  border: 1px solid var(--bordure-carte);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.carte-personnage:hover:not(:disabled) {
+  border-color: var(--or);
+}
+
+.carte-personnage--selectionne {
+  border-color: var(--or);
+  background-color: rgba(202, 161, 83, 0.12);
+}
+
+.carte-personnage--pris {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.carte-personnage__portrait {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--bordure-carte);
+}
+
+.carte-personnage__nom {
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--or-clair);
+}
+
+.carte-personnage__classe {
+  font-size: 0.72rem;
+  color: var(--texte-attenue);
+}
+
+.carte-personnage__pris-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texte-attenue);
+}

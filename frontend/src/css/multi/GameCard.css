@@ -1,0 +1,127 @@
+
+.carte-partie {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 22px;
+  background-color: var(--fond-carte);
+  border: 1px solid var(--bordure-carte);
+  border-radius: var(--rayon);
+}
+ 
+.carte-partie__entete {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+ 
+.carte-partie__titre {
+  margin: 0;
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--or-clair);
+  line-height: 1.25;
+}
+ 
+.carte-partie__hote {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--texte-attenue);
+}
+ 
+.carte-partie__pied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+ 
+.carte-partie__infos {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+ 
+.carte-partie__joueurs {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: var(--texte-attenue);
+}
+ 
+
+.badge-visibilite {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-visibilite--public {
+  color: var(--teal);
+}
+.badge-visibilite--prive {
+  color: #9b83e0;
+}
+ 
+/* Badges de mode de jeu */
+.badge-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-mode--cooperatif {
+  color: var(--teal);
+  background-color: rgba(63, 174, 138, 0.14);
+  border-color: rgba(63, 174, 138, 0.4);
+}
+.badge-mode--chacun-pour-soi {
+  color: var(--rouge);
+  background-color: rgba(193, 68, 95, 0.14);
+  border-color: rgba(193, 68, 95, 0.4);
+}
+.badge-mode--equipe-vs-equipe {
+  color: var(--bleu);
+  background-color: rgba(74, 134, 201, 0.14);
+  border-color: rgba(74, 134, 201, 0.4);
+}
+ 
+.bouton-rejoindre {
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid var(--or);
+  border-radius: 6px;
+  color: var(--or-clair);
+  font-family: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.bouton-rejoindre:hover:not(:disabled) {
+  background-color: rgba(202, 161, 83, 0.12);
+}
+.bouton-rejoindre:disabled {
+  border-color: rgba(183, 171, 152, 0.35);
+  color: var(--texte-attenue);
+  cursor: not-allowed;
+}

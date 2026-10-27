@@ -67,9 +67,6 @@ graph TD
 Étape 5 : Tout se range. Chacun des trois services note ce qu'il doit garder dans la base de données, qui est juste une grosse armoire à fiches partagée.
 
 
-Auth s'occupe uniquement des comptes et mots de passe.
-Game s'occupe uniquement de la partie en cours.
-IA s'occupe uniquement de générer du texte.
 
 
 dossier gateway

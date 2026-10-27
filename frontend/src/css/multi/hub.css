@@ -1,0 +1,133 @@
+.hub {
+  min-height: 100vh;
+  padding: 2rem 3rem;
+}
+
+.hub__retour {
+  display: inline-block;
+  color: var(--color-gold);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  transition: color 0.25s ease;
+}
+
+.hub__retour:hover {
+  color: #fff;
+}
+
+.hub__entete {
+  text-align: center;
+  margin: 2rem 0 3rem;
+}
+
+.hub__label {
+  color: var(--color-text-muted);
+  letter-spacing: 0.3em;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.hub__titre {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--color-gold);
+  margin-top: 0.5rem;
+}
+
+.hub__stats {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.hub__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 2rem;
+  border: 1px solid var(--color-gold-dark);
+  border-radius: 8px;
+  background: var(--gold-10);
+}
+
+.hub__stat-valeur {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--color-gold-bright);
+}
+
+.hub__stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+.hub__section-entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hub__section-titre {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--color-gold);
+  margin-bottom: 0.25rem;
+}
+
+.hub__section-sous-titre {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.hub__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.hub__bouton {
+  font-family: var(--font-display);
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: 1px solid var(--color-gold-dark);
+  background: transparent;
+  color: var(--color-gold);
+  transition: color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hub__bouton:hover {
+  color: #ffffff;
+  box-shadow: 0 0 20px 2px var(--gold-40);
+}
+
+.hub__bouton--plein {
+  background: linear-gradient(180deg, #e8963a, #c9691f);
+  color: #1a1006;
+  border: none;
+}
+
+.hub__bouton--plein:hover {
+  color: #ffffff;
+}
+
+.hub__grille {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding: 0 15rem;
+}
+@media (max-width: 900px) {
+  .hub__grille {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

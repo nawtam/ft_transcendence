@@ -1,1 +1,1 @@
-# Interface avec ChromaDB (Lore des univers)
+# TODO(ia): RAG lore via pgvector. Wire when db_ai embeddings are ready.

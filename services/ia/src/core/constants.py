@@ -1,1 +1,0 @@
-# Enums pour les univers, les types de messages, etc.

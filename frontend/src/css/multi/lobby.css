@@ -1,0 +1,293 @@
+.page-lobby {
+  --or: #caa153;
+  --or-clair: #e3c179;
+  --violet: #9b83e0;
+  --teal: #3fae8a;
+  --rouge: #c1445f;
+  --bleu: #4a86c9;
+  --texte-clair: #f1e9db;
+  --texte-attenue: #b7ab98;
+  --fond-carte: rgba(28, 20, 14, 0.72);
+  --bordure-carte: rgba(202, 161, 83, 0.22);
+  --rayon: 10px;
+
+  position: relative;
+  min-height: 100vh;
+  color: var(--texte-clair);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background-color: #0d0a08;
+  background-image:
+    linear-gradient(180deg, rgba(8, 6, 5, 0.94) 0%, rgba(8, 6, 5, 0.88) 30%, rgba(8, 6, 5, 0.7) 65%, rgba(8, 6, 5, 0.45) 100%),
+    var(--image-fond);
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+.page-lobby--introuvable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: #0d0a08;
+}
+
+.page-lobby__contenu {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 40px 60px;
+}
+
+.page-lobby__entete {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-lobby__titre-univers {
+  margin: 0 0 10px;
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--or);
+}
+
+.page-lobby__ambiance {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 10px 22px;
+  max-width: 640px;
+  background-color: rgba(20, 15, 11, 0.5);
+  border: 1px solid var(--bordure-carte);
+  border-radius: 999px;
+  color: var(--texte-attenue);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.page-lobby__grille {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+/* Panneau de gauche : briefing */
+.panneau-briefing {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--fond-carte);
+  border: 1px solid var(--bordure-carte);
+  border-radius: var(--rayon);
+  padding: 26px 28px;
+}
+
+.panneau-briefing__label {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--texte-attenue);
+}
+
+.panneau-briefing__titre {
+  margin: 0;
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--or);
+}
+
+.panneau-briefing__narration {
+  margin: 0;
+  font-style: italic;
+  color: var(--texte-clair);
+  line-height: 1.5;
+}
+
+.panneau-briefing__recompenses {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--texte-attenue);
+}
+.panneau-briefing__recompenses strong {
+  color: var(--or-clair);
+  font-weight: 600;
+}
+
+.panneau-briefing__difficulte {
+  padding: 3px 10px;
+  border: 1px solid var(--bordure-carte);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.panneau-briefing__info {
+  font-size: 0.78rem;
+  color: var(--texte-attenue);
+}
+.panneau-briefing__info summary {
+  cursor: pointer;
+  color: var(--texte-attenue);
+}
+.panneau-briefing__info summary:hover {
+  color: var(--texte-clair);
+}
+.panneau-briefing__info p {
+  margin: 8px 0 0;
+}
+
+.panneau-briefing__section {
+  padding-top: 14px;
+  border-top: 1px solid var(--bordure-carte);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panneau-briefing__sous-titre {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texte-attenue);
+}
+
+/* Mode figé (un seul, pas un sélecteur) */
+.mode-fige {
+  padding: 14px 16px;
+  background-color: rgba(202, 161, 83, 0.1);
+  border: 1px solid var(--or);
+  border-radius: 8px;
+}
+.mode-fige__nom {
+  margin: 0 0 4px;
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--or-clair);
+  text-transform: uppercase;
+}
+.mode-fige__description {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--texte-attenue);
+}
+
+.grille-personnages {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.panneau-briefing__chargement {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--texte-attenue);
+}
+
+/* Panneau de droite : joueurs + chat */
+.panneau-joueurs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--fond-carte);
+  border: 1px solid var(--bordure-carte);
+  border-radius: var(--rayon);
+  padding: 22px;
+  position: sticky;
+  top: 20px;
+}
+
+.panneau-joueurs__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panneau-joueurs__label {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--texte-attenue);
+}
+.panneau-joueurs__compte {
+  font-size: 0.78rem;
+  color: var(--or-clair);
+}
+
+.panneau-joueurs__barre {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.panneau-joueurs__progression {
+  height: 100%;
+  background-color: var(--or);
+  transition: width 0.2s ease;
+}
+
+.panneau-joueurs__liste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bouton-pret,
+.bouton-lancer {
+  padding: 11px 16px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.bouton-pret {
+  background: transparent;
+  border: 1px solid var(--or);
+  color: var(--or-clair);
+}
+.bouton-pret:hover {
+  background-color: rgba(202, 161, 83, 0.12);
+}
+
+.bouton-lancer {
+  background-color: var(--or);
+  border: 1px solid var(--or);
+  color: #1a1208;
+  font-weight: 600;
+}
+.bouton-lancer:disabled {
+  background-color: rgba(202, 161, 83, 0.18);
+  border-color: var(--bordure-carte);
+  color: var(--texte-attenue);
+  cursor: not-allowed;
+  font-weight: 400;
+}
+
+@media (max-width: 860px) {
+  .page-lobby__grille {
+    grid-template-columns: 1fr;
+  }
+  .panneau-joueurs {
+    position: static;
+  }
+  .page-lobby__contenu {
+    padding: 28px 20px 50px;
+  }
+}
