@@ -67,7 +67,11 @@ services:
       context: ./services/game
       dockerfile: containerfile
     environment:
-      DATABASE_URL: postgres://game_user:${GAME_DB_PASSWORD}@postgres:5432/db_game
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: game_user
+      PGPASSWORD: ${GAME_DB_PASSWORD}
+      PGDATABASE: db_game
       IA_SERVICE_URL: http://ia:8000
       SKIP_JWT: "0"
       JWT_PUBLIC_KEY_FILE: /run/jwt_public.pem
