@@ -1,6 +1,24 @@
+const { createHash } = require('crypto');
 const { resetGame, getPlayer } = require('./sessionStore');
+const { saveGame } = require('../db/gamesRepo');
 
 const games = new Map();
+
+function hashPassword(password) {
+  return createHash('sha256').update(String(password)).digest('hex');
+}
+
+function persist(game) {
+  if (!game) return;
+  saveGame(game).catch((err) => console.error('save game', game.gameId, err.message));
+}
+
+function hydrateGames(list) {
+  games.clear();
+  for (const game of list) {
+    if (game?.gameId) games.set(game.gameId, game);
+  }
+}
 
 function createGameId() {
   return `game-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -92,6 +110,7 @@ function initTurns(gameId) {
   for (const id of ids) {
     combat.paByUser[id] = combat.maxPa;
   }
+  persist(game);
   return { ok: true, state: toTurnState(game) };
 }
 
@@ -118,6 +137,7 @@ function setBusy(gameId, busy) {
   const game = games.get(gameId);
   if (!game) return;
   ensureCombat(game).busy = Boolean(busy);
+  persist(game);
 }
 
 function spendPa(gameId, userId, cost) {
@@ -128,6 +148,7 @@ function spendPa(gameId, userId, cost) {
   const next = (combat.paByUser[id] ?? 0) - Number(cost);
   if (next < 0) return { ok: false, error: 'Not enough action points.' };
   combat.paByUser[id] = next;
+  persist(game);
   return { ok: true, pa: next, state: toTurnState(game) };
 }
 
@@ -144,6 +165,7 @@ function advanceTurn(gameId) {
   for (const id of ids) {
     combat.paByUser[id] = combat.maxPa;
   }
+  persist(game);
   return { ok: true, state: toTurnState(game) };
 }
 
@@ -155,6 +177,7 @@ function setLobbyReady(gameId, userId, ready) {
   }
   const player = ensureLobbyPlayer(game, userId);
   player.ready = Boolean(ready);
+  persist(game);
   return { ok: true, state: toLobbyState(game) };
 }
 
@@ -174,6 +197,7 @@ function setLobbyPick(gameId, userId, personnageId, classe) {
   const player = ensureLobbyPlayer(game, userId);
   player.personnageId = personnageId || null;
   player.classe = classe || '';
+  persist(game);
   return { ok: true, state: toLobbyState(game) };
 }
 
@@ -196,6 +220,7 @@ function addLobbyChat(gameId, userId, text) {
   lobby.messages.push(message);
   if (lobby.messages.length > 50) lobby.messages.shift();
 
+  persist(game);
   return { ok: true, message, state: toLobbyState(game) };
 }
 
@@ -208,15 +233,15 @@ function createGame({
   titre = null,
   universeId = null,
 } = {}) {
+  let passwordHash = null;
   if (visibilite === 'prive') {
     const pwd = typeof password === 'string' ? password.trim() : '';
     if (!pwd) {
       return { ok: false, error: 'Password required for private games.' };
     }
-    password = pwd;
+    passwordHash = hashPassword(pwd);
   } else {
     visibilite = 'public';
-    password = null;
   }
 
   const gameId = createGameId();
@@ -226,7 +251,7 @@ function createGame({
     maxPlayers: mode === 'solo' ? 1 : maxPlayers,
     hostUserId: String(hostUserId),
     visibilite,
-    password,
+    passwordHash,
     titre: typeof titre === 'string' && titre.trim() ? titre.trim() : `Partie ${gameId}`,
     universeId: universeId || null,
     playerIds: [],
@@ -238,13 +263,14 @@ function createGame({
   meta.playerIds.push(String(hostUserId));
   getPlayer(gameId, String(hostUserId));
   ensureLobbyPlayer(meta, hostUserId);
+  persist(meta);
 
   return { ok: true, game: meta };
 }
 
 function toPublicGame(game) {
   if (!game) return null;
-  const { password, lobby, combat, ...safe } = game;
+  const { password, passwordHash, lobby, combat, ...safe } = game;
   return {
     ...safe,
     hasPassword: game.visibilite === 'prive',
@@ -274,6 +300,7 @@ function joinGame(gameId, userId, password = null) {
   if (game.playerIds.map(String).includes(uid)) {
     getPlayer(gameId, uid);
     ensureLobbyPlayer(game, uid);
+    persist(game);
     return { ok: true, game };
   }
 
@@ -283,7 +310,7 @@ function joinGame(gameId, userId, password = null) {
 
   if (game.visibilite === 'prive') {
     const pwd = typeof password === 'string' ? password.trim() : '';
-    if (!pwd || pwd !== game.password) {
+    if (!pwd || hashPassword(pwd) !== game.passwordHash) {
       return { ok: false, error: 'Invalid password.' };
     }
   }
@@ -291,6 +318,7 @@ function joinGame(gameId, userId, password = null) {
   game.playerIds.push(uid);
   getPlayer(gameId, uid);
   ensureLobbyPlayer(game, uid);
+  persist(game);
 
   return { ok: true, game };
 }
@@ -367,4 +395,6 @@ module.exports = {
   spendPa,
   advanceTurn,
   toTurnState,
+  hydrateGames,
+  persist,
 };

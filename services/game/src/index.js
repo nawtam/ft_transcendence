@@ -1,19 +1,16 @@
 const express = require('express');
 const http = require('http');
 const { WebSocketServer } = require('ws');
-const { Pool } = require('pg');
 const { onMessage } = require('./ws/onMessage');
 const { resetGame, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
 const { handleTurn } = require('./game/handleTurn');
 const { verifyJwtFromUrl, verifyJwtFromRequest } = require('./ws/verifyJwt');
 const { joinRoom, leaveRoom, broadcast } = require('./ws/rooms');
-const {createGame, getGame, listGames, joinGame, toPublicGame, isMember, ensureLobbyPlayer, toLobbyState} = require('./game/gameRegistry');
-
+const {createGame, getGame, listGames, joinGame, toPublicGame, isMember, ensureLobbyPlayer, toLobbyState, hydrateGames, persist} = require('./game/gameRegistry');
+const { pool, initGamesTable, loadGames } = require('./db/gamesRepo');
 
 const app = express();
 app.use(express.json());
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 app.get('/health', async (req, res) => {
 	try {
@@ -124,6 +121,7 @@ wss.on('connection', (ws, req) => {
 			return;
 		}
 		ensureLobbyPlayer(game, userId, ws.user?.username || null);
+		persist(game);
 	}
 
 	joinRoom(gameId, ws);
@@ -139,4 +137,13 @@ wss.on('connection', (ws, req) => {
 	});
 });
 
-server.listen(3001, () => console.log('game listening on 3001'));
+initGamesTable()
+  .then(loadGames)
+  .then((rows) => {
+    hydrateGames(rows);
+    server.listen(3001, () => console.log('game listening on 3001'));
+  })
+  .catch((err) => {
+    console.error('game boot failed', err);
+    process.exit(1);
+  });
