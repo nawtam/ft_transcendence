@@ -71,6 +71,21 @@ export default function Game() {
           return;
         }
 
+        if (data.type === 'history' && Array.isArray(data.messages)) {
+          const historique = (data.messages as { role?: string; content?: unknown }[]).filter(
+            (m): m is { role?: string; content: string } =>
+              Boolean(m) && typeof m.content === 'string',
+          );
+          setMessages(
+            historique.map((m, i) => ({
+              id: `hist-${i}`,
+              auteur: m.role === 'user' ? 'Vous' : 'MJ',
+              texte: m.content,
+            })),
+          );
+          return;
+        }
+
         if (data.type === 'lobby_state' || data.type === 'lobby_chat' || data.type === 'lobby_start') {
           return;
         }

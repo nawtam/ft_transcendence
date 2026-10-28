@@ -1,4 +1,5 @@
 const { handleTurn } = require('../game/handleTurn');
+const { getSession } = require('../game/sessionStore');
 const {
   getGame,
   isMember,
@@ -79,6 +80,11 @@ async function onMessage(ws, raw) {
       return;
     }
     safeSend(ws, toTurnState(game));
+    const session = getSession(gameId, userId);
+    safeSend(ws, {
+      type: 'history',
+      messages: session.messagesHistory,
+    });
     return;
   }
 
