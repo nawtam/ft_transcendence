@@ -67,8 +67,12 @@ app.post('/games/:gameId/join', (req, res) => {
 });
 
 app.post('/test-turn', async (req, res) => {
+	const auth = verifyJwtFromRequest(req);
+	if (!auth.ok) {
+		return res.status(401).json({ error: auth.error });
+	}
 	try {
-		const userId = req.body.userId || DEFAULT_USER_ID;
+		const userId = String(auth.user.sub);
 		const gameId = req.body.gameId || DEFAULT_GAME_ID;
 
 		const game = getGame(gameId);
@@ -84,7 +88,15 @@ app.post('/test-turn', async (req, res) => {
 });
 
 app.post('/reset-session', (req, res) => {
+	const auth = verifyJwtFromRequest(req);
+	if (!auth.ok) {
+		return res.status(401).json({ error: auth.error });
+	}
 	const gameId = req.body?.gameId || DEFAULT_GAME_ID;
+	const game = getGame(gameId);
+	if (game && String(game.hostUserId) !== String(auth.user.sub)) {
+		return res.status(403).json({ error: 'Only the host can reset the session.' });
+	}
 	resetGame(gameId);
 	res.json({ ok: true, gameId });
 });
