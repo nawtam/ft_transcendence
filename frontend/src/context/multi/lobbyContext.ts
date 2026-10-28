@@ -22,12 +22,20 @@ export interface LobbyStatePlayer {
   classe: string;
 }
 
+export interface LobbyChatMessage {
+  id: string;
+  userId: string;
+  username: string;
+  text: string;
+}
+
 export interface LobbyStatePayload {
   type: 'lobby_state';
   gameId: string;
   hostUserId: string;
   started: boolean;
   players: LobbyStatePlayer[];
+  messages?: LobbyChatMessage[];
 }
 
 export function useLobby() {
@@ -44,12 +52,19 @@ export function useLobby() {
         pret: Boolean(p.ready),
       })),
     );
+
+    if (Array.isArray(state.messages)) {
+      setMessages(
+        state.messages.map((msg) => ({
+          id: msg.id,
+          auteur: String(msg.userId) === monId ? 'Vous' : msg.username || msg.userId,
+          texte: msg.text,
+        })),
+      );
+    }
   }
 
-  function ajouterLobbyChat(
-    msg: { id: string; userId: string; username: string; text: string },
-    monId: string,
-  ) {
+  function ajouterLobbyChat(msg: LobbyChatMessage, monId: string) {
     setMessages((prev) => [
       ...prev,
       {

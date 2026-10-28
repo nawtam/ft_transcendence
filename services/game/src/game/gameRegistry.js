@@ -60,6 +60,7 @@ function toLobbyState(game) {
     gameId: game.gameId,
     hostUserId: String(game.hostUserId),
     started: lobby.started,
+    messages: lobby.messages || [],
     players: game.playerIds.map((id) => {
       const p = lobby.players[String(id)] || {
         id: String(id),
