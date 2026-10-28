@@ -2,7 +2,8 @@ const express = require('express');
 const http = require('http');
 const { WebSocketServer } = require('ws');
 const { onMessage } = require('./ws/onMessage');
-const { resetGame, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
+const { resetGame, hydrateSessions, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
+const { initSessionTables, loadSessions } = require('./db/sessionRepo');
 const { handleTurn } = require('./game/handleTurn');
 const { verifyJwtFromUrl, verifyJwtFromRequest } = require('./ws/verifyJwt');
 const { joinRoom, leaveRoom, broadcast } = require('./ws/rooms');
@@ -66,8 +67,12 @@ app.post('/games/:gameId/join', (req, res) => {
 });
 
 app.post('/test-turn', async (req, res) => {
+	const auth = verifyJwtFromRequest(req);
+	if (!auth.ok) {
+		return res.status(401).json({ error: auth.error });
+	}
 	try {
-		const userId = req.body.userId || DEFAULT_USER_ID;
+		const userId = String(auth.user.sub);
 		const gameId = req.body.gameId || DEFAULT_GAME_ID;
 
 		const game = getGame(gameId);
@@ -83,7 +88,15 @@ app.post('/test-turn', async (req, res) => {
 });
 
 app.post('/reset-session', (req, res) => {
+	const auth = verifyJwtFromRequest(req);
+	if (!auth.ok) {
+		return res.status(401).json({ error: auth.error });
+	}
 	const gameId = req.body?.gameId || DEFAULT_GAME_ID;
+	const game = getGame(gameId);
+	if (game && String(game.hostUserId) !== String(auth.user.sub)) {
+		return res.status(403).json({ error: 'Only the host can reset the session.' });
+	}
 	resetGame(gameId);
 	res.json({ ok: true, gameId });
 });
@@ -138,9 +151,11 @@ wss.on('connection', (ws, req) => {
 });
 
 initGamesTable()
-  .then(loadGames)
-  .then((rows) => {
+  .then(() => initSessionTables())
+  .then(() => Promise.all([loadGames(), loadSessions()]))
+  .then(([rows, sessions]) => {
     hydrateGames(rows);
+    hydrateSessions(sessions);
     server.listen(3001, () => console.log('game listening on 3001'));
   })
   .catch((err) => {

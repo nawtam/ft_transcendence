@@ -1,5 +1,5 @@
 const { interpret, narrate } = require('../ia/client');
-const { getSession } = require('./sessionStore');
+const { getSession, persistSession } = require('./sessionStore');
 const { applyAction } = require('./applyAction');
 
 async function handleTurn(userMessage, userId, gameId) {
@@ -42,6 +42,8 @@ async function handleTurn(userMessage, userId, gameId) {
     { role: 'assistant', content: narrateRes.narrator_message },
   );
 
+  persistSession(gameId, userId);
+  
   return {
     type: 'narration',
     text: narrateRes.narrator_message,
