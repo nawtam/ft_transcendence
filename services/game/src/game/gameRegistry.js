@@ -1,5 +1,5 @@
 const { createHash } = require('crypto');
-const { resetGame, getPlayer } = require('./sessionStore');
+const { resetGame, getPlayer, persistSession } = require('./sessionStore');
 const { saveGame } = require('../db/gamesRepo');
 
 const games = new Map();
@@ -262,6 +262,7 @@ function createGame({
   resetGame(gameId);
   meta.playerIds.push(String(hostUserId));
   getPlayer(gameId, String(hostUserId));
+  persistSession(gameId, String(hostUserId));
   ensureLobbyPlayer(meta, hostUserId);
   persist(meta);
 
@@ -299,6 +300,7 @@ function joinGame(gameId, userId, password = null) {
   const uid = String(userId);
   if (game.playerIds.map(String).includes(uid)) {
     getPlayer(gameId, uid);
+    persistSession(gameId, uid);
     ensureLobbyPlayer(game, uid);
     persist(game);
     return { ok: true, game };
@@ -317,6 +319,7 @@ function joinGame(gameId, userId, password = null) {
 
   game.playerIds.push(uid);
   getPlayer(gameId, uid);
+  persistSession(gameId, uid);
   ensureLobbyPlayer(game, uid);
   persist(game);
 

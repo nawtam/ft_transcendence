@@ -29,6 +29,8 @@ async function handleTurn(userMessage, userId, gameId) {
       game_result: gameResult,
     };
   }
+  
+  persistSession(gameId, userId);
 
   const narrateRes = await narrate({
     user_message: userMessage,
