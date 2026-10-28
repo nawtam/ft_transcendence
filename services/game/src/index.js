@@ -2,7 +2,8 @@ const express = require('express');
 const http = require('http');
 const { WebSocketServer } = require('ws');
 const { onMessage } = require('./ws/onMessage');
-const { resetGame, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
+const { resetGame, hydrateSessions, DEFAULT_USER_ID, DEFAULT_GAME_ID } = require('./game/sessionStore');
+const { initSessionTables, loadSessions } = require('./db/sessionRepo');
 const { handleTurn } = require('./game/handleTurn');
 const { verifyJwtFromUrl, verifyJwtFromRequest } = require('./ws/verifyJwt');
 const { joinRoom, leaveRoom, broadcast } = require('./ws/rooms');
@@ -138,9 +139,11 @@ wss.on('connection', (ws, req) => {
 });
 
 initGamesTable()
-  .then(loadGames)
-  .then((rows) => {
+  .then(() => initSessionTables())
+  .then(() => Promise.all([loadGames(), loadSessions()]))
+  .then(([rows, sessions]) => {
     hydrateGames(rows);
+    hydrateSessions(sessions);
     server.listen(3001, () => console.log('game listening on 3001'));
   })
   .catch((err) => {
