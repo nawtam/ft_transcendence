@@ -11,6 +11,7 @@ interface TurnState {
   busy: boolean;
   maxPa: number;
   paByUser: Record<string, number>;
+  players?: { id: string; username: string }[];
 }
 
 interface PlayerState {
@@ -113,7 +114,7 @@ export default function Game() {
             ...prev,
             {
               id: `${Date.now()}-u-${prev.length}`,
-              auteur: String(data.userId) === monId ? 'Vous' : `Joueur ${data.userId}`,
+              auteur: String(data.userId) === monId ? 'Vous' : String(data.username || `Joueur ${data.userId}`),
               texte: data.message,
             },
           ]);
@@ -143,6 +144,11 @@ export default function Game() {
   const monTour = Boolean(monId && turn && String(turn.currentTurnUserId) === monId);
   const mesPa = monId && turn ? turn.paByUser[monId] ?? 0 : 0;
   const peutAgir = monTour && !turn?.busy && mesPa > 0;
+  const joueurActif = turn?.players?.find((p) => String(p.id) === String(turn.currentTurnUserId));
+  const nomTour =
+    turn?.currentTurnUserId && String(turn.currentTurnUserId) === monId
+      ? 'Vous'
+      : joueurActif?.username || (turn?.currentTurnUserId ? `Joueur ${turn.currentTurnUserId}` : '…');
 
   const envoyerAction = (texte: string) => {
     const ws = wsRef.current;
@@ -189,7 +195,7 @@ export default function Game() {
         {turn
           ? monTour
             ? `Ton tour — PA ${mesPa}/${turn.maxPa}${turn.busy ? ' (résolution…)' : ''}`
-            : `Tour de Joueur ${turn.currentTurnUserId} — tes PA ${mesPa}/${turn.maxPa}`
+            : `Tour de ${nomTour} — tes PA ${mesPa}/${turn.maxPa}`
           : 'En attente de l’état du tour…'}
         {fiche
           ? ` — PV ${fiche.hp}/${fiche.maxHp} — ${fiche.location}${fiche.inventory.length ? ` — ${fiche.inventory.join(', ')}` : ''}`

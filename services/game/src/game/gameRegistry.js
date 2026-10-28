@@ -96,6 +96,10 @@ function toTurnState(game) {
     busy: combat.busy,
     maxPa: combat.maxPa,
     paByUser: { ...combat.paByUser },
+    players: (game.playerIds || []).map((id) => {
+      const p = game.lobby?.players?.[String(id)];
+      return { id: String(id), username: p?.username || String(id) };
+    }),
   };
 }
 

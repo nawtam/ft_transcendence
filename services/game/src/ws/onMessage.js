@@ -219,6 +219,7 @@ async function onMessage(ws, raw) {
     broadcast(gameId, {
       ...result,
       userId,
+      username: ws.user?.username || userId,
       message,
       paSpent: cost,
     });
