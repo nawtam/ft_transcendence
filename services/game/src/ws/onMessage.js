@@ -31,6 +31,19 @@ function safeSend(ws, payload) {
   }
 }
 
+function toPlayerState(gameId, userId) {
+  const stats = getSession(gameId, userId).playerStats || {};
+  return {
+    type: 'player_state',
+    hp: stats.hp,
+    maxHp: stats.max_hp,
+    location: stats.location,
+    inventory: (stats.inventory || []).map((item) =>
+      typeof item === 'string' ? item : item?.name || 'objet',
+    ),
+  };
+}
+
 function paCostForResult(result) {
   if (!result || result.type === 'clarification') return 0;
   if (result.game_result && result.game_result.success === false) return 0;
@@ -85,6 +98,7 @@ async function onMessage(ws, raw) {
       type: 'history',
       messages: session.messagesHistory,
     });
+    safeSend(ws, toPlayerState(gameId, userId));
     return;
   }
 
@@ -215,6 +229,7 @@ async function onMessage(ws, raw) {
     setBusy(gameId, false);
     const game = getGame(gameId);
     if (game) broadcast(gameId, toTurnState(game));
+    safeSend(ws, toPlayerState(gameId, userId));
   }
 }
 

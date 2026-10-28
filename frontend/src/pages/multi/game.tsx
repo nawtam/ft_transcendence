@@ -13,6 +13,13 @@ interface TurnState {
   paByUser: Record<string, number>;
 }
 
+interface PlayerState {
+  hp: number;
+  maxHp: number;
+  location: string;
+  inventory: string[];
+}
+
 export default function Game() {
   const { universeId, gameId } = useParams<{ universeId: string; gameId: string }>();
   const [messages, setMessages] = useState<LobbyMessage[]>([]);
@@ -20,6 +27,7 @@ export default function Game() {
   const [monId, setMonId] = useState<string | null>(null);
   const [turn, setTurn] = useState<TurnState | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const [fiche, setFiche] = useState<PlayerState | null>(null);
 
   useEffect(() => {
     let annule = false;
@@ -83,6 +91,16 @@ export default function Game() {
               texte: m.content,
             })),
           );
+          return;
+        }
+
+        if (data.type === 'player_state') {
+          setFiche({
+            hp: Number(data.hp),
+            maxHp: Number(data.maxHp),
+            location: String(data.location || ''),
+            inventory: Array.isArray(data.inventory) ? data.inventory.map(String) : [],
+          });
           return;
         }
 
@@ -173,6 +191,9 @@ export default function Game() {
             ? `Ton tour — PA ${mesPa}/${turn.maxPa}${turn.busy ? ' (résolution…)' : ''}`
             : `Tour de Joueur ${turn.currentTurnUserId} — tes PA ${mesPa}/${turn.maxPa}`
           : 'En attente de l’état du tour…'}
+        {fiche
+          ? ` — PV ${fiche.hp}/${fiche.maxHp} — ${fiche.location}${fiche.inventory.length ? ` — ${fiche.inventory.join(', ')}` : ''}`
+          : ''}
       </p>
       <ChatBox
         messages={messages}
