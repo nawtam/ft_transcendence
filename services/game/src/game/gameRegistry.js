@@ -276,7 +276,7 @@ function createGame({
 
 function toPublicGame(game) {
   if (!game) return null;
-  const { password, passwordHash, lobby, combat, ...safe } = game;
+  const { password, passwordHash, lobby, combat, combatLog, ...safe } = game;
   return {
     ...safe,
     hasPassword: game.visibilite === 'prive',
@@ -384,6 +384,17 @@ function startLobby(gameId, userId) {
   };
 }
 
+function appendCombatLog(gameId, entries) {
+  const game = games.get(gameId);
+  if (!game || !Array.isArray(entries) || entries.length === 0) return;
+  if (!Array.isArray(game.combatLog)) game.combatLog = [];
+  game.combatLog.push(...entries);
+  if (game.combatLog.length > 80) {
+    game.combatLog.splice(0, game.combatLog.length - 80);
+  }
+  persist(game);
+}
+
 module.exports = {
   createGame,
   getGame,
@@ -405,4 +416,5 @@ module.exports = {
   toTurnState,
   hydrateGames,
   persist,
+  appendCombatLog,
 };

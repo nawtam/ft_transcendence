@@ -81,16 +81,25 @@ export default function Game() {
         }
 
         if (data.type === 'history' && Array.isArray(data.messages)) {
-          const historique = (data.messages as { role?: string; content?: unknown }[]).filter(
-            (m): m is { role?: string; content: string } =>
-              Boolean(m) && typeof m.content === 'string',
-          );
+          const historique = (data.messages as {
+            id?: string;
+            role?: string;
+            content?: unknown;
+            text?: unknown;
+            userId?: string;
+            username?: string;
+          }[]).filter((m) => m && (typeof m.content === 'string' || typeof m.text === 'string'));
           setMessages(
-            historique.map((m, i) => ({
-              id: `hist-${i}`,
-              auteur: m.role === 'user' ? 'Vous' : 'MJ',
-              texte: m.content,
-            })),
+            historique.map((m, i) => {
+              const texte = typeof m.content === 'string' ? m.content : String(m.text);
+              const auteur =
+                m.role === 'assistant' || m.username === 'MJ'
+                  ? 'MJ'
+                  : String(m.userId) === monId
+                    ? 'Vous'
+                    : String(m.username || `Joueur ${m.userId || i}`);
+              return { id: m.id || `hist-${i}`, auteur, texte };
+            }),
           );
           return;
         }

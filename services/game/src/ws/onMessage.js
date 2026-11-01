@@ -14,6 +14,7 @@ const {
   spendPa,
   advanceTurn,
   toTurnState,
+  appendCombatLog,
 } = require('../game/gameRegistry');
 const { broadcast } = require('./rooms');
 
@@ -94,9 +95,10 @@ async function onMessage(ws, raw) {
     }
     safeSend(ws, toTurnState(game));
     const session = getSession(gameId, userId);
+    const shared = Array.isArray(game.combatLog) ? game.combatLog : [];
     safeSend(ws, {
       type: 'history',
-      messages: session.messagesHistory,
+      messages: shared.length ? shared : session.messagesHistory,
     });
     safeSend(ws, toPlayerState(gameId, userId));
     return;
@@ -223,6 +225,25 @@ async function onMessage(ws, raw) {
       message,
       paSpent: cost,
     });
+    const log = [];
+    if (message) {
+      log.push({
+        id: `${Date.now()}-u`,
+        userId,
+        username: ws.user?.username || userId,
+        role: 'user',
+        text: message,
+      });
+    }
+    if (result.text) {
+      log.push({
+        id: `${Date.now()}-mj`,
+        role: 'assistant',
+        username: 'MJ',
+        text: result.text,
+      });
+    }
+    appendCombatLog(gameId, log);
     broadcast(gameId, turnState);
   } catch (err) {
     safeSend(ws, { type: 'error', text: err.message || 'Turn failed.' });
