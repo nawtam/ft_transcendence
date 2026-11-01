@@ -1,4 +1,5 @@
 const { handleTurn } = require('../game/handleTurn');
+const { getSession } = require('../game/sessionStore');
 const {
   getGame,
   isMember,
@@ -13,6 +14,7 @@ const {
   spendPa,
   advanceTurn,
   toTurnState,
+  appendCombatLog,
 } = require('../game/gameRegistry');
 const { broadcast } = require('./rooms');
 
@@ -28,6 +30,19 @@ function safeSend(ws, payload) {
   if (ws.readyState === 1) {
     ws.send(JSON.stringify(payload));
   }
+}
+
+function toPlayerState(gameId, userId) {
+  const stats = getSession(gameId, userId).playerStats || {};
+  return {
+    type: 'player_state',
+    hp: stats.hp,
+    maxHp: stats.max_hp,
+    location: stats.location,
+    inventory: (stats.inventory || []).map((item) =>
+      typeof item === 'string' ? item : item?.name || 'objet',
+    ),
+  };
 }
 
 function paCostForResult(result) {
@@ -79,6 +94,13 @@ async function onMessage(ws, raw) {
       return;
     }
     safeSend(ws, toTurnState(game));
+    const session = getSession(gameId, userId);
+    const shared = Array.isArray(game.combatLog) ? game.combatLog : [];
+    safeSend(ws, {
+      type: 'history',
+      messages: shared.length ? shared : session.messagesHistory,
+    });
+    safeSend(ws, toPlayerState(gameId, userId));
     return;
   }
 
@@ -199,9 +221,29 @@ async function onMessage(ws, raw) {
     broadcast(gameId, {
       ...result,
       userId,
+      username: ws.user?.username || userId,
       message,
       paSpent: cost,
     });
+    const log = [];
+    if (message) {
+      log.push({
+        id: `${Date.now()}-u`,
+        userId,
+        username: ws.user?.username || userId,
+        role: 'user',
+        text: message,
+      });
+    }
+    if (result.text) {
+      log.push({
+        id: `${Date.now()}-mj`,
+        role: 'assistant',
+        username: 'MJ',
+        text: result.text,
+      });
+    }
+    appendCombatLog(gameId, log);
     broadcast(gameId, turnState);
   } catch (err) {
     safeSend(ws, { type: 'error', text: err.message || 'Turn failed.' });
@@ -209,6 +251,7 @@ async function onMessage(ws, raw) {
     setBusy(gameId, false);
     const game = getGame(gameId);
     if (game) broadcast(gameId, toTurnState(game));
+    safeSend(ws, toPlayerState(gameId, userId));
   }
 }
 

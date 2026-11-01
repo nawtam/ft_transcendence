@@ -11,6 +11,14 @@ interface TurnState {
   busy: boolean;
   maxPa: number;
   paByUser: Record<string, number>;
+  players?: { id: string; username: string }[];
+}
+
+interface PlayerState {
+  hp: number;
+  maxHp: number;
+  location: string;
+  inventory: string[];
 }
 
 export default function Game() {
@@ -20,6 +28,7 @@ export default function Game() {
   const [monId, setMonId] = useState<string | null>(null);
   const [turn, setTurn] = useState<TurnState | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const [fiche, setFiche] = useState<PlayerState | null>(null);
 
   useEffect(() => {
     let annule = false;
@@ -71,6 +80,40 @@ export default function Game() {
           return;
         }
 
+        if (data.type === 'history' && Array.isArray(data.messages)) {
+          const historique = (data.messages as {
+            id?: string;
+            role?: string;
+            content?: unknown;
+            text?: unknown;
+            userId?: string;
+            username?: string;
+          }[]).filter((m) => m && (typeof m.content === 'string' || typeof m.text === 'string'));
+          setMessages(
+            historique.map((m, i) => {
+              const texte = typeof m.content === 'string' ? m.content : String(m.text);
+              const auteur =
+                m.role === 'assistant' || m.username === 'MJ'
+                  ? 'MJ'
+                  : String(m.userId) === monId
+                    ? 'Vous'
+                    : String(m.username || `Joueur ${m.userId || i}`);
+              return { id: m.id || `hist-${i}`, auteur, texte };
+            }),
+          );
+          return;
+        }
+
+        if (data.type === 'player_state') {
+          setFiche({
+            hp: Number(data.hp),
+            maxHp: Number(data.maxHp),
+            location: String(data.location || ''),
+            inventory: Array.isArray(data.inventory) ? data.inventory.map(String) : [],
+          });
+          return;
+        }
+
         if (data.type === 'lobby_state' || data.type === 'lobby_chat' || data.type === 'lobby_start') {
           return;
         }
@@ -80,7 +123,7 @@ export default function Game() {
             ...prev,
             {
               id: `${Date.now()}-u-${prev.length}`,
-              auteur: String(data.userId) === monId ? 'Vous' : `Joueur ${data.userId}`,
+              auteur: String(data.userId) === monId ? 'Vous' : String(data.username || `Joueur ${data.userId}`),
               texte: data.message,
             },
           ]);
@@ -110,6 +153,11 @@ export default function Game() {
   const monTour = Boolean(monId && turn && String(turn.currentTurnUserId) === monId);
   const mesPa = monId && turn ? turn.paByUser[monId] ?? 0 : 0;
   const peutAgir = monTour && !turn?.busy && mesPa > 0;
+  const joueurActif = turn?.players?.find((p) => String(p.id) === String(turn.currentTurnUserId));
+  const nomTour =
+    turn?.currentTurnUserId && String(turn.currentTurnUserId) === monId
+      ? 'Vous'
+      : joueurActif?.username || (turn?.currentTurnUserId ? `Joueur ${turn.currentTurnUserId}` : '…');
 
   const envoyerAction = (texte: string) => {
     const ws = wsRef.current;
@@ -156,8 +204,11 @@ export default function Game() {
         {turn
           ? monTour
             ? `Ton tour — PA ${mesPa}/${turn.maxPa}${turn.busy ? ' (résolution…)' : ''}`
-            : `Tour de Joueur ${turn.currentTurnUserId} — tes PA ${mesPa}/${turn.maxPa}`
+            : `Tour de ${nomTour} — tes PA ${mesPa}/${turn.maxPa}`
           : 'En attente de l’état du tour…'}
+        {fiche
+          ? ` — PV ${fiche.hp}/${fiche.maxHp} — ${fiche.location}${fiche.inventory.length ? ` — ${fiche.inventory.join(', ')}` : ''}`
+          : ''}
       </p>
       <ChatBox
         messages={messages}

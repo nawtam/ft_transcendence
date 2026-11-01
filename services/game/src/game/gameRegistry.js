@@ -1,5 +1,5 @@
 const { createHash } = require('crypto');
-const { resetGame, getPlayer } = require('./sessionStore');
+const { resetGame, getPlayer, persistSession } = require('./sessionStore');
 const { saveGame } = require('../db/gamesRepo');
 
 const games = new Map();
@@ -60,6 +60,7 @@ function toLobbyState(game) {
     gameId: game.gameId,
     hostUserId: String(game.hostUserId),
     started: lobby.started,
+    messages: lobby.messages || [],
     players: game.playerIds.map((id) => {
       const p = lobby.players[String(id)] || {
         id: String(id),
@@ -95,6 +96,10 @@ function toTurnState(game) {
     busy: combat.busy,
     maxPa: combat.maxPa,
     paByUser: { ...combat.paByUser },
+    players: (game.playerIds || []).map((id) => {
+      const p = game.lobby?.players?.[String(id)];
+      return { id: String(id), username: p?.username || String(id) };
+    }),
   };
 }
 
@@ -262,6 +267,7 @@ function createGame({
   resetGame(gameId);
   meta.playerIds.push(String(hostUserId));
   getPlayer(gameId, String(hostUserId));
+  persistSession(gameId, String(hostUserId));
   ensureLobbyPlayer(meta, hostUserId);
   persist(meta);
 
@@ -270,7 +276,7 @@ function createGame({
 
 function toPublicGame(game) {
   if (!game) return null;
-  const { password, passwordHash, lobby, combat, ...safe } = game;
+  const { password, passwordHash, lobby, combat, combatLog, ...safe } = game;
   return {
     ...safe,
     hasPassword: game.visibilite === 'prive',
@@ -299,6 +305,7 @@ function joinGame(gameId, userId, password = null) {
   const uid = String(userId);
   if (game.playerIds.map(String).includes(uid)) {
     getPlayer(gameId, uid);
+    persistSession(gameId, uid);
     ensureLobbyPlayer(game, uid);
     persist(game);
     return { ok: true, game };
@@ -317,6 +324,7 @@ function joinGame(gameId, userId, password = null) {
 
   game.playerIds.push(uid);
   getPlayer(gameId, uid);
+  persistSession(gameId, uid);
   ensureLobbyPlayer(game, uid);
   persist(game);
 
@@ -376,6 +384,17 @@ function startLobby(gameId, userId) {
   };
 }
 
+function appendCombatLog(gameId, entries) {
+  const game = games.get(gameId);
+  if (!game || !Array.isArray(entries) || entries.length === 0) return;
+  if (!Array.isArray(game.combatLog)) game.combatLog = [];
+  game.combatLog.push(...entries);
+  if (game.combatLog.length > 80) {
+    game.combatLog.splice(0, game.combatLog.length - 80);
+  }
+  persist(game);
+}
+
 module.exports = {
   createGame,
   getGame,
@@ -397,4 +416,5 @@ module.exports = {
   toTurnState,
   hydrateGames,
   persist,
+  appendCombatLog,
 };
