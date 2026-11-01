@@ -29,7 +29,14 @@ async function handleTurn(userMessage, userId, gameId) {
       game_result: gameResult,
     };
   }
-  
+
+  session.recentEvents.push({
+    fact: `Joueur ${userId} — ${gameResult.action || 'action'} — ${userMessage}`,
+  });
+  if (session.recentEvents.length > 20) {
+    session.recentEvents.splice(0, session.recentEvents.length - 20);
+  }
+
   persistSession(gameId, userId);
 
   const narrateRes = await narrate({
@@ -43,9 +50,12 @@ async function handleTurn(userMessage, userId, gameId) {
     { role: 'user', content: userMessage },
     { role: 'assistant', content: narrateRes.narrator_message },
   );
+  if (session.messagesHistory.length > 40) {
+    session.messagesHistory.splice(0, session.messagesHistory.length - 40);
+  }
 
   persistSession(gameId, userId);
-  
+
   return {
     type: 'narration',
     text: narrateRes.narrator_message,

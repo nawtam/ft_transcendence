@@ -91,9 +91,11 @@ function getSession(gameId = DEFAULT_GAME_ID, userId = DEFAULT_USER_ID) {
   const location = player.playerStats.location;
   const room = world.rooms[location] || cloneRoom(location);
 
-  if (!world.rooms[location]) {
+  if (!world.rooms[location])
     world.rooms[location] = room;
-  }
+
+  if (!Array.isArray(world.recentEvents)) 
+    world.recentEvents = [];
 
   return {
     gameId,
