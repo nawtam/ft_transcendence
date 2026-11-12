@@ -27,3 +27,5 @@ CREATE TABLE IF NOT EXISTS game_players (
 
 ALTER TABLE game_worlds OWNER TO game_user;
 ALTER TABLE game_players OWNER TO game_user;
+
+//here
