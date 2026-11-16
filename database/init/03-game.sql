@@ -28,4 +28,23 @@ CREATE TABLE IF NOT EXISTS game_players (
 ALTER TABLE game_worlds OWNER TO game_user;
 ALTER TABLE game_players OWNER TO game_user;
 
-//here
+CREATE TABLE IF NOT EXISTS player_stat (
+    user_id TEXT PRIMARY KEY,
+    games_played INTEGER NOT NULL DEFAULT 0,
+    victories INTEGER NOT NULL DEFAULT 0,
+    defeats INTEGER NOT NULL DEFAULT 0,
+    total_xp INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS match_history (
+    id SERIAL PRIMARY KEY,
+    game_id TEXT NOT NULL,
+    universe_slug TEXT NOT NULL,
+    game_mode TEXT NOT NULL,
+    winner_id TEXT,
+    duration_sec INTEGER NOT NULL DEFAULT 0,
+    played_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE player_stat OWNER TO game_user;
+ALTER TABLE match_history OWNER TO game_user;
