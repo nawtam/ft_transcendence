@@ -1,0 +1,34 @@
+{
+  "name": "Place de Lancélion",
+  "description": "Le cœur pavé du village, entouré de maisons à colombages et d'un vieux puits de pierre.",
+  "type": "village",
+  "danger_level": 0,
+  "ambiance": "Animée mais tendue, les villageois murmurent au sujet du dragon.",
+  "discovery_text": "Vous arrivez sur la place centrale de Lancélion. Le vent porte l'odeur du pain chaud mêlée à celle de la cendre lointaine.",
+  "connections": [
+    { "place": "ruines", "description": "Un sentier envahi par les ronces vers l'ouest." },
+    { "place": "forge", "description": "Le bruit rythmé du marteau résonne au nord." },
+    { "place": "chateau", "description": "Une large route pavée mène aux grilles closes du château à l'est." }
+  ],
+  "access_condition": "",
+  "asset": "/assets/universe/medieval/places/place-village.png",
+
+"sous_zone": [
+  {
+      "name": "Le Puits Central",
+      "description": "Un vieux puits couvert de mousse où les habitants se rassemblent.",
+      "type": "point-interet",
+      "acces_condition": "",
+      "ambiance": "Calme",
+      "asset": "/assets/universe/medieval/places/puits.png"
+    },
+    {
+      "name": "La Petite Floraison",
+      "description": "Une petite boutique fleurie aux étals débordant de bouquets colorés, de plantes sauvages et de fleurs séchées. La fleuriste accueille les habitants avec le sourire.",
+      "type": "commerce",
+      "acces_condition": "",
+      "ambiance": "Chaleureuse et parfumée",
+      "asset": "/assets/universe/medieval/places/fleuriste.png"
+    }
+  ]
+}

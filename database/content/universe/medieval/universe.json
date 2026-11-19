@@ -1,43 +1,29 @@
 {
-  "name": "",
-  "theme": "",
-  // fantasy-medieval, scifi, horreur...
-  "tone": "",
-  "description": "",
+  "name": "Médiéval",
+  "theme": "fantasy-medieval",
+  "tone": "Épique, sombre et chevaleresque",
+  "description": "Un royaume déchiré par des guerres féodales et des menaces oubliées tapies dans les terres sauvages.",
   "game_modes": {
     "ffa": {
       "pools_by_character": {
-        "char1": [
-          { "objectif": "", "probability": 1 }
-          // référençant objectifs/ffa/char1/*.json5
-        ],
-        "char2": [
-          { "objectif": "", "probability": 1 }
-        ],
-        "char3": [
-          { "objectif": "", "probability": 1 }
-        ],
-        "char4": [
-          { "objectif": "", "probability": 1 }
-        ]
-        // une clé par personnage jouable de l'univers
+        "sire-arthur": [{ "objectif": "ffa-arthur-1", "probability": 1 }],
+        "dame yseult": [{ "objectif": "ffa-yseult-1", "probability": 1 }],
+        "morvan": [{ "objectif": "ffa-morvan-1", "probability": 1 }],
+        "brianne": [{ "objectif": "ffa-brianne-1", "probability": 1 }]
       }
     },
     "coop": {
       "pool": [
-        { "objectif": "", "probability": 1 }
-        // slug référençant objectifs/coop/*.json5
+        { "objectif": "coop-dragon", "probability": 1 }
       ]
     },
     "equipes": {
       "pool": [
-        { "objectif": "", "probability": 1 }
-        // slug référençant objectifs/tvt/*.json5
+        { "objectif": "team-artefact", "probability": 1 }
       ]
     }
   },
-  "content_version": "",
-  "status": "",
-  // draft, published
-  "asset": ""
+  "content_version": "1.0.0",
+  "status": "published",
+  "asset": "/assets/universe/medieval/asset.png"
 }

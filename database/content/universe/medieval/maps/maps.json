@@ -1,27 +1,19 @@
 {
-  "name": "",
+  "name": "Roayaume de Lancélion",
   "grid_size": {
-    "rows": 0,
-    "cols": 0
-  },
+    "rows": 3,
+    "cols": 3
+    },
   "movement": "orthogonal",
   "map": [
-    {
-      "place": "",
-      // référence un fichier de places
-      "col": 0,
-      "row": 0
-    }
-    // un objet par lieu à placer sur la grille
-  ],
-  "lieu_infranchissable": [
-    {
-      "row": 0,
-      "col": 0,
-      "reason": ""
-      // ex: "lac infranchissable"
-    }
-    // optionnel, une par case sans lieu/traversable
+    { "place": "antre-dragon", "col": 0, "row": 0 },
+    { "place": "foret-sombre", "col": 1, "row": 0 },
+    { "place": "pont-pierre", "col": 2, "row": 0 },
+    { "place": "lac", "col": 0, "row": 1 },
+    { "place": "forge", "col": 1, "row": 1 },
+    { "place": "taverne", "col": 2, "row": 1 },
+    { "place": "ruines", "col": 0, "row": 2 },
+    { "place": "place-village", "col": 1, "row": 2 },
+    { "place": "chateau", "col": 2, "row": 2 }
   ]
 }
-

@@ -1,0 +1,32 @@
+{
+  "name": "Lac de Lancélion",
+  "description": "Une étendue d'eau cristalline bordée d'une haute cascade argentée. Un lac mystérieux enveloppé d'une brume éternelle, où les eaux sombres reflètent les silhouettes des saules. Selon les légendes, une ancienne puissance sommeille sous sa surface et une épée sacrée y aurait été offerte par une mystérieuse Dame du Lac.",
+  "type": "cote",
+  "danger_level": 2,
+  "ambiance": "Mystique et silencieuse, une brume épaisse enveloppe le lac dans un silence presque surnaturel, empreinte de magie ancienne et de mystère.",
+  "discovery_text": "En approchant des rives du Lac des Brumes, le fracas de la cascade couvre le bruit de vos pas. Une petite barque attend près du bord, et au loin sur l'eau immobile, une silhouette féminine pâle semble flotter dans la brume, tournée vers vous.",  "connections": [
+    { "place": "ruines", "description": "Un chemin pierreux descend vers les ruines au sud." },
+    { "place": "forge", "description": "Un sentier boueux rejoint le village à l'est." },
+    { "place": "antre-dragon", "description": "Un passage dissimulé derrière la cascade." }
+  ],
+  "access_condition": "",
+  "asset": "/assets/universe/medieval/places/lac.png",
+  "sous_zone": [
+    {
+      "name": "Passage derrière la cascade",
+      "description": "Une faille humide cachée derrière le rideau d'eau, ouverte par la Dame du Lac une fois son souhait exaucé.",
+      "type": "passage-secret",
+      "acces_condition": "quete_dame_du_lac_terminee",
+      "ambiance": "Sombre et résonnante",
+      "asset": "/assets/universe/medieval/places/cascade.png"
+    },
+    {
+      "name": "La Barque du Ponton",
+      "description": "Une barque en bois sombre attachée par une corde usée, prête à traverser les eaux brumeuses vers l'apparition.",
+      "type": "point-interet",
+      "acces_condition": "",
+      "ambiance": "Calme et bercée par le clapotis de l'eau",
+      "asset": "/assets/universe/medieval/places/barque.png"
+    }
+  ]
+}
