@@ -1,0 +1,1 @@
+Événements passés, contexte qui explique pourquoi le monde est dans son état actuel

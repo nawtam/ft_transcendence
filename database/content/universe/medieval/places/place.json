@@ -1,0 +1,36 @@
+{
+  "name": "",
+  "description": "",
+  "type": "",
+  // village, ville, foret, ruines, donjon, camp, grotte, plaine, montagne, cote, autre
+  "danger_level": 0,
+  // 0 à 10
+  "ambiance": "",
+  "discovery_text": "",
+  // texte lu par l'ia uniquement à la première visite
+  "connections": [
+    {
+      "place": "",
+      // référence un fichier de places/
+      "description": ""
+      // ex: "sentier escarpé", facultatif
+    }
+  ],
+  "access_condition": "",
+  // ex: "quête X active", laisser vide si accessible librement
+  "asset": "",
+
+"sous_zone": [
+    {
+      "name": "",
+      // ex: on est dans le lieu village, il peut aller à la forge, la librairie...
+      "description": "",
+      "type": "",
+      "acces_condition": "",
+      "ambiance": "",
+      // si accessible librement, ou condition nécessaire
+      "asset": ""
+    }
+    // ajouter autant de sous-zones que nécessaire
+  ]
+}

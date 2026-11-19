@@ -1,0 +1,1 @@
+Conventions de noms propres, expressions typiques, éventuel jargon

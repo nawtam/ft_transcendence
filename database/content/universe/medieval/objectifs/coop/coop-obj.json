@@ -1,0 +1,44 @@
+{
+  "name": "",
+  "description": "",
+  "difficulty": "",
+  // facile, moyen, difficile
+  "steps": [
+    {
+      "order": 1,
+      "objective": "",
+      "indices": "",
+      "target_npc": "",
+      "target_monster": "",
+      "target_item": "",
+      "target_place": {
+        "place": "",
+        "sous_zone": ""
+      },
+      "optional": false,
+      "requires_all_players": false
+    }
+    // ajouter autant d'étapes que nécessaire, dans l'ordre
+  ],
+  "victory_text": "",
+  "reward": {
+    "xp": 0,
+    "items": [
+      {
+        "item": "",
+        "quantity": 1
+      }
+    ]
+  },
+  "fail_condition": "",
+  "fail_consequence": {
+    "description": "",
+    "npc_disposition_change": [
+      {
+        "npc": "",
+        "new_disposition": ""
+      }
+    ],
+    "permanent": false
+  }
+}

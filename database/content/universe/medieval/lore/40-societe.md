@@ -1,0 +1,1 @@
+Vie de tous les jours, coutumes, économie, hiérarchie sociale

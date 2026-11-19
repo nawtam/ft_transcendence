@@ -1,0 +1,1 @@
+Nature des dangers récurrents (créatures, guerre, fléau...)

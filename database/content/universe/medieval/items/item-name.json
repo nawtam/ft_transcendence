@@ -1,0 +1,25 @@
+{
+  "name": "",
+  "description": "",
+  "type": "",
+  // arme, armure, consommable, quete, divers
+  "rarity": "",
+  // commun, rare, epique, legendaire
+  "effects": {},
+  // ex: { "force": 1 } ou { "soin": 20 }
+  "usable": false,
+  "stackable": false,
+  "quest": "",
+  // si lié à une quête
+  "npc": "",
+  // si vendu/donné par un pnj précis
+  "monster": "",
+  // si dropé par un monstre précis
+  "place": {
+    "place": "",
+    // référence un fichier de places/, laisser vide si non trouvable à un endroit fixe
+    "sous_zone": ""
+    //une sous-zone précise de ce lieu vide si non
+  },
+  "asset": ""
+}

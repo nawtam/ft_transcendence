@@ -1,0 +1,27 @@
+{
+  "name": "",
+  "grid_size": {
+    "rows": 0,
+    "cols": 0
+  },
+  "movement": "orthogonal",
+  "map": [
+    {
+      "place": "",
+      // référence un fichier de places
+      "col": 0,
+      "row": 0
+    }
+    // un objet par lieu à placer sur la grille
+  ],
+  "lieu_infranchissable": [
+    {
+      "row": 0,
+      "col": 0,
+      "reason": ""
+      // ex: "lac infranchissable"
+    }
+    // optionnel, une par case sans lieu/traversable
+  ]
+}
+

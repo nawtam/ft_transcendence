@@ -1,0 +1,27 @@
+{
+  "name": "",
+  "description": "",
+  "stats": {
+    "hp": 0,
+    "attack": 0,
+    "defense": 0
+  },
+  "behavior": "",
+  // ex: agressif, fuit_si_blesse, chasse_en_groupe, passif_sauf_provoque
+  "loot": [],
+  // items dropables, référence items/
+  "place": [
+    {
+      "place": "",
+      // référence un fichier de places/
+      "sous_zone": "",
+      "probability": 0
+      // 0 à 1, chance d'apparition dans ce lieu
+    }
+  ],
+  "quest": "",
+  // si c'est la cible d'une quête
+  "npc": "",
+  // si lié à un pnj (invocateur, dresseur...)
+  "asset": ""
+}

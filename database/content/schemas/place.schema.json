@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "place.schema.json",
+  "title": "Lieu",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "type": {
+      "type": "string",
+      "enum": ["village", "ville", "foret", "ruines", "donjon", "camp", "grotte", "plaine", "montagne", "cote", "autre"]
+    },
+    "danger_level": { "type": "integer", "minimum": 0, "maximum": 10 },
+    "ambiance": { "type": "string" },
+    "discovery_text": { "type": "string" },
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "place": { "$ref": "common.schema.json#/$defs/slug" },
+          "description": { "type": "string" }
+        },
+        "required": ["place"]
+      }
+    },
+    "access_condition": { "type": "string" },
+    "asset": { "$ref": "common.schema.json#/$defs/asset_path" },
+    "sous_zone": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" },
+          "type": { "type": "string" },
+          "acces_condition": { "type": "string" },
+          "ambiance": { "type": "string" },
+          "asset": { "$ref": "common.schema.json#/$defs/asset_path" }
+        },
+        "required": ["name"]
+      }
+    }
+  },
+  "required": ["name", "description", "type", "danger_level", "ambiance", "discovery_text", "connections", "access_condition", "asset", "sous_zone"]
+}

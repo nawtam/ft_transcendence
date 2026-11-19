@@ -1,0 +1,86 @@
+{
+  "name": "",
+  "description": "",
+  "difficulty": "",
+  // facile, moyen, difficile
+  "team_a": {
+    "characters": [],
+    // 2 slugs de characters/
+    "steps": [
+      {
+        "order": 1,
+        "objective": "",
+        "indices": "",
+        "target_npc": "",
+        "target_monster": "",
+        "target_item": "",
+        "target_place": {
+          "place": "",
+          "sous_zone": ""
+        },
+        "optional": false
+      }
+      // ajouter autant d'étapes que nécessaire
+    ],
+    "victory_text": "",
+    "reward": {
+      "xp": 0,
+      "items": [
+        {
+          "item": "",
+          "quantity": 1
+        }
+      ]
+    },
+    "fail_condition": "",
+    "fail_consequence": {
+      "description": "",
+      "npc_disposition_change": [
+        {
+          "npc": "",
+          "new_disposition": ""
+        }
+      ],
+      "permanent": false
+    }
+  },
+  "team_b": {
+    "characters": [],
+    "steps": [
+      {
+        "order": 1,
+        "objective": "",
+        "indice": "",
+        "target_npc": "",
+        "target_monster": "",
+        "target_item": "",
+        "target_place": {
+          "place": "",
+          "sous_zone": ""
+        },
+        "optional": false
+      }
+    ],
+    "victory_text": "",
+    "reward": {
+      "xp": 0,
+      "items": [
+        {
+          "item": "",
+          "quantity": 1
+        }
+      ]
+    },
+    "fail_condition": "",
+    "fail_consequence": {
+      "description": "",
+      "npc_disposition_change": [
+        {
+          "npc": "",
+          "new_disposition": ""
+        }
+      ],
+      "permanent": false
+    }
+  }
+}

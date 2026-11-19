@@ -1,0 +1,19 @@
+{
+  "name": "",
+  "description": "",
+  "condition": "",
+  // se qui declenche
+  "event_place": [],
+  "probability": 0,
+  "frequence": "",
+  // ex: 1x par partie, par lieux visité...
+  "quest": "",
+  // si lié a une quete
+  "npc": [],
+  // si lié a un npc
+  "monster": [],
+  // si lié a un monstre
+  "possible_outcomes": [],
+  //Pistes narratives possibles données à l'IA
+  "asset": ""
+}
