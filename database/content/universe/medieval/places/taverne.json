@@ -1,0 +1,25 @@
+{
+  "name": "Taverne du Sanglier Doré",
+  "description": "Une salle chaleureuse aux poutres de chêne massif, éclairée par un grand foyer. Des voyageurs, des gardes et des habitants y échangent des rumeurs autour de chopes fumantes.",
+  "type": "village",
+  "danger_level": 0,
+  "ambiance": "Conviviale mais feutrée, ponctuée d'éclats de voix et de chuchotements inquiets.",
+  "discovery_text": "En poussant la lourde porte de bois, l'odeur du ragoût et de la bière brune vous enveloppe. Plusieurs regards se tournent vers vous depuis les tables du fond.",
+  "connections": [
+    { "place": "forge", "description": "Une ruelle mène vers les lueurs de la forge à l'ouest." },
+    { "place": "pont-pierre", "description": "Un sentier escarpé monte vers le vieux pont au nord." },
+    { "place": "chateau", "description": "Un chemin bordé de murets longe les remparts du château au sud." }
+  ],
+  "access_condition": "",
+  "asset": "/assets/universe/medieval/places/taverne.png",
+  "sous_zone": [
+    {
+      "name": "Le Comptoir de l'Aubergiste",
+      "description": "Un long comptoir en bois poli où l'aubergiste essuie ses verres tout en écoutant les moindres secrets du royaume.",
+      "type": "point-interet",
+      "acces_condition": "",
+      "ambiance": "Chaleureuse et animée",
+      "asset": "/assets/universe/medieval/places/comptoir.png"
+    }
+  ]
+}

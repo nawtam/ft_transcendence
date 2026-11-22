@@ -1,0 +1,24 @@
+{
+  "name": "Ruines de l'Ancien Bastion",
+  "description": "Les vestiges effondrés d'une forteresse oubliée, envahis par le lierre et les ronces. Des armures rouillées et des blocs de métal ancien gisent sous les arches brisées.",
+  "type": "ruines",
+  "danger_level": 3,
+  "ambiance": "Mélancolique et inquiétante, balayée par un vent froid sifflant entre les pierres.",
+  "discovery_text": "Vous pénétrez au milieu de colonnes brisées et de murs couverts de mousse. Sous les décombres brillent parfois des éclats d'un métal ancien très résistant.",
+  "connections": [
+    { "place": "lac", "description": "Un chemin pierreux remonte vers les brumes du lac au nord." },
+    { "place": "place-village", "description": "Un sentier envahi par les ronces ramène vers le village à l'est." }
+  ],
+  "access_condition": "",
+  "asset": "/assets/universe/medieval/places/ruines.png",
+  "sous_zone": [
+    {
+      "name": "L'Armurerie Effondrée",
+      "description": "Une salle voûtée à moitié ensevelie où subsistent des plaques d'acier runique idéales pour forger un bouclier spécial.",
+      "type": "fouille",
+      "acces_condition": "",
+      "ambiance": "Sombre et poussiéreuse",
+      "asset": "/assets/universe/medieval/places/armurerie-ruines.png"
+    }
+  ]
+}

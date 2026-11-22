@@ -1,0 +1,26 @@
+{
+  "name": "Forge de Lancélion",
+  "description": "Un atelier ouvert baigné par la lueur rougeoyante des braises. Des enclumes massives et des râteliers d'armes bordent les murs noircis par la suie.",
+  "type": "village",
+  "danger_level": 0,
+  "ambiance": "Chaude et bruyante, rythmée par le choc régulier du marteau sur le métal.",
+  "discovery_text": "Une vague de chaleur vous accueille à l'entrée de la forge. Le maître forgeron essuie son front couvert de suie en observant votre équipement.",
+  "connections": [
+    { "place": "lac", "description": "Un sentier boueux mène vers les brumes du lac à l'ouest." },
+    { "place": "foret-sombre", "description": "Un chemin forestier s'enfonce sous les arbres sombres au nord." },
+    { "place": "taverne", "description": "Une ruelle pavée rejoint la taverne animée à l'est." },
+    { "place": "place-village", "description": "La place centrale du village s'étend juste au sud." }
+  ],
+  "access_condition": "",
+  "asset": "/assets/universe/medieval/places/forge.png",
+  "sous_zone": [
+    {
+      "name": "L'Enclume du Maître",
+      "description": "Une enclume gravée de runes anciennes permettant de forger des armes et des boucliers renforcés à partir de matériaux rares.",
+      "type": "craft",
+      "acces_condition": "",
+      "ambiance": "Ardente et étincelante",
+      "asset": "/assets/universe/medieval/places/enclume.png"
+    }
+  ]
+}
