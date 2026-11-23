@@ -1,0 +1,24 @@
+{
+  "name": "Château de Lancélion",
+  "description": "Une imposante forteresse de pierre blanche dressée sur un promontoire rocheux, dominant tout le royaume. Ses lourdes grilles en fer forgé sont hermétiquement closes et gardées par des sentinelles en armure.",
+  "type": "ville",
+  "danger_level": 0,
+  "ambiance": "Solennelle, austère et sous haute garde.",
+  "discovery_text": "Vous vous dressez devant les hautes murailles du Château de Lancélion. Les gardes croisent leurs hallebardes devant la herse abaissée : nul n'entre sans la preuve que le fléau ailé a été vaincu.",
+  "connections": [
+    { "place": "place-village", "description": "Une large avenue pavée redescend vers la place centrale du village à l'ouest." },
+    { "place": "taverne", "description": "Un chemin de ronde longe les remparts vers la taverne au nord." }
+  ],
+  "access_condition": "langue_dragon_possedee",
+  "asset": "/assets/universe/medieval/places/chateau.png",
+  "sous_zone": [
+    {
+      "name": "La Salle du Trône",
+      "description": "Une vaste salle aux vitraux colorés où siège le Roi Aegon de Lancélion sur son trône de chêne et d'or, entouré de ses conseillers.",
+      "type": "point-interet",
+      "acces_condition": "langue_dragon_possedee",
+      "ambiance": "Majestueuse et tendue",
+      "asset": "/assets/universe/medieval/places/salle-trone.png"
+    }
+  ]
+}

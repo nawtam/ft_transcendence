@@ -1,0 +1,38 @@
+{
+  "name": "Antre du Dragon",
+  "description": "Une immense caverne volcanique plongée dans une pénombre étouffante, où la roche noire suinte d'humidité et de cendres. L'air y est lourd, saturé de soufre, et le silence oppressant n'est brisé que par le souffle profond et régulier d'une créature colossale tapie dans l'obscurité.",
+  "type": "grotte",
+  "danger_level": 9,
+  "ambiance": "Sombre, pesante et suffocante, chargée d'une terreur ancienne et d'une chaleur étouffante.",
+  "discovery_text": "Une chaleur lourde et une odeur âcre de soufre vous écrasent dès que vous franchissez le seuil de la caverne. Dans l'obscurité épaisse, le sol tremble légèrement au rythme d'une respiration gigantesque : vous êtes entré dans le repaire du dragon.",
+  "connections": [
+    {
+      "place": "foret-sombre",
+      "description": "Un sentier escarpé et périlleux s'enfonce vers la Forêt Sombre à l'est."
+    },
+    {
+      "place": "lac",
+      "description": "Un boyau rocheux et humide mène au passage secret derrière la cascade du Lac de Lancélion au sud."
+    }
+  ],
+  "access_condition": "foret_sombre_traversee || quete_dame_du_lac_terminee",
+  "asset": "/assets/universe/medieval/places/antre-dragon.png",
+  "sous_zone": [
+    {
+      "name": "La Fosse aux Cendres",
+      "description": "Le cœur obscur de la caverne, jonché d'ossements calcinés et d'armes fondues, où sommeille le dragon.",
+      "type": "boss",
+      "acces_condition": "",
+      "ambiance": "Oppressante, brûlante et sinistre",
+      "asset": "/assets/universe/medieval/places/fosse-dragon.png"
+    },
+    {
+      "name": "L'Entrée de la Grotte",
+      "description": "Un gouffre béant taillé dans la roche noire, encadré de crânes noircis par les flammes. À demi enfoncée dans la terre calcinée se dresse une vieille planche de bois vermoulue sur laquelle ont été gravés à la hâte des mots presque effacés par le temps et la suie.",
+      "type": "point-interet",
+      "acces_condition": "",
+      "ambiance": "Sinistre, glaciale et menaçante",
+      "asset": "/assets/universe/medieval/places/entree-grotte.png"
+    }
+  ]
+}
