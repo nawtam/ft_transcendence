@@ -4,7 +4,7 @@
   "type": "cote",
   "danger_level": 2,
   "ambiance": "Mystique et silencieuse, une brume épaisse enveloppe le lac dans un silence presque surnaturel, empreinte de magie ancienne et de mystère.",
-  "discovery_text": "En approchant des rives du Lac des Brumes, le fracas de la cascade couvre le bruit de vos pas. Une petite barque attend près du bord, et au loin sur l'eau immobile, une silhouette féminine pâle semble flotter dans la brume, tournée vers vous.",  "connections": [
+  "discovery_text": "En approchant des rives du Lac embrumé, le fracas de la cascade couvre le bruit de vos pas. Une petite barque attend près du bord, et au loin sur l'eau immobile, une silhouette féminine pâle semble flotter dans la brume, tournée vers vous.",  "connections": [
     { "place": "ruines", "description": "Un chemin pierreux descend vers les ruines au sud." },
     { "place": "forge", "description": "Un sentier boueux rejoint le village à l'est." },
     { "place": "antre-dragon", "description": "Un passage dissimulé derrière la cascade." }
@@ -17,7 +17,7 @@
       "description": "Une faille humide cachée derrière le rideau d'eau, ouverte par la Dame du Lac une fois son souhait exaucé.",
       "type": "passage-secret",
       "acces_condition": "quete_dame_du_lac_terminee",
-      "ambiance": "Sombre et résonnante",
+      "ambiance": "Sombre, humide et résonnante",
       "asset": "/assets/universe/medieval/places/cascade.png"
     },
     {

@@ -1,0 +1,46 @@
+{
+  "name": "Forêt Sombre",
+  "description": "Une futaie dense et tordue où les branches noueuses étouffent la lumière du jour. Des créatures féroces rôdent dans l'ombre des troncs centenaires, tandis que de rares fleurs luminescentes poussent au pied des racines. Le sentier menant vers la forge au sud a été condamné par une lourde barricade de troncs et de ferraille dressée par le forgeron pour protéger le village.",
+  "type": "foret",
+  "danger_level": 6,
+  "ambiance": "Menaçante, étouffante et hostile, rythmée par des craquements de branches et des grognements invisibles dans l'obscurité.",
+  "discovery_text": "Dès que vous franchissez l'orée des bois, la lumière disparaît sous une voûte d'arbres noirs et griffus. L'air est glacial, des yeux luisants vous épient depuis les fourrés, et le passage sud vers la forge est condamné par une solide barricade de bois et de métal.",
+  "connections": [
+    {
+      "place": "pont-pierre",
+      "description": "Un sentier boueux envahi de racines rejoint le tablier du Pont de Pierre à l'est."
+    },
+    {
+      "place": "antre-dragon",
+      "description": "Une piste escarpée jonchée d'ossements calcinés grimpe vers l'Antre du Dragon à l'ouest."
+    }
+  ],
+  "access_condition": "",
+  "asset": "/assets/universe/medieval/places/foret-sombre.png",
+  "sous_zone": [
+    {
+      "name": "La Barricade de la Forge",
+      "description": "Un enchevêtrement massif de troncs abattus, de pieux taillés et de chaînes forgées bloquant hermétiquement tout accès vers la forge du village au sud.",
+      "type": "obstacle",
+      "acces_condition": "passage_condamne",
+      "ambiance": "Tendu et sinistre, marqué par les traces de griffes sur le bois",
+      "asset": "/assets/universe/medieval/places/barricade-foret.png"
+    },
+    {
+      "name": "Le Sentier des Ronces",
+      "description": "Un chemin étroit où la visibilité est quasi nulle, terrain de chasse favori des créatures qui infestent la forêt.",
+      "type": "embuscade",
+      "acces_condition": "",
+      "ambiance": "Oppressante et dangereuse",
+      "asset": "/assets/universe/medieval/places/sentier-ronces.png"
+    },
+    {
+      "name": "La Clairière aux Fleurs Sombres",
+      "description": "Un petit recoin humide baigné d'une pâle lueur lunaire où poussent les fleurs sauvages recherchées par le Sorcier et la Dame du Lac.",
+      "type": "recolte",
+      "acces_condition": "",
+      "ambiance": "Étrange et silencieuse",
+      "asset": "/assets/universe/medieval/places/clairiere-fleurs.png"
+    }
+  ]
+}

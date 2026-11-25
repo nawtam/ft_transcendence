@@ -1,0 +1,38 @@
+{
+  "name": "Pont de Pierre",
+  "description": "Un vieux pont de pierre voûté enjambant une rivière sombre et brumeuse, qui relie le chemin de la taverne à la lisière de la Forêt Sombre. Sous son arche principale, à l'abri des regards, se cache un campement discret éclairé d'une lueur bleutée.",
+  "type": "autre",
+  "danger_level": 2,
+  "ambiance": "Humide, mystérieuse et feutrée, bercée par le grondement continu de l'eau sous les pierres.",
+  "discovery_text": "Le vent siffle entre les parapets moussus du vieux pont de pierre qui ouvre la voie vers la Forêt Sombre. En jetant un œil sous l'arche, vous apercevez le reflet vacillant d'une flamme bleue dans l'ombre.",
+  "connections": [
+    {
+      "place": "foret-sombre",
+      "description": "Le tablier de pierre débouche directement sur l'orée obscure de la Forêt Sombre à l'ouest."
+    },
+    {
+      "place": "taverne",
+      "description": "Un sentier rocailleux redescend vers la taverne du village au sud."
+    }
+  ],
+  "access_condition": "",
+  "asset": "/assets/universe/medieval/places/pont-pierre.png",
+  "sous_zone": [
+    {
+      "name": "Le Tablier du Pont",
+      "description": "Une large chaussée de pierres usées par les siècles et bordée de murets fissurés, qui franchit la rivière en direction de la Forêt Sombre.",
+      "type": "passage",
+      "acces_condition": "",
+      "ambiance": "Venteuse et dégagée, face à l'orée sombre des bois",
+      "asset": "/assets/universe/medieval/places/tablier-pont.png"
+    },
+    {
+      "name": "L'Arche du Sorcier",
+      "description": "Un abri caché sous la voûte humide du pont, où une tente faite de tissus rafistolés est éclairée par une légère lanterne au feu bleu. Un vieil homme enveloppé dans une cape sombre y prépare d'étranges décoctions à partir de plantes rares.",
+      "type": "point-interet",
+      "acces_condition": "",
+      "ambiance": "Étrange, feutrée et baignée d'une lueur bleue surnaturelle",
+      "asset": "/assets/universe/medieval/places/arche-sorcier.png"
+    }
+  ]
+}

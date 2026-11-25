@@ -7,7 +7,6 @@
   "discovery_text": "Une vague de chaleur vous accueille à l'entrée de la forge. Le maître forgeron essuie son front couvert de suie en observant votre équipement.",
   "connections": [
     { "place": "lac", "description": "Un sentier boueux mène vers les brumes du lac à l'ouest." },
-    { "place": "foret-sombre", "description": "Un chemin forestier s'enfonce sous les arbres sombres au nord." },
     { "place": "taverne", "description": "Une ruelle pavée rejoint la taverne animée à l'est." },
     { "place": "place-village", "description": "La place centrale du village s'étend juste au sud." }
   ],
@@ -21,6 +20,14 @@
       "acces_condition": "",
       "ambiance": "Ardente et étincelante",
       "asset": "/assets/universe/medieval/places/enclume.png"
+    },
+    {
+      "name": "La Barricade Nord",
+      "description": "Une solide palissade de troncs et de ferraille érigée par le forgeron pour condamner le sentier menant à la Forêt Sombre et protéger le village.",
+      "type": "obstacle",
+      "acces_condition": "passage_condamne",
+      "ambiance": "Tendue et vigilante",
+      "asset": "/assets/universe/medieval/places/barricade-forge.png"
     }
   ]
 }

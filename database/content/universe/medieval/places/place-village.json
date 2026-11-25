@@ -12,8 +12,7 @@
   ],
   "access_condition": "",
   "asset": "/assets/universe/medieval/places/place-village.png",
-
-"sous_zone": [
+  "sous_zone": [
   {
       "name": "Le Puits Central",
       "description": "Un vieux puits couvert de mousse où les habitants se rassemblent.",
