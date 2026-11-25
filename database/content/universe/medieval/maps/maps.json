@@ -15,5 +15,6 @@
     { "place": "ruines", "col": 0, "row": 2 },
     { "place": "place-village", "col": 1, "row": 2 },
     { "place": "chateau", "col": 2, "row": 2 }
-  ]
+  ],
+  "lieu_infranchissable": []  
 }

@@ -52,7 +52,7 @@ def load_schemas():
 def list_universes():
     if not CONTENT_ROOT.exists():
         return []
-    return sorted(d.name for d in CONTENT_ROOT.iterdir() if d.is_dir())
+    return sorted(d.name for d in CONTENT_ROOT.iterdir() if d.is_dir() and d.name != "0-temoin")
 
 
 def resolve_pattern(template, universe, character=None):
