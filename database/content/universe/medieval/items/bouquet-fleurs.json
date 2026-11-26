@@ -1,0 +1,17 @@
+{
+  "name": "Bouquet de Fleurs Sauvages",
+  "description": "Un bouquet fraîchement cueilli composé de lys des vallées, de bruyère et de fleurs des champs au parfum délicat de terre ferme.",
+  "type": "quete",
+  "rarity": "commun",
+  "effects": {},
+  "usable": true,
+  "stackable": false,
+  "quest": "voeu-dame-du-lac",
+  "npc": "fleuriste",
+  "monster": "",
+  "place": {
+    "place": "place-village",
+    "sous_zone": "La Petite Floraison"
+  },
+  "asset": "/assets/universe/medieval/items/bouquet-fleurs.png"
+}

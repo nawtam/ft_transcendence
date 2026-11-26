@@ -1,0 +1,36 @@
+{
+  "name": "La Dame du Lac",
+  "description": "Une apparition féminine d'une beauté éthérée flottant juste au-dessus des eaux brumeuses du Lac de Lancélion, vêtue d'une robe d'argent liquide.",
+  "role": "sage",
+  "place": {
+    "place": "lac",
+    "sous_zone": ""
+  },
+  "personality": "Bienveillante mais inflexible sur la sacralité de ses eaux. Elle prévient les mortels d'utiliser la barque avant de poser son énigme pour Excalibur, et garde en silence la nostalgie du parfum des fleurs terrestres.",
+  "disposition": "amical",
+  "voice_tone": "Doux, cristallin, solennel et résonnant comme l'écho de l'eau dans une caverne",
+  "idle_lines": [
+    "Prends garde, voyageur. Ces eaux sont sacrées et nul mortel ne saurait les profaner impunément. Tu peux en franchir l'étendue, mais jamais en fouler les flots de ton propre corps. Emprunte cette barque, car quiconque ose y poser le pied abandonne à jamais le monde des vivants.",
+    "Je suis toujours en mouvement comme la brume qui danse dans le silence, ou solide comme un roc prenant la force de la pierre ; pourtant, au commencement fragile, je suis la genèse de toute forme de vie. Qui suis-je ?",
+    "Réponds justement à mon énigme, voyageur, et la lame sacrée Excalibur émergera des flots pour toi.",
+    "Cela fait des siècles que je n'ai pas foulé l'herbe tendre... Parfois, le vent m'apporte de loin l'odeur d'une fleur, et mon cœur se souvient de la terre ferme."
+  ],
+  "quest_pool": [
+    {
+      "quest": "voeu-dame-du-lac",
+      "probability": 1,
+      "condition": "secret"
+    }
+  ],
+  "sells": [],
+  "buys_categories": [],
+  "hostile_condition": "Entrer à pied dans les eaux sacrées du lac sans emprunter la barque, ou attaquer la Dame du Lac",
+  "combat_stats": {
+    "hp": 120,
+    "attack": 18,
+    "defense": 15,
+    "equipement": ["excalibur"]
+  },
+  "loot": ["excalibur"],
+  "asset": "/assets/universe/medieval/npcs/dame-du-lac.png"
+}

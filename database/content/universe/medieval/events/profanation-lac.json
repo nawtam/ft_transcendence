@@ -1,0 +1,16 @@
+{
+  "name": "Profanation des Eaux Sacrées",
+  "description": "Les eaux du Lac de Lancélion sont inviolables. Tout mortel qui y pose le pied sans monter dans la barque du ponton est aussitôt englouti par les profondeurs sacrées et meurt sur le coup.",
+  "condition": "Le joueur entre ou nage dans les eaux du Lac de Lancélion sans utiliser la barque du ponton",
+  "event_place": ["lac"],
+  "probability": 1,
+  "fréquence": "À chaque tentative de profanation",
+  "quest": "",
+  "npc": ["dame-du-lac"],
+  "monster": [],
+  "possible_outcomes": [
+    "Si le joueur entre dans l'eau à pied ou tente de nager sans la barque : les flots sacrés se referment sur lui dans un froid glacial et il meurt instantanément (HP réduits à 0).",
+    "Si le joueur monte dans la barque du ponton : il traverse le lac sain et sauf jusqu'à la Dame du Lac."
+  ],
+  "asset": "/assets/universe/medieval/events/profanation-lac.png"
+}

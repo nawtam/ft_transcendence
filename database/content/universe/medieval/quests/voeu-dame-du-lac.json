@@ -1,0 +1,48 @@
+{
+  "name": "Le Souvenir de la Terre Ferme",
+  "description": "Quête cachée : la Dame du Lac confie Excalibur à celui qui résout son énigme sur l'eau, mais si un voyageur attentif devine sa nostalgie et lui offre une fleur fraîche, elle ouvre en secret le passage derrière la cascade vers l'Antre du Dragon.",
+  "type": "secondaire",
+  "repeatable": false,
+  "steps": [
+    {
+      "order": 1,
+      "objective": "Résoudre l'énigme de la Dame du Lac (réponse : l'eau) pour obtenir Excalibur.",
+      "target_npc": "dame-du-lac",
+      "target_monster": "",
+      "target_item": "excalibur",
+      "target_place": {
+        "place": "lac",
+        "sous_zone": ""
+      }
+    },
+    {
+      "order": 2,
+      "objective": "Initiative secrète : offrir une fleur fraîche (de La Petite Floraison ou de la Forêt Sombre) à la Dame du Lac pour qu'elle ouvre le passage derrière la cascade.",
+      "target_npc": "dame-du-lac",
+      "target_monster": "",
+      "target_item": "bouquet-fleurs",
+      "target_place": {
+        "place": "lac",
+        "sous_zone": "Passage derrière la cascade"
+      }
+    }
+  ],
+  "reward": {
+    "xp": 150,
+    "items": []
+  },
+  "unlocks_quest": "",
+  "fail_condition": "La Dame du Lac devient hostile ou est vaincue",
+  "fail_consequence": {
+    "description": "Les eaux du lac se glacent et la cascade devient un mur infranchissable. Le passage secret reste scellé à jamais.",
+    "npc_change": [
+      {
+        "npc": "dame-du-lac",
+        "disposition": "hostile"
+      }
+    ],
+    "lose_items": [],
+    "blocks_quest": "",
+    "permanent": true
+  }
+}
