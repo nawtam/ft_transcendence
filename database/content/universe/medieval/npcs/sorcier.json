@@ -1,0 +1,29 @@
+{
+  "name": "Malakor le Vran",
+  "description": "Un vieux sorcier-alchimiste de la race ancienne des Vrans, aux écailles ternies par l'âge et la suie. Il vit reclus sous une tente rafistolée et un peu sale dressée sous la voûte humide du Pont de Pierre, enveloppé dans une longue cape déchirée et usée par les années, l'air perpétuellement fatigué auprès de sa lanterne bleue.",
+  "role": "sage",
+  "place": {
+    "place": "pont-pierre",
+    "sous_zone": "L'Arche du Sorcier"
+  },
+  "personality": "Fatigué, méfiant et excentrique, mais doté d'un savoir alchimique ancestral propre aux Vrans. Il grogne contre l'humidité de son campement mais s'anime dès qu'on lui apporte une fleur rare de la Forêt Sombre.",
+  "disposition": "mefiant",
+  "voice_tone": "Rauque, sifflant légèrement, fatigué et chuchotant, comme un vieil être des marais qui a trop veillé",
+  "idle_lines": [
+    "*Il resserre sa cape déchirée autour de ses épaules écailleuses en soupirant.* Encore un humain qui vient troubler mon repos sous ce pont humide...",
+    "Mes vieux os de Vran sont las, mais mon alambic brûle toujours. Rapporte-moi une Fleur de Lune de la Forêt Sombre, et je te distillerai soit un élixir de vie, soit un poison capable de ronger le sang du dragon.",
+    "Ne traîne pas trop sous ma tente, l'humidité ronge tout ici... dis-moi ce que tu veux que je prépare et laisse-moi dormir."
+  ],
+  "quest_pool": [],
+  "sells": ["potion-soin", "poison-dragon"],
+  "buys_categories": ["quete", "consommable"],
+  "hostile_condition": "Attaquer le vieux Vran ou saccager sa tente et son alambic sous le pont",
+  "combat_stats": {
+    "hp": 75,
+    "attack": 14,
+    "defense": 6,
+    "equipement": []
+  },
+  "loot": ["potion-soin", "poison-dragon"],
+  "asset": "/assets/universe/medieval/npcs/sorcier.png"
+}

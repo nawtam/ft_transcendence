@@ -1,0 +1,29 @@
+{
+  "name": "Clara la Fleuriste",
+  "description": "Une jeune femme souriante au tablier taché de terre et de pollen, entourée de paniers d'osier débordant de fleurs sauvages fraîchement coupées dans sa boutique de La Petite Floraison.",
+  "role": "marchand",
+  "place": {
+    "place": "place-village",
+    "sous_zone": "La Petite Floraison"
+  },
+  "personality": "Chaleureuse, bavarde et poétique. Elle adore raconter les légendes du royaume autour des plantes et remarque vite les voyageurs qui cherchent quelque chose d'inhabituel.",
+  "disposition": "amical",
+  "voice_tone": "Enjoué, doux et accueillant",
+  "idle_lines": [
+    "Approchez, voyageurs ! Un bouquet frais pour égayer votre route ou apaiser un cœur nostalgique ?",
+    "Les anciens racontent que les esprits des eaux envient souvent le parfum des fleurs de la terre ferme...",
+    "On dit que des fleurs nocturnes brillent au cœur de la Forêt Sombre, mais seul le vieux sorcier sous le Pont de Pierre sait vraiment à quoi elles servent."
+  ],
+  "quest_pool": [],
+  "sells": ["bouquet-fleurs"],
+  "buys_categories": ["quete", "divers"],
+  "hostile_condition": "Attaquer la fleuriste ou saccager l'étal de La Petite Floraison",
+  "combat_stats": {
+    "hp": 45,
+    "attack": 4,
+    "defense": 2,
+    "equipement": []
+  },
+  "loot": ["bouquet-fleurs"],
+  "asset": "/assets/universe/medieval/npcs/fleuriste.png"
+}

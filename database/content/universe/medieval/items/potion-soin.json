@@ -1,0 +1,19 @@
+{
+  "name": "Élixir des Flammes Bleues",
+  "description": "Une fiole lumineuse distillée par le Sorcier du Pont de Pierre. Restaure immédiatement une grande quantité de points de vie.",
+  "type": "consommable",
+  "rarity": "rare",
+  "effects": {
+    "soin": 50
+  },
+  "usable": true,
+  "stackable": true,
+  "quest": "",
+  "npc": "sorcier",
+  "monster": "",
+  "place": {
+    "place": "pont-pierre",
+    "sous_zone": "L'Arche du Sorcier"
+  },
+  "asset": "/assets/universe/medieval/items/potion-soin.png"
+}

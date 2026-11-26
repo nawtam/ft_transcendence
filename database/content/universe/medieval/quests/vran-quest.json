@@ -1,0 +1,68 @@
+{
+  "name": "Les Flammes Bleues du Vran",
+  "description": "Malakor le Vran, reclus sous l'arche humide du Pont de Pierre, accepte de distiller une rare Fleur de Lune Sombre cueillie dans la Forêt Sombre pour préparer au choix un puissant élixir de soin ou un venin capable d'affaiblir les écailles du dragon.",
+  "type": "secondaire",
+  "repeatable": false,
+  "steps": [
+    {
+      "order": 1,
+      "objective": "Rencontrer Malakor le Vran sous l'Arche du Sorcier au Pont de Pierre.",
+      "target_npc": "sorcier",
+      "target_monster": "",
+      "target_item": "",
+      "target_place": {
+        "place": "pont-pierre",
+        "sous_zone": "L'Arche du Sorcier"
+      }
+    },
+    {
+      "order": 2,
+      "objective": "Cueillir une Fleur de Lune Sombre dans la Clairière aux Fleurs Sombres de la Forêt Sombre.",
+      "target_npc": "",
+      "target_monster": "",
+      "target_item": "fleur-sombre",
+      "target_place": {
+        "place": "foret-sombre",
+        "sous_zone": "La Clairière aux Fleurs Sombres"
+      }
+    },
+    {
+      "order": 3,
+      "objective": "Rapporter la Fleur de Lune Sombre à Malakor le Vran et choisir entre l'Élixir des Flammes Bleues ou le Venin d'Ombre.",
+      "target_npc": "sorcier",
+      "target_monster": "",
+      "target_item": "fleur-sombre",
+      "target_place": {
+        "place": "pont-pierre",
+        "sous_zone": "L'Arche du Sorcier"
+      }
+    }
+  ],
+  "reward": {
+    "xp": 120,
+    "items": [
+      {
+        "item": "potion-soin",
+        "quantity": 1
+      },
+      {
+        "item": "poison-dragon",
+        "quantity": 1
+      }
+    ]
+  },
+  "unlocks_quest": "",
+  "fail_condition": "Malakor le Vran devient hostile ou son alambic est détruit",
+  "fail_consequence": {
+    "description": "Malakor éteint sa lanterne bleue et disparaît dans les marais sous le pont. Nul ne peut plus distiller les Fleurs de Lune Sombre.",
+    "npc_change": [
+      {
+        "npc": "sorcier",
+        "disposition": "hostile"
+      }
+    ],
+    "lose_items": [],
+    "blocks_quest": "",
+    "permanent": true
+  }
+}

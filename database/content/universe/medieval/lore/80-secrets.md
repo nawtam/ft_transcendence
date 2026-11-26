@@ -1,1 +1,5 @@
-Informations que l'IA connaît mais ne doit pas révéler facilement aux joueurs (twists, vérités cachées)
+# Secrets du Royaume (Réservés au Maître du Jeu)
+
+- **Le Souhait Secret de la Dame du Lac :** La Dame du Lac ne demande jamais explicitement aux joueurs de lui apporter une fleur. Elle exprime simplement, avec nostalgie, combien la terre ferme et le parfum d'une fleur fraîche lui manquent après des siècles passés sur l'eau. Si un joueur prend de lui-même l'initiative d'aller chercher un bouquet chez Clara la fleuriste (à La Petite Floraison) ou une fleur dans la Forêt Sombre et de le lui offrir, elle est profondément émue et ouvre le **passage secret derrière la cascade**, permettant d'accéder directement à l'Antre du Dragon sans traverser les dangers de la Forêt Sombre.
+- **L'indice de Clara :** Clara la fleuriste sait que les esprits des eaux envient le parfum des fleurs terrestres et que Malakor le Vran recherche les fleurs nocturnes de la forêt, mais elle ne donne ces indices que si on engage la conversation avec elle.
+- **La faiblesse du Dragon :** Le dragon de la Fosse aux Cendres est redoutable face aux armes ordinaires, mais la lame sacrée **Excalibur** ou le **Venin d'Ombre** distillé par Malakor permettent de percer sa défense.

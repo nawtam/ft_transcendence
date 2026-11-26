@@ -1,0 +1,17 @@
+{
+  "name": "Fleur de Lune Sombre",
+  "description": "Une fleur nocturne aux pétales d'un bleu luminescent qui pousse uniquement dans la Clairière aux Fleurs Sombres. Son parfum envoûtant renferme une puissante énergie alchimique.",
+  "type": "quete",
+  "rarity": "rare",
+  "effects": {},
+  "usable": true,
+  "stackable": true,
+  "quest": "",
+  "npc": "sorcier",
+  "monster": "",
+  "place": {
+    "place": "foret-sombre",
+    "sous_zone": "La Clairière aux Fleurs Sombres"
+  },
+  "asset": "/assets/universe/medieval/items/fleur-sombre.png"
+}
