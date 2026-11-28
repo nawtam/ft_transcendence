@@ -14,7 +14,13 @@
     "Mes vieux os de Vran sont las, mais mon alambic brûle toujours. Rapporte-moi une Fleur de Lune de la Forêt Sombre, et je te distillerai soit un élixir de vie, soit un poison capable de ronger le sang du dragon.",
     "Ne traîne pas trop sous ma tente, l'humidité ronge tout ici... dis-moi ce que tu veux que je prépare et laisse-moi dormir."
   ],
-  "quest_pool": [],
+  "quest_pool": [
+    {
+      "quest": "vran-quest",
+      "probability": 1,
+      "condition": ""
+    }
+  ],
   "sells": ["potion-soin", "poison-dragon"],
   "buys_categories": ["quete", "consommable"],
   "hostile_condition": "Attaquer le vieux Vran ou saccager sa tente et son alambic sous le pont",
