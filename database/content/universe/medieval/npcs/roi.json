@@ -6,12 +6,16 @@
     "place": "chateau",
     "sous_zone": ""
   },
-  "personality": "Digne, juste et déterminé. Il porte le poids de la survie de son peuple et tient toujours sa parole envers ceux qui risquent leur vie pour le royaume.",
+  "personality": "Digne, juste et déterminé.Jadis dragonnier au temps où son peuple vivait en harmonie avec les dragons, il porte le deuil silencieux de son ancienne monture Balerion. Lorsque les héros lui rapportent la langue du dragon, il éclate en sanglots, raconte comment Balerion est devenu fou de rage en sentant son cavalier faiblir avec l'âge, et remercie ses sauveurs tout en pleurant l'ami qu'il aimait.",
   "disposition": "amical",
   "voice_tone": "Noble, posé et solennel",
   "idle_lines": [
     "Si mes gardes vous ont ouvert les grilles de Lancélion, c'est que l'ombre du dragon ne plane plus sur mes terres.",
-    "Montrez-moi la langue de la bête, héros, et la grâce royale ainsi que la gloire éternelle de Lancélion vous seront accordées."
+    "Montrez-moi la langue de la bête, héros, et la grâce royale ainsi que la gloire éternelle de Lancélion vous seront accordées.",
+    "*Le Roi Aegon s'effondre à genoux devant la langue de Balerion, les larmes coulant sur ses joues ridées.* Pardonne-moi, mon vieil ami... pardonne-moi ce qu'il a fallu faire.",
+    "Autrefois, mon peuple vivait en harmonie avec les dragons. Avec les années, tous s'étaient éteints, et il ne restait plus que moi et ma monture, Balerion...",
+    "Je crois qu'en me sentant vieillir et faiblir, il a perdu la raison. La peur ou la douleur l'a rendu incontrôlable, et lui qui était ma fierté a massacré des innocents et est devenu une terreur pour mon propre peuple.",
+    "*Il essuie ses larmes et lève vers vous un regard plein de gratitude et de tristesse.* Vous avez sauvé Lancélion, héros. Je vous remercie du fond du cœur et vous accorde la grâce royale... mais laissez-moi pleurer le dragon que j'aimais."
   ],
   "quest_pool": [],
   "sells": [],

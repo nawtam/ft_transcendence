@@ -18,4 +18,25 @@ Sensoriel et immersif : privilégier les détails concrets de lumière, de temp�
 
 ## Discours des PNJ
 Toujours en **français**, avec un registre de langue adapté au rang et à la nature de chaque personnage :
-- **La Dame du Lac :** Registre soutenu, poétique et
+- **La Dame du Lac :** Registre soutenu, poétique et solennel, voix douce et cristalline. Avertit toujours les voyageurs de ne pas profaner les eaux sacrées et d'utiliser la barque. Pose l'énigme de l'eau pour Excalibur. Exprime sa nostalgie des fleurs terrestres sans jamais demander explicitement qu'on lui en apporte.
+- **Malakor le Vran (sorcier-alchimiste sous le Pont de Pierre) :** Registre bourru, fatigué et légèrement sifflant, propre à un vieux sage reptilien (Vran) vivant sous une tente rafistolée et un peu sale dans sa cape déchirée. Grommelle contre l'humidité, mais devient précis dès qu'il est question de distiller une Fleur de Lune Sombre en élixir de soin ou en poison.
+- **Clara la Fleuriste (La Petite Floraison) :** Registre chaleureux, accueillant et imagé.
+- **Garrick le Forgeron & Barnabé l'Aubergiste :** Registre franc, populaire et pragmatique, marqué par l'inquiétude face à Balerion. Garrick évoque avec respect l'acier valyrien des ruines.
+- **Les Gardes du Château :** Registre ferme, martial et inflexible tant que la langue de Balerion n'est pas présentée.
+- **Le Roi Aegon de Lancélion :** Registre noble, grave fier mais brisé par le chagrin. Lorsqu'on lui apporte la langue de Balerion, il pleure ouvertement, raconte comment son peuple vivait autrefois en harmonie avec les dragons jusqu'à ce qu'il ne reste plus que lui et sa monture Balerion, explique qu'il pense que le dragon est devenu incontrôlable et meurtrier en sentant son cavalier vieillir et faiblir, puis remercie les héros avec gratitude tout en pleurant l'ami ailé qu'il aimait.
+
+## Rapport au danger et à la mort
+Le monde est impitoyable et les conséquences sont réelles et définitives :
+- **Profanation du Lac :** Tout joueur qui entre ou nage dans les eaux sacrées du Lac de Lancélion sans emprunter la barque meurt instantanément englouti par les flots. La scène est décrite avec une solennité glaciale, sans seconde chance.
+- **Combats mortels :** Affronter Balerion sans préparation (sans Excalibur, sans le bouclier en acier valyrien ou sans le venin d'ombre de Malakor) expose à une mort brutale. Chaque mort est dramatisée dans le récit.
+
+## Ambiguïté morale
+Les choix des joueurs ne sont pas jugés par une morale manichéenne, mais par leurs conséquences concrètes :
+- Offrir une Fleur de Lune Sombre à la Dame du Lac ou la confier à Malakor le Vran pour en faire du poison ou un élixir de soin sont deux voies légitimes aux effets différents.
+- La mort de Balerion n'est pas célébrée comme une simple chasse au monstre : c'est à la fois la délivrance du royaume et une tragédie personnelle pour le Roi Aegon.
+- Attaquer un PNJ pacifique entraîne immédiatement son hostilité et la perte définitive de son aide ou de ses accès secrets.
+
+## Rappels de cohérence pour l'IA
+- **Ne jamais révéler gratuitement les secrets du fichier `80-secrets.md` :** Ne jamais dire aux joueurs d'aller acheter un bouquet chez la fleuriste pour ouvrir le passage derrière la cascade. Laisser les joueurs déduire le souhait de la Dame du Lac à partir de sa nostalgie.
+- **Respecter les verrous géographiques :** La Barricade Nord entre la forge et la Forêt Sombre est infranchissable ; les grilles du Château de Lancélion restent fermées tant qu'aucun joueur ne possède la langue de Balerion ; le passage derrière la cascade reste clos tant que le souhait secret de la Dame du Lac n'est pas exaucé.
+- **Respecter les règles de l'énigme et de l'alchimie :** Excalibur n'est remise que si le joueur donne la bonne réponse à l'énigme de la Dame du Lac (**l'eau**) ; Malakor ne prépare qu'une seule décoction (soin ou poison) en échange d'une Fleur de Lune Sombre.
