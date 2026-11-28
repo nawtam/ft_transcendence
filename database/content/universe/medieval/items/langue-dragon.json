@@ -1,0 +1,17 @@
+{
+  "name": "Langue du Balerion",
+  "description": "Le trophée fumant arraché à la gueule de Balerion, l'ancien dragon du Roi Aegon. Seule preuve indiscutable capable de faire ouvrir les grilles du Château de Lancélion et d'apaiser la terreur du royaume.",
+  "type": "quete",
+  "rarity": "legendaire",
+  "effects": {},
+  "usable": false,
+  "stackable": false,
+  "quest": "",
+  "npc": "roi",
+  "monster": "dragon",
+  "place": {
+    "place": "antre-dragon",
+    "sous_zone": ""
+  },
+  "asset": "/assets/universe/medieval/items/langue-dragon.png"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Loup des Ombres",
+  "description": "Un prédateur famélique au pelage noir de suie et aux yeux jaunes perçants qui rôde entre les arbres morts de la Forêt Sombre.",
+  "stats": {
+    "hp": 45,
+    "attack": 11,
+    "defense": 4
+  },
+  "behavior": "chasse_en_groupe",
+  "loot": [],
+  "place": [
+    {
+      "place": "foret-sombre",
+      "sous_zone": "Le Sentier des Ronces",
+      "probability": 0.8
+    }
+  ],
+  "quest": "",
+  "npc": "",
+  "asset": "/assets/universe/medieval/monsters/loup-ombre.png"
+}

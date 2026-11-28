@@ -1,0 +1,19 @@
+{
+  "name": "Écu en Acier Valyrien",
+  "description": "Un bouclier d'un noir profond parcouru de fines ondulations métalliques, reforgé par Garrick sur l'Enclume du Maître. Ce métal légendaire absorbe la chaleur des flammes et résiste aux crocs du dragon.",
+  "type": "armure",
+  "rarity": "epique",
+  "effects": {
+    "defense": 10
+  },
+  "usable": true,
+  "stackable": false,
+  "quest": "",
+  "npc": "forgeron",
+  "monster": "",
+  "place": {
+    "place": "forge",
+    "sous_zone": "L'Enclume du Maître"
+  },
+  "asset": "/assets/universe/medieval/items/bouclier-valyrien.png"
+}

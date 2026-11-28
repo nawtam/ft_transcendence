@@ -1,0 +1,21 @@
+{
+  "name": "Pillard des Ronces",
+  "description": "Une créature chétive et sournoise armée d'une dague rouillée qui tend des embuscades aux voyageurs cherchant la Clairière aux Fleurs Sombres.",
+  "stats": {
+    "hp": 35,
+    "attack": 9,
+    "defense": 3
+  },
+  "behavior": "fuit_si_blesse",
+  "loot": ["fleur-sombre"],
+  "place": [
+    {
+      "place": "foret-sombre",
+      "sous_zone": "La Clairière aux Fleurs Sombres",
+      "probability": 0.7
+    }
+  ],
+  "quest": "",
+  "npc": "",
+  "asset": "/assets/universe/medieval/monsters/gobelin-ronces.png"
+}

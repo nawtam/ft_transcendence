@@ -1,0 +1,17 @@
+{
+  "name": "Lingot d'Acier Valyrien",
+  "description": "Un métal sombre et léger aux reflets ondulants comme des vagues figées, forgé jadis par le feu des dragons. Découvert dans l'armurerie effondrée des Ruines de l'Ancien Bastion, seul Garrick le Forgeron sait le travailler.",
+  "type": "quete",
+  "rarity": "rare",
+  "effects": {},
+  "usable": false,
+  "stackable": true,
+  "quest": "",
+  "npc": "forgeron",
+  "monster": "",
+  "place": {
+    "place": "ruines",
+    "sous_zone": "L'Armurerie Effondrée"
+  },
+  "asset": "/assets/universe/medieval/items/acier-valyrien.png"
+}
