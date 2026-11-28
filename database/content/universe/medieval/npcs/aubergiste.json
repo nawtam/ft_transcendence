@@ -1,0 +1,29 @@
+{
+  "name": "Barnabé l'Aubergiste",
+  "description": "Un homme jovial à la barbe grisonnante et au tablier taché de cervoise, qui essuie sans relâche ses chopes en bois derrière le comptoir de la Taverne du Sanglier Doré.",
+  "role": "aubergiste",
+  "place": {
+    "place": "taverne",
+    "sous_zone": ""
+  },
+  "personality": "Bavard, chaleureux et observateur. Il connaît tous les secrets de comptoir du royaume et aime aider les aventuriers prêts à affronter le dragon.",
+  "disposition": "amical",
+  "voice_tone": "Chaleureux, complice et légèrement enroué",
+  "idle_lines": [
+    "Bienvenue au Sanglier Doré ! Installe-toi près du feu, les routes sont dangereuses depuis que le dragon s'est réveillé.",
+    "Si tu comptes traverser le Pont de Pierre vers la Forêt Sombre, jette un œil sous la grande arche : un vieux Vran y distille d'étranges décoctions.",
+    "Le Roi Aegon a fait verrouiller les grilles du Château. Il a juré de couvrir d'or et de gracier quiconque lui apportera la langue du dragon."
+  ],
+  "quest_pool": [],
+  "sells": [],
+  "buys_categories": ["consommable", "divers"],
+  "hostile_condition": "Attaquer l'aubergiste ou déclencher une bagarre générale dans la taverne",
+  "combat_stats": {
+    "hp": 60,
+    "attack": 8,
+    "defense": 4,
+    "equipement": []
+  },
+  "loot": [],
+  "asset": "/assets/universe/medieval/npcs/aubergiste.png"
+}

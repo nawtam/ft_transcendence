@@ -1,0 +1,29 @@
+{
+  "name": "Garrick le Forgeron",
+  "description": "Un colosse aux avant-bras marqués par des brûlures et la suie, portant un lourd tablier de cuir craquelé. Il bat le métal rougeoyant sur l'Enclume du Maître à la Forge de Lancélion.",
+  "role": "forgeron",
+  "place": {
+    "place": "forge",
+    "sous_zone": "L'Enclume du Maître"
+  },
+  "personality": "Bourru, pragmatique et protecteur envers les habitants du village. Il respecte les guerriers courageux et s'enthousiasme dès qu'on lui apporte un métal rare.",
+  "disposition": "amical",
+  "voice_tone": "Grave, franc et sonore, ponctué par le fracas régulier de son marteau",
+  "idle_lines": [
+    "N'essaie même pas de franchir ma Barricade Nord : j'ai condamné ce passage pour empêcher les bêtes de la Forêt Sombre d'envahir le village.",
+    "L'acier ordinaire plie comme du roseau face aux écailles du dragon. Mais si tu me rapportes des plaques d'acier runique depuis les Ruines de l'Ancien Bastion, je te forgerai un bouclier digne des anciens rois.",
+    "Un bon bouclier sauve plus de vies qu'une belle épée, voyageur."
+  ],
+  "quest_pool": [],
+  "sells": ["bouclier-runique"],
+  "buys_categories": ["arme", "armure", "divers"],
+  "hostile_condition": "Attaquer le forgeron ou saboter la forge",
+  "combat_stats": {
+    "hp": 95,
+    "attack": 15,
+    "defense": 10,
+    "equipement": []
+  },
+  "loot": ["bouclier-runique"],
+  "asset": "/assets/universe/medieval/npcs/forgeron.png"
+}

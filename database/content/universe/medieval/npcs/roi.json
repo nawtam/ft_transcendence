@@ -1,0 +1,28 @@
+{
+  "name": "Roi Aegon de Lancélion",
+  "description": "Un souverain d'âge mûr au visage sévère et à la présence imposante, aussi redoutable que calme et déterminé dans ses ambitions. Fatigué par le siège silencieux du dragon, drapé dans un manteau pourpre bordé d'hermine et coiffé d'une couronne d'or sobre.",
+  "role": "noble",
+  "place": {
+    "place": "chateau",
+    "sous_zone": ""
+  },
+  "personality": "Digne, juste et déterminé. Il porte le poids de la survie de son peuple et tient toujours sa parole envers ceux qui risquent leur vie pour le royaume.",
+  "disposition": "amical",
+  "voice_tone": "Noble, posé et solennel",
+  "idle_lines": [
+    "Si mes gardes vous ont ouvert les grilles de Lancélion, c'est que l'ombre du dragon ne plane plus sur mes terres.",
+    "Montrez-moi la langue de la bête, héros, et la grâce royale ainsi que la gloire éternelle de Lancélion vous seront accordées."
+  ],
+  "quest_pool": [],
+  "sells": [],
+  "buys_categories": [],
+  "hostile_condition": "Attaquer le Roi Aegon ou lever une arme dans la salle du trône",
+  "combat_stats": {
+    "hp": 110,
+    "attack": 16,
+    "defense": 12,
+    "equipement": []
+  },
+  "loot": [],
+  "asset": "/assets/universe/medieval/npcs/roi.png"
+}
